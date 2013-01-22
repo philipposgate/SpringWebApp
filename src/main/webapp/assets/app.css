@@ -1,0 +1,315 @@
+label { float: left; }
+
+label.error { float: none; color: red; vertical-align: top; }
+
+.orbis_boxContainer {
+	width:968px;
+	background-color:#262f3b;
+	background-image:url(/site/images/common/bkgrdMain.jpg);
+	background-position:top center;
+	background-repeat:repeat-x;
+	text-align:left;
+	margin:0px auto;
+}
+
+.orbis_boxContainer-800 {
+	width:867px;
+	background-color:#262f3b;
+	background-image:url(/site/images/common/bkgrdMain.jpg);
+	background-position:top center;
+	background-repeat:repeat-x;
+	text-align:left;
+	margin:0px auto;
+}
+
+.orbis_boxContainer-657 {
+	width:657px;
+	background-color:#262f3b;
+	background-image:url(/site/images/common/bkgrdMain.jpg);
+	background-position:top center;
+	background-repeat:repeat-x;
+	text-align:left;
+	margin:0px auto;
+}
+
+#orbis_subpageContainer {
+	/*background-image:url(/site/images/common/bkgrdSubpage.jpg);
+	background-repeat:repeat-y;
+	background-position:top left;
+	overflow:auto;*/
+}
+
+.orbis_boxContainer-800 a,
+.orbis_boxContainer-800 a:active,
+.orbis_boxContainer-800 a:visited,
+.orbis_boxContainer-800 a:link {
+	color:#ffb006;
+	text-decoration:none;
+}
+
+.orbis_boxContainer-800 a:hover {
+	color:#ffb006;
+	text-decoration:none;
+}
+
+.orbis_rightMainContainer {
+	/*width:435px; - width with left menu*/
+	/*width:657px;  - full width*/
+	width:627px;
+	float:left;
+	color:#fff;
+	padding:0px 15px;
+}
+
+.orbis_subContentContainer {
+	padding:10px 20px;
+	padding-left:0px;
+	padding-bottom:20px;
+}
+
+.orbis_subContentContainer .headerTitle {
+	margin-bottom:0px;
+}
+
+.orbis_subContentContainer .headerContainer {
+	margin-bottom:0px;
+	margin:0px !important;
+	padding:0px;
+}
+
+.headerContainer .headerTitle h1 {
+	font-size: 1.8em;
+	font-weight: normal;
+	float: left;
+}
+
+.orbis_invisibleContainer {
+	margin-top:15px;
+	margin-left:18px;
+}
+
+.orbis_topImgContainer {
+	min-height:78px;
+}
+
+.orbis_rightMainContainer .customContentContainer {
+	color:#fff;
+}
+
+.imagePageContainer {
+	position: relative;
+}
+
+.programScheduleStyles .orbis_leftContainer {
+	float:left;	
+	margin-left:155px;
+}
+
+.programScheduleStyles .orbis_rightContainer {
+	float:left;
+	margin-top:16px;
+	margin-right:15px;
+	overflow:auto;
+}
+
+.orbis_headerImgContainer {
+	background-color:#354555;
+	background-image:url(/site/images/common/headerMain.jpg);
+	background-repeat:no-repeat;
+	padding-bottom:3px;
+}
+
+.orbis_headerImgContainer2 {
+	margin-left:150px;
+	background-color:#354555;
+	background-image:url(/site/images/common/headerMain_small.jpg);
+	background-repeat:no-repeat;
+	padding-bottom:3px;
+}
+
+.orbis_mainContentContainer {
+	padding-bottom:20px;
+	float:left;
+	width:645px;
+	margin-top:4px;
+	padding-bottom:0px;
+}
+
+.orbis_rightContentContainer {
+	float:left;
+	margin-left:3px;
+	width:204px;
+	height:838px;
+}
+
+.orbis_leftContainer {
+	float:left;
+}
+
+.orbis_midContainer {
+	float:left;
+}
+
+.orbis_rightContainer {
+	float:left;
+	margin-top:16px;
+	overflow:auto;
+}
+.orbis_navContainer {
+	width:627px;
+	clear:both;
+	text-align:left;
+	overflow:hidden;
+	margin-left:15px;
+	margin-bottom:3px;
+}
+
+.orbis_boxContainer .orbis_navContainer,
+.orbis_boxContainer .orbis_footerNavContainer {
+	margin-left:170px;
+}
+
+.orbis_navBox {
+	float:left;
+	padding-right:4px;
+	margin:0px;
+}
+
+.orbis_footerNavContainer {
+	width:627px;
+	clear:both;
+	text-align:left;
+	overflow:hidden;
+	margin-left:15px;
+	margin-top:4px;
+}
+
+.orbis_footerNavBox {
+	float:left;
+	padding-right:4px;
+	margin:0px;
+}
+
+.orbis_chatContainer {
+	height:551px;
+	margin-top:3px;
+	margin-bottom:5px;
+	background-color:#81a8d3;
+	border:1px solid white;
+}
+
+.orbis_chatBannerContainer {
+	border:1px solid #fff;
+	background-color:#AAA;
+	height:276px;
+}
+
+a img {
+	cursor: pointer;
+}
+
+img {
+	border: 0px;	
+}
+
+.orbis_footerContainer {
+	width:657px;
+	clear:both;
+	margin:0px auto;
+	font-size:10px;
+	margin-top:10px;
+	padding-bottom:13px;
+	text-align:center;
+	color:#fff;
+}
+
+.boxContainer .orbis_footerContainer {
+	width:100%;
+	background-color:#262f3b;
+	border-top:2px solid #f66002;
+	padding-top:3px;
+}
+
+.orbis_footerContainer a,
+.orbis_footerContainer a:active,
+.orbis_footerContainer a:link,
+.orbis_footerContainer a:visited {
+	text-decoration:underline;
+	color:#fff;
+}
+
+#wrapper {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin-top:0px;
+	margin: 0 auto;
+	width: 100%;
+	text-align: center;
+}
+
+.headerContainer .headerTitle h1 {
+	font-family:Arial, Helvetica, Verdana, sans-serif;
+	font-size: 18px;
+	color:#ffa200;
+}
+
+#chatBox {}
+#chatTitle {padding:2px;text-align:center;color:#FFF;font-weight:bold;font-size:9px;}
+#chatMessages {height:400px;padding:1px;margin-bottom:2px;overflow-y:auto;text-align:left;background-color:#DADADA;overflow-x:hidden;}
+#chatInput {height:120px;padding:3px;}
+#chatInputLoggedIn {height:100%}
+#chatInputNotLoggedIn {height:100%}
+#chatTextarea {margin-left:auto; margin-right:auto;height:50px;width:96%;font-size:10pt;}
+.chatBtns {font-size:9pt;color:#FFF;font-weight:bold;background-image:none; background-color:#495e73;}
+div.chatMsgDiv {padding:1px;}
+.chatManager {color:blue;}
+
+td {	
+	padding: 2px 2px 2px 2px;
+	vertical-align:top;	
+}
+
+hr {
+	background-color:#ccc;
+	color:#000000;
+	height: 1px;
+	border: none;
+	width: 100%;
+}
+
+a,
+a:link,
+a:active,
+a:visited {
+	color:#f66002;
+	text-decoration:none;
+}
+
+a.btn,
+a:link.btn,
+a:active.btn,
+a:visited.btn {
+  color: #333;
+}
+
+a.btn-primary,
+a:link.btn-primary,
+a:active.btn-primary,
+a:visited.btn-primary {
+  color: #FFF;
+}
+
+a.btn-inverse,
+a:link.btn-inverse,
+a:active.btn-inverse,
+a:visited.btn-inverse {
+  color: #FFF;
+}
+
+a.btn-danger,
+a:link.btn-danger,
+a:active.btn-danger,
+a:visited.btn-danger {
+  color: #FFF;
+}
