@@ -18,7 +18,7 @@
 	http://docs.cksource.com/CKFinder_2.x/Developers_Guide/Java/Configuration/baseURL_and_baseDir
 	-->
 	<baseDir></baseDir>
-	<baseURL>/content/documents/</baseURL>
+	<baseURL>/uploads/</baseURL>
 	<licenseKey></licenseKey>
 	<licenseName></licenseName>
 	<!--
@@ -59,16 +59,16 @@
 	<defaultResourceTypes></defaultResourceTypes>
 	<types>
 		<type name="Files">
-			<url>%BASE_URL%Link/</url>
-			<directory>%BASE_DIR%Link</directory>
+			<url>%BASE_URL%files/</url>
+			<directory>%BASE_DIR%files</directory>
 			<maxSize>0</maxSize>
 			<allowedExtensions>7z,aiff,asf,avi,bmp,csv,doc,docx,fla,flv,gif,gz,gzip,jpeg,jpg,mid,mov,mp3,mp4,mpc,mpeg,mpg,ods,odt,pdf,png,ppt,pptx,pxd,qt,ram,rar,rm,rmi,rmvb,rtf,sdc,sitd,swf,sxc,sxw,tar,tgz,tif,tiff,txt,vsd,wav,wma,wmv,xls,xlsx,zip
 			</allowedExtensions>
 			<deniedExtensions></deniedExtensions>
 		</type>
 		<type name="Images">
-			<url>%BASE_URL%Image/</url>
-			<directory>%BASE_DIR%Image</directory>
+			<url>%BASE_URL%images/</url>
+			<directory>%BASE_DIR%images</directory>
 			<maxSize>0</maxSize>
 			<allowedExtensions>bmp,gif,jpeg,jpg,png</allowedExtensions>
 			<deniedExtensions></deniedExtensions>

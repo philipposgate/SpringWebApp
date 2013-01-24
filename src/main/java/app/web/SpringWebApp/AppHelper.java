@@ -54,28 +54,28 @@ public class AppHelper implements InitializingBean
 			roleDAO.create(adminRole);
 		}
 
-		User rootUser = getUserByUsername("root");
-		if (rootUser == null)
+		User adminUser = getUserByUsername("admin");
+		if (adminUser == null)
 		{
 			System.out.println("CREATE ROOT USER");
-			rootUser = new User();
-			rootUser.setFirstName("root");
-			rootUser.setLastName("admin");
-			rootUser.setEmail("root@admin.com");
-			rootUser.setUsername("root");
-			rootUser.setPassword("1");
-			rootUser.setAccountNonLocked(true);
-			rootUser.setAccountNonExpired(true);
-			rootUser.setCredentialsNonExpired(true);
-			rootUser.setEnabled(true);
-			rootUser.setCreateDate(new Date());
+			adminUser = new User();
+			adminUser.setFirstName("admin");
+			adminUser.setLastName("admin");
+			adminUser.setEmail("admin@admin.com");
+			adminUser.setUsername("admin");
+			adminUser.setPassword("1");
+			adminUser.setAccountNonLocked(true);
+			adminUser.setAccountNonExpired(true);
+			adminUser.setCredentialsNonExpired(true);
+			adminUser.setEnabled(true);
+			adminUser.setCreateDate(new Date());
 
-			userDAO.create(rootUser);
+			userDAO.create(adminUser);
 
-			rootUser.getRoles().add(userRole);
-			rootUser.getRoles().add(adminRole);
+			adminUser.getRoles().add(userRole);
+			adminUser.getRoles().add(adminRole);
 
-			userDAO.update(rootUser);
+			userDAO.update(adminUser);
 		}
 
 		User regularUser = getUserByUsername("user");
@@ -90,9 +90,9 @@ public class AppHelper implements InitializingBean
 			regularUser.setCredentialsNonExpired(true);
 			regularUser.setEnabled(true);
 			regularUser.setCreateDate(new Date());
-			regularUser.setFirstName("Bob");
-			regularUser.setLastName("Smith");
-			regularUser.setEmail("bob.smith@user.com");
+			regularUser.setFirstName("user");
+			regularUser.setLastName("user");
+			regularUser.setEmail("user@user.com");
 
 			userDAO.create(regularUser);
 

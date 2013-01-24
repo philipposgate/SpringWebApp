@@ -34,8 +34,8 @@
 				    });
 				});
 			</script>
-			<div style="float:right;cursor:pointer;">
-				<img id="editHtmlBtn" src="/assets/images/edit.png" title="edit page">
+			<div style="cursor:pointer;">
+				<img id="editHtmlBtn" src="/assets/images/edit.png" title="edit content">
 			</div>
 			${pageContent}
 		</c:if>

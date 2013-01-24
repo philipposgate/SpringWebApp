@@ -7,7 +7,7 @@
 	<title>${pageTitle}</title>
 	<style type="text/css" media="all">
 		@import url("/assets/jquery/jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css");
-		@import url("/assets/bootstrap-2.1.1/css/bootstrap.css");
+		@import url("/assets/bootstrap-2.2.2/css/bootstrap.css");
 		@import url("/assets/app.css");
 		.modal-body {
 		    max-height: 800px;
@@ -15,7 +15,7 @@
     </style>
 	<script src="/assets/jquery/jquery-1.8.2.min.js"></script>
 	<script src="/assets/jquery/jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.min.js"></script>
-	<script src="/assets/bootstrap-2.1.1/js/bootstrap.min.js"></script>
+	<script src="/assets/bootstrap-2.2.2/js/bootstrap.min.js"></script>
 	<script src="/assets/scripts/jquery-validation-1.10.0/jquery.validate.min.js"></script>
 	<script src="/assets/scripts/jquery-validation-1.10.0/additional-methods.min.js"></script>
 	<script src="/assets/app.js"></script>

@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/app/includeTop.jsp"%>
+<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <div class="container">
 	<div class="row">
@@ -8,8 +8,6 @@
 				<ul class="nav nav-list">
 					<li class="nav-header">My Account</li>
 					<li class="active"><a href="#">Account Details</a></li>
-					<li><a href="/app/">Home</a></li>
-					<li><a href="/j_spring_security_logout">Logout</a></li>
 				</ul>
 			</div>
 		</div>

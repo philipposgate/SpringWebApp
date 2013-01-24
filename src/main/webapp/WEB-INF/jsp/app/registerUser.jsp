@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/app/includeTop.jsp"%>
+<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <div class="container">
 	<div class="row">

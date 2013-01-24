@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/app/includeTop.jsp"%>
+<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -18,8 +18,8 @@
 				
 				<form name="f" action="/j_spring_security_check" method="POST">
 					<table class="table table-striped">
-						<tr><td>User:</td><td><input type="text" name="j_username"></td></tr>
-						<tr><td>Password:</td><td><input type="password" name="j_password"></td></tr>
+						<tr><td>User:</td><td><input type="text" name="j_username"> <code>eg: 'admin' or 'user'</code></td></tr>
+						<tr><td>Password:</td><td><input type="password" name="j_password"> <code>eg: 1</code></td></tr>
 						<tr>
 							<td colspan="2">
 								<input class="btn btn-primary btn-large" name="submit" type="submit" value="Login"/>

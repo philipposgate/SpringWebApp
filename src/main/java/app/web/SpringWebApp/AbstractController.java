@@ -119,7 +119,7 @@ public abstract class AbstractController
 	}
 
 	public String getContentPage(String page, HttpServletRequest request,
-			Model model)
+			Model model, String defaultContent)
 	{
 		PageContent pageContent = null;
 
@@ -140,7 +140,8 @@ public abstract class AbstractController
 		{
 			pageContent = new PageContent();
 			pageContent.setPage(page);
-			pageContent.setContent(page);
+			pageContent.setContent(defaultContent == null ? page
+					: defaultContent);
 		}
 
 		String pageContentAction = request.getParameter("pageContentAction");
