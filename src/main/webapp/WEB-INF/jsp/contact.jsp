@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <h1>Contact</h1>
 
@@ -27,4 +26,3 @@
 		diam, quis tempus mi enim vel nisi.</p>
 </div>
 
-<%@include file="/WEB-INF/jsp/includeBottom.jsp"%>

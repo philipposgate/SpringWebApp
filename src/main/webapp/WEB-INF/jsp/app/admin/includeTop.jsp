@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
     <div class="container-fluid">
       <div class="row-fluid">

@@ -243,6 +243,11 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.1</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-extras</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
     <build>
@@ -283,4 +288,6 @@
             </plugin>
         </plugins>
     </build>
+    <url>https://github.com/philipposgate/SpringWebApp</url>
+    <description>A boiler-plate template project for Eclipse that demonstrates a typical Spring-based J2E webapp.</description>
 </project>

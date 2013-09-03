@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
+<%@ include file="/WEB-INF/jsp/app/includeTop.jsp"%>
 
 <center>
 
@@ -9,5 +9,4 @@
 	
 </center>
 
-
-<%@ include file="/WEB-INF/jsp/includeBottom.jsp"%>
+<%@ include file="/WEB-INF/jsp/app/includeBottom.jsp"%>

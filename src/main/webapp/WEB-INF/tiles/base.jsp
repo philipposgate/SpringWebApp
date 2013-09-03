@@ -1,3 +1,4 @@
+<%@ include file="/WEB-INF/jsp/include.jsp"%>
 <c:if test="${empty pageTitle}">
 	<c:set var="pageTitle" value="Spring Web App" />
 </c:if>
@@ -84,6 +85,13 @@
         </div>
       </div>
     </div>
-	
 
 	<div class="container" style="margin-top: 60px;">
+	
+		<tiles:insertAttribute name="body" />
+	
+	</div> 
+	
+</body>
+</html>
+	

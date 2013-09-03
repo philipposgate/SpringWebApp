@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <h1>Welcome!</h1>
 <P>to <B>Spring Web App</B></P>
@@ -30,7 +29,3 @@
 		nisi eget fermentum ornare, risus dolor sollicitudin orci, id iaculis velit enim molestie odio.</p>
   </div>
 </div>
-
-
-
-<%@include file="/WEB-INF/jsp/includeBottom.jsp"%>

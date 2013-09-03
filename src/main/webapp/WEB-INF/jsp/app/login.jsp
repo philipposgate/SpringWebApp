@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<%@ include file="/WEB-INF/jsp/includeTop.jsp"%>
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -33,6 +32,3 @@
 		</div>
 	</div>
 </div>
-
-
-<%@ include file="/WEB-INF/jsp/app/includeBottom.jsp"%>
