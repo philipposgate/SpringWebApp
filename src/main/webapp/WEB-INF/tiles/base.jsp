@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
+
 <c:if test="${empty pageTitle}">
 	<c:set var="pageTitle" value="Spring Web App" />
 </c:if>

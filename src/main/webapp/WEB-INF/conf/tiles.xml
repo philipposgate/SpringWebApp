@@ -6,41 +6,28 @@
     <definition name="base" template="/WEB-INF/tiles/base.jsp">
         <put-attribute name="body" value="" />
     </definition>
-
-    <definition name="home" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/home.jsp" />
+    <definition name="*" extends="base">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+    </definition>
+    <definition name="*/*" extends="base">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+    </definition>
+    <definition name="*/*/*" extends="base">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
     </definition>
 
-    <definition name="about" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/about.jsp" />
+	<!-- AJAX TEMPLATE -->
+    <definition name="ajax" template="/WEB-INF/tiles/ajax.jsp">
+        <put-attribute name="body" value="" />
     </definition>
-
-    <definition name="contact" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/contact.jsp" />
+    <definition name="ajax/*" extends="ajax">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
     </definition>
-
-    <definition name="app/login" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/login.jsp" />
+    <definition name="ajax/*/*" extends="ajax">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
     </definition>
-
-    <definition name="app/registerUser" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/registerUser.jsp" />
-    </definition>
-
-    <definition name="app/user/userHome" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/user/userHome.jsp" />
-    </definition>
-
-    <definition name="app/admin/adminHome" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/admin/adminHome.jsp" />
-    </definition>
-
-    <definition name="app/admin/adminUsrMgt" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/admin/adminUsrMgt.jsp" />
-    </definition>
-
-    <definition name="app/admin/ajaxUserDetails" extends="base">
-        <put-attribute name="body" value="/WEB-INF/jsp/app/admin/ajaxUserDetails.jsp" />
+    <definition name="ajax/*/*/*" extends="ajax">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
     </definition>
 
 

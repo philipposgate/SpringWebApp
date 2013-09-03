@@ -81,7 +81,7 @@ public class AppController extends AbstractController
 	{
 		User user = userDAO.getById(userId);
 		model.addAttribute("user", user);
-		return "app/admin/ajaxUserDetails";
+		return "ajax/app/admin/ajaxUserDetails";
 	}
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
@@ -121,6 +121,7 @@ public class AppController extends AbstractController
 	{
 		User user = new User();
 		user.setCreateDate(new Date());
+		user.setEnabled(true);
 		bindUser(request, user);
 
 		userDAO.create(user);

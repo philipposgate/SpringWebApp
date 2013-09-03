@@ -3,11 +3,14 @@
 <%@ include file="/WEB-INF/jsp/app/admin/includeTop.jsp"%>
 
 	<script>
+		app.addComponent("jqueryValidate");
+		
 		$(document).ready(function(){
 		    $("#userDialog").on("hidden", function() {
 		        $(this).removeData("modal");
 		    });
 		});
+		
 		function editUser(userId)
 		{
 		    $("#userDialog").modal("show");

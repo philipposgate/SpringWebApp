@@ -1,3 +1,9 @@
 /*
  * Put custom css styles here
  */
+ 
+input.error { border: 1px dotted red; }
+form label.error, label.error {
+	color: red;
+	font-style: italic
+}
