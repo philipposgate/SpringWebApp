@@ -32,11 +32,11 @@ public class AuthenticationSuccessHandlerImpl implements
 
 		if (roles.contains(AppHelper.ROLE_ADMIN))
 		{
-			response.sendRedirect("/app/admin/");
+			response.sendRedirect("/admin/");
 		}
 		else
 		{
-			response.sendRedirect("/app/user/");
+			response.sendRedirect("/user/");
 		}
 	}
 }

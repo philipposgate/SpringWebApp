@@ -16,7 +16,7 @@
 					<div class="successFadeout"><B>Account Saved!</B></div>
 				</c:if>
 				<h1>My Account Details</h1>
-				<form id="accountForm" action="/app/user/<sec:authentication property="principal.id"/>" method="POST">
+				<form id="accountForm" action="/user/<sec:authentication property="principal.id"/>" method="POST">
 					<table class="table table-striped">
 						<tbody>
 							<tr>
@@ -68,7 +68,7 @@
     				required: true,
     				minlength: 3,
     				remote: {
-    				    url: "/app/checkUsername",
+    				    url: "/checkUsername",
     				    type: "GET"
     				}
     			},

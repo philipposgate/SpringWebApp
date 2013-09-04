@@ -26,14 +26,14 @@ public class AppController extends AbstractController
 	@RequestMapping(value = "/login")
 	public String login()
 	{
-		return "app/login";
+		return "/app/login";
 	}
 
 	@RequestMapping(value = "/loginError")
 	public String loginError(ModelMap model)
 	{
 		model.addAttribute("error", "true");
-		return "app/login";
+		return "/app/login";
 	}
 
 	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
@@ -54,7 +54,7 @@ public class AppController extends AbstractController
 
 			model.addAttribute("saved", true);
 		}
-		return "app/user/userHome";
+		return "/user/userHome";
 	}
 
 	@RequestMapping(value = "user/")
@@ -107,13 +107,13 @@ public class AppController extends AbstractController
 	@RequestMapping(value = "/registerUser", method = RequestMethod.GET)
 	public String registerUserView()
 	{
-		return "app/registerUser";
+		return "/app/registerUser";
 	}
 
 	@RequestMapping(value = "/testRedirect")
 	public String testRedirect()
 	{
-		return "redirect:/app/user/";
+		return "redirect:/user/";
 	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
@@ -132,7 +132,7 @@ public class AppController extends AbstractController
 
 		AppHelper.setUserLoggedIn(user);
 
-		return "redirect:/app/user/";
+		return "redirect:/user/";
 	}
 
 	@RequestMapping(value = "/checkUsername", method = RequestMethod.GET)
@@ -200,7 +200,7 @@ public class AppController extends AbstractController
 	public String sessionExpired()
 	{
 		System.out.println("session expired!");
-		return "redirect:/app/login";
+		return "redirect:/login";
 	}
 
 	private void bindUser(HttpServletRequest request, User user)

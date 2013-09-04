@@ -5,7 +5,7 @@
 		<div class="span6 offset3">
 			<div class="well">
 				<h1>Create New Account</h1>
-				<form id="registrationForm" action="/app/registerUser" method="POST">
+				<form id="registrationForm" action="/registerUser" method="POST">
 					<table class="table table-striped">
 						<tbody>
 							<tr>
@@ -36,7 +36,7 @@
 					</table>
 					<p>
 						<input type="submit" class="btn btn-primary btn-large" value="Create Account">
-						<a href="/app/" class="btn btn-large">Cancel</a>
+						<a href="/" class="btn btn-large">Cancel</a>
 					</p>
 				</form>
 			</div>
@@ -54,7 +54,7 @@
     				required: true,
     				minlength: 3,
     				remote: {
-    				    url: "/app/checkUsername",
+    				    url: "/checkUsername",
     				    type: "GET"
     				}
     			},

@@ -56,7 +56,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
-		<url-pattern>/app/*</url-pattern>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -103,7 +103,7 @@
 	</session-config>
 
 	<welcome-file-list>
-		<welcome-file>app/</welcome-file>
+		<welcome-file>/</welcome-file>
 	</welcome-file-list>
 	
 	<error-page>

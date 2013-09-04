@@ -45,7 +45,7 @@
 		<tbody>
 			<c:forEach var="user" items="${users}">
 				<tr>
-					<td><a data-toggle="modal" href="/app/admin/users/${user.id}" data-target="#userDialog" class="btn btn-mini" >edit</a></td>
+					<td><a data-toggle="modal" href="/admin/users/${user.id}" data-target="#userDialog" class="btn btn-mini" >edit</a></td>
 					<td>${user.id}</td>
 					<td>${user.username}</td>
 					<td>${user.firstName}</td>

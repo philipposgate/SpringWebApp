@@ -31,18 +31,6 @@
 
 </head>
 <body>
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-		    var activePath = "/app/";
-		    if (document.location.pathname != "/")
-		    {
-		        activePath = document.location.pathname;
-		    }
-		    
-		    $('ul.nav > li > a[href="' + activePath + '"]').parent().addClass('active');
-		});
-	</script>
 	
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -55,9 +43,9 @@
           <a class="brand" href="/">Spring Web App</a>
           <div class="nav-collapse collapse">
 			<ul class="nav">
-				<li><a href="/app/">Home</a></li>
-				<li><a href="/app/about">About</a></li>
-				<li><a href="/app/contact">Contact</a></li>
+				<li><a href="/">Home</a></li>
+				<li><a href="/about">About</a></li>
+				<li><a href="/contact">Contact</a></li>
 			</ul>
             <div class="pull-right">
 	            <ul class="nav pull-right">
@@ -67,10 +55,10 @@
 		                <ul class="dropdown-menu">
 		                  <c:choose>
 			                  <c:when test="${isAdmin}">
-				                  <li><a href="/app/admin/">Site Administration</a></li>
+				                  <li><a href="/admin/">Site Administration</a></li>
 			                  </c:when>
 			                  <c:otherwise>
-				                  <li><a href="/app/user/">My Account</a></li>
+				                  <li><a href="/user/">My Account</a></li>
 			                  </c:otherwise>
 		                  </c:choose>
 		                  <li><a href="/j_spring_security_logout">Logout</a></li>
@@ -78,7 +66,7 @@
 		              </li>
 					</c:if>
 					<c:if test="${!loggedIn}">
-						<li><a href="/app/login">Login</a></li>
+						<li><a href="/login">Login</a></li>
 					</c:if>
 	            </ul>
             </div>

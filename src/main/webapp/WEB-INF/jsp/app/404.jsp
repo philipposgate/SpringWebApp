@@ -9,7 +9,7 @@
 
 				<P>Page not found.</P>
 				
-				<P><a href="/app/" class="btn btn-large btn-inverse">Return to Home Page</a></P>
+				<P><a href="/" class="btn btn-large btn-inverse">Return to Home Page</a></P>
 				
 			</div>
 		</div>
