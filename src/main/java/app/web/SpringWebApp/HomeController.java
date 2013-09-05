@@ -27,6 +27,7 @@ public class HomeController extends AbstractController
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model)
 	{
+		model.addAttribute("homeNav", "home");
 		return "home";
 	}
 
@@ -34,12 +35,14 @@ public class HomeController extends AbstractController
 	@Transactional
 	public String about(HttpServletRequest request, Model model)
 	{
+		model.addAttribute("homeNav", "about");
 		return getContentPage("about", request, model, defaultContent);
 	}
 
 	@RequestMapping(value = "/contact", method = RequestMethod.GET)
 	public String contact(Locale locale, Model model)
 	{
+		model.addAttribute("homeNav", "contact");
 		return "contact";
 	}
 

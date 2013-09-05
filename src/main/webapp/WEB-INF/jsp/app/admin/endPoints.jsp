@@ -1,6 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<c:set var="activeNav" value="endPoints" />
-<%@ include file="/WEB-INF/jsp/app/admin/includeTop.jsp"%>
 
 <h2>Spring MVC Endpoints</h2>
 
@@ -71,5 +69,3 @@
 		</tbody>
 	</table>
 </c:forEach>
-
-<%@ include file="/WEB-INF/jsp/app/admin/includeBottom.jsp"%>

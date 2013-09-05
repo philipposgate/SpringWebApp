@@ -71,6 +71,7 @@ public class AppController extends AbstractController {
 
 	@RequestMapping(value = "admin/")
 	public String adminHome(Model model) {
+		model.addAttribute("adminNav", "adminHome");
 		return "app/admin/adminHome";
 	}
 
@@ -79,6 +80,7 @@ public class AppController extends AbstractController {
 		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
 				.getHandlerMethods();
 		model.addAttribute("handlerMethods", handlerMethods);
+		model.addAttribute("adminNav", "endPoints");
 
 		return "app/admin/endPoints";
 	}
@@ -86,6 +88,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "admin/users")
 	public String adminUsrMgt(Model model) {
 		model.addAttribute("users", userDAO.getAll());
+		model.addAttribute("adminNav", "userMgt");
 		return "app/admin/adminUsrMgt";
 	}
 
