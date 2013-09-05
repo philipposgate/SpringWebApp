@@ -5,7 +5,7 @@
 		<div class="span6 offset3">
 			<div class="well">
 				<h1>Create New Account</h1>
-				<form id="registrationForm" action="/registerUser" method="POST">
+				<form id="registrationForm" action="/registerUser" method="POST" autocomplete="off">
 					<table class="table table-striped">
 						<tbody>
 							<tr>
@@ -45,6 +45,7 @@
 </div>
 
 <script type="text/javascript">
+	app.addComponent("jqueryValidate");
     $(document).ready(function() {
         $("#registrationForm").validate({
     		rules: {

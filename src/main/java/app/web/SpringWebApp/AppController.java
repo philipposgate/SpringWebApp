@@ -1,6 +1,7 @@
 package app.web.SpringWebApp;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,38 +14,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import app.web.SpringWebApp.user.User;
 import app.web.SpringWebApp.user.UserDAO;
 
 @Controller
-public class AppController extends AbstractController
-{
+public class AppController extends AbstractController {
+	
 	@Autowired
 	private UserDAO userDAO;
 
+	private final RequestMappingHandlerMapping handlerMapping;
+
+	@Autowired
+	public AppController(RequestMappingHandlerMapping handlerMapping) {
+		this.handlerMapping = handlerMapping;
+	}
+
 	@RequestMapping(value = "/login")
-	public String login()
-	{
+	public String login() {
 		return "/app/login";
 	}
 
 	@RequestMapping(value = "/loginError")
-	public String loginError(ModelMap model)
-	{
+	public String loginError(ModelMap model) {
 		model.addAttribute("error", "true");
 		return "/app/login";
 	}
 
 	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
 	public String userUpdate(@PathVariable String userId, Model model,
-			HttpServletRequest request)
-	{
+			HttpServletRequest request) {
 		User userLoggedIn = AppHelper.getUserLoggedIn();
 
 		if (userLoggedIn != null
-				&& userLoggedIn.getId().equals(new Integer(userId)))
-		{
+				&& userLoggedIn.getId().equals(new Integer(userId))) {
 			User user = AppHelper.getUserById(userId);
 			bindUser(request, user);
 
@@ -58,27 +65,32 @@ public class AppController extends AbstractController
 	}
 
 	@RequestMapping(value = "user/")
-	public String userHome(Model model)
-	{
+	public String userHome(Model model) {
 		return "app/user/userHome";
 	}
 
 	@RequestMapping(value = "admin/")
-	public String adminHome(Model model)
-	{
+	public String adminHome(Model model) {
 		return "app/admin/adminHome";
 	}
 
+	@RequestMapping(value = "admin/endPoints")
+	public String endPoints(Model model) {
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
+				.getHandlerMethods();
+		model.addAttribute("handlerMethods", handlerMethods);
+
+		return "app/admin/endPoints";
+	}
+
 	@RequestMapping(value = "admin/users")
-	public String adminUsrMgt(Model model)
-	{
+	public String adminUsrMgt(Model model) {
 		model.addAttribute("users", userDAO.getAll());
 		return "app/admin/adminUsrMgt";
 	}
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.GET)
-	public String adminUsrLoad(@PathVariable String userId, Model model)
-	{
+	public String adminUsrLoad(@PathVariable String userId, Model model) {
 		User user = userDAO.getById(userId);
 		model.addAttribute("user", user);
 		return "ajax/app/admin/ajaxUserDetails";
@@ -86,8 +98,7 @@ public class AppController extends AbstractController
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
 	public String adminUsrSave(@PathVariable String userId, Model model,
-			HttpServletRequest request)
-	{
+			HttpServletRequest request) {
 		User user = userDAO.getById(userId);
 
 		bindUser(request, user);
@@ -105,20 +116,17 @@ public class AppController extends AbstractController
 	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.GET)
-	public String registerUserView()
-	{
+	public String registerUserView() {
 		return "/app/registerUser";
 	}
 
 	@RequestMapping(value = "/testRedirect")
-	public String testRedirect()
-	{
+	public String testRedirect() {
 		return "redirect:/user/";
 	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	public String registerUserSave(HttpServletRequest request)
-	{
+	public String registerUserSave(HttpServletRequest request) {
 		User user = new User();
 		user.setCreateDate(new Date());
 		user.setEnabled(true);
@@ -137,20 +145,15 @@ public class AppController extends AbstractController
 
 	@RequestMapping(value = "/checkUsername", method = RequestMethod.GET)
 	@ResponseBody
-	public String checkUsername(@RequestParam("username") String username)
-	{
+	public String checkUsername(@RequestParam("username") String username) {
 		boolean ok = false;
 
-		if (username != null)
-		{
+		if (username != null) {
 			User userLoggedIn = AppHelper.getUserLoggedIn();
 
-			if (userLoggedIn == null)
-			{
+			if (userLoggedIn == null) {
 				ok = AppHelper.getUserByUsername(username) == null;
-			}
-			else
-			{
+			} else {
 				ok = getCurrentSession()
 						.createQuery(
 								"from User u where u.id != ? and u.username=?")
@@ -168,20 +171,15 @@ public class AppController extends AbstractController
 	@RequestMapping(value = "/checkUsername/{userId}", method = RequestMethod.GET)
 	@ResponseBody
 	public String checkUsername(@PathVariable String userId,
-			@RequestParam("username") String username)
-	{
+			@RequestParam("username") String username) {
 		boolean ok = false;
 
-		if (username != null)
-		{
+		if (username != null) {
 			User user = userDAO.getById(userId);
 
-			if (user == null)
-			{
+			if (user == null) {
 				ok = AppHelper.getUserByUsername(username) == null;
-			}
-			else
-			{
+			} else {
 				ok = getCurrentSession()
 						.createQuery(
 								"from User u where u.id != ? and u.username=?")
@@ -197,22 +195,19 @@ public class AppController extends AbstractController
 	}
 
 	@RequestMapping(value = "/sessionExpired")
-	public String sessionExpired()
-	{
+	public String sessionExpired() {
 		System.out.println("session expired!");
 		return "redirect:/login";
 	}
 
-	private void bindUser(HttpServletRequest request, User user)
-	{
+	private void bindUser(HttpServletRequest request, User user) {
 		user.setFirstName(request.getParameter("firstName"));
 		user.setLastName(request.getParameter("lastName"));
 		user.setEmail(request.getParameter("email"));
 		user.setUsername(request.getParameter("username"));
 
 		String password = request.getParameter("password");
-		if (!password.equals(request.getParameter("confirmPassword")))
-		{
+		if (!password.equals(request.getParameter("confirmPassword"))) {
 			throw new IllegalArgumentException("password mismatch!");
 		}
 		user.setPassword(password);

@@ -42,7 +42,12 @@ var app = {
      * This is the global map of all the available "components" that a JSP can choose from. 
      */
     components : {
-      
+
+        json : {
+            tag : "<script type='text/javascript' src='/core/scripts/json/json2.js'></script>",
+            loaded : false
+        },
+        
         jqueryValidate : {
             tag: "<script type='text/javascript' src='/assets/scripts/jquery-validation-1.11.1/additional-methods.min.js'></script>",
             dependencies : ["jqueryValidate_core"],
