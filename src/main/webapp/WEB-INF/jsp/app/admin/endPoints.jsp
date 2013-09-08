@@ -10,7 +10,9 @@
 				<td style="font-weight:bold;">URL Pattern:</td>
 				<td style="font-weight:bold;">
 					<c:if test="${not empty entry.key.patternsCondition.patterns}">
-						${entry.key.patternsCondition.patterns}
+						<c:forEach var="pattern" items="${entry.key.patternsCondition.patterns}" varStatus="loop">
+							${pattern}<c:if test="${!loop.last}"><BR></c:if>
+						</c:forEach>
 					</c:if>
 				</td>
 			</tr>

@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import app.web.SpringWebApp.user.User;
 
-public class AuthenticationSuccessHandlerImpl implements
-		AuthenticationSuccessHandler
+public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler
 {
 
 	@Override
@@ -27,16 +30,30 @@ public class AuthenticationSuccessHandlerImpl implements
 		user.setLastLoggedInDate(new Date());
 		AppHelper.updateUser(user);
 
-		Set<String> roles = AuthorityUtils.authorityListToSet(authentication
-				.getAuthorities());
+		String redirectUrl = null;
+		
+        SavedRequest savedRequest = (SavedRequest) request.getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
+		
+        if (savedRequest != null)
+        {
+        	redirectUrl = savedRequest.getRedirectUrl();
+        }
+        
+        if (null == redirectUrl)
+        {
+    		Set<String> roles = AuthorityUtils.authorityListToSet(authentication
+    				.getAuthorities());
 
-		if (roles.contains(AppHelper.ROLE_ADMIN))
-		{
-			response.sendRedirect("/admin/");
-		}
-		else
-		{
-			response.sendRedirect("/user/");
-		}
+    		if (roles.contains(AppHelper.ROLE_ADMIN))
+    		{
+            	redirectUrl = "/admin/";
+    		}
+    		else
+    		{
+            	redirectUrl = "/user/";
+    		}
+        }
+
+		getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 	}
 }

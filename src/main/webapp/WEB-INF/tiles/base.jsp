@@ -47,21 +47,33 @@
 						<li class="${homeNav=='home' ? 'active' : ''}"><a href="/">Home</a></li>
 						<li class="${homeNav=='about' ? 'active' : ''}"><a href="/about">About</a></li>
 						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/contact">Contact</a></li>
-						<c:if test="${loggedIn && isAdmin}">
-							<li class="dropdown ${not empty adminNav ? 'active' : ''}">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <b class="caret"></b></a>
-								<ul class="dropdown-menu">
-									<li class="${adminNav=='adminHome' ? 'active' : ''}">
-										<a href="/admin/">Admin Home</a>
-									</li>
-									<li class="${adminNav=='userMgt' ? 'active' : ''}">
-										<a href="/admin/users">Manage Users</a>
-									</li>
-									<li class="${adminNav=='endPoints' ? 'active' : ''}">
-										<a href="/admin/endPoints">End Points</a>
-									</li>
-								</ul>
-							</li>
+						<c:if test="${loggedIn}">
+							<c:if test="${isAdmin}">
+								<li class="dropdown ${not empty adminNav ? 'active' : ''}">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li class="${adminNav=='adminHome' ? 'active' : ''}">
+											<a href="/admin/">Admin Home</a>
+										</li>
+										<li class="${adminNav=='userMgt' ? 'active' : ''}">
+											<a href="/admin/users">Manage Users</a>
+										</li>
+										<li class="${adminNav=='endPoints' ? 'active' : ''}">
+											<a href="/admin/endPoints">End Points</a>
+										</li>
+									</ul>
+								</li>
+							</c:if>
+							<c:if test="${!isAdmin}">
+								<li class="dropdown ${not empty userNav ? 'active' : ''}">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li class="${userNav=='userHome' ? 'active' : ''}">
+											<a href="/user/">My Account Details</a>
+										</li>
+									</ul>
+								</li>
+							</c:if>
 						</c:if>
 					</ul>
 					<div class="pull-right">

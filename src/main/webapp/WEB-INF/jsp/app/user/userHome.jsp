@@ -2,15 +2,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="span2 offset2">
-			<div class="well sidebar-nav">
-				<ul class="nav nav-list">
-					<li class="nav-header">My Account</li>
-					<li class="active"><a href="#">Account Details</a></li>
-				</ul>
-			</div>
-		</div>
-		<div class="span6">
+		<div class="span12">
 			<div class="well">
 				<c:if test="${not empty saved}">
 					<div class="successFadeout"><B>Account Saved!</B></div>

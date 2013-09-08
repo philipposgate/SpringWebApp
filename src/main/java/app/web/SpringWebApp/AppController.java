@@ -61,11 +61,12 @@ public class AppController extends AbstractController {
 
 			model.addAttribute("saved", true);
 		}
-		return "/user/userHome";
+		return userHome(model);
 	}
 
 	@RequestMapping(value = "user/")
 	public String userHome(Model model) {
+		model.addAttribute("userNav", "userHome");
 		return "app/user/userHome";
 	}
 
@@ -123,10 +124,6 @@ public class AppController extends AbstractController {
 		return "/app/registerUser";
 	}
 
-	@RequestMapping(value = "/testRedirect")
-	public String testRedirect() {
-		return "redirect:/user/";
-	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
 	public String registerUserSave(HttpServletRequest request) {
