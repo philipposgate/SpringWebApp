@@ -48,4 +48,18 @@ public class AppConfigDAO extends AbstractHibernateDAO<AppConfig>
 		}
 		return appConfig;
 	}
+	
+	public void saveConfig(String key, String value)
+	{
+		AppConfig appConfig = getAppConfig(key);
+		
+		if (null == appConfig)
+		{
+			appConfig = new AppConfig();
+			appConfig.setKey(key);
+		}
+		
+		appConfig.setValue(value);
+		getCurrentSession().saveOrUpdate(appConfig);
+	}
 }

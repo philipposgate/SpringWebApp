@@ -3,6 +3,7 @@ package app.web.SpringWebApp.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -728,5 +730,33 @@ public final class StringUtils
 			// e.printStackTrace();
 		}
 		return result;
+	}
+
+	public static String URL_decrypt(String s)
+	{
+		String result = null;
+
+		try
+		{
+			result = DES_decrypt(URLDecoder.decode(s, "UTF-8"));
+		}
+		catch (Exception e)
+		{
+			// e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static String getRandomAlphaNumeric(int length)
+	{
+	    String charPool = "ABCD1E2F3GOPQ4R5S6TUVWXYZH7I8J9K0LMN";
+	    
+	    StringBuilder rs = new StringBuilder();
+	    Random random = new Random();
+	    for (int i = 0; i < length; i++)
+	    {
+	        rs.append(charPool.charAt((int)(random.nextDouble() * charPool.length())));
+	    }
+	    return rs.toString();
 	}
 }

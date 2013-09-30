@@ -48,6 +48,7 @@
 	</security:authentication-manager>
 	<security:http auto-config="true" use-expressions="true">
 		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/appts/admin/**" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/user/**" access="hasRole('ROLE_USER')" />
 		<security:form-login authentication-success-handler-ref="authenticationSuccessHandler" login-page="/login" default-target-url="/" always-use-default-target="false" authentication-failure-url="/loginError" />
 		<security:access-denied-handler error-page="/WEB-INF/jsp/app/accessDenied.jsp" />
@@ -79,6 +80,22 @@
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
+    <!-- Email Sender (Using GMail) -->
+    <bean id="gmailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="25"/>
+        <property name="username" value="my.gmail.address@gmail.com"/>
+        <property name="password" value="my.gmail.password"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.debug">false</prop>
+            </props>
+        </property>
+    </bean>
+    	
 	<!-- App Settings (see AppHelper.appSettings) -->
 	<util:map id="appSettings" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
 		<entry key="fooSetting" value="foo!" />

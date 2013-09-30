@@ -73,7 +73,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "admin/")
 	public String adminHome(Model model) {
 		model.addAttribute("adminNav", "adminHome");
-		return "app/admin/adminHome";
+		return "app/admin/admin_home";
 	}
 
 	@RequestMapping(value = "admin/endPoints")
@@ -83,21 +83,21 @@ public class AppController extends AbstractController {
 		model.addAttribute("handlerMethods", handlerMethods);
 		model.addAttribute("adminNav", "endPoints");
 
-		return "app/admin/endPoints";
+		return "app/admin/admin_endPoints";
 	}
 
 	@RequestMapping(value = "admin/users")
 	public String adminUsrMgt(Model model) {
 		model.addAttribute("users", userDAO.getAll());
 		model.addAttribute("adminNav", "userMgt");
-		return "app/admin/adminUsrMgt";
+		return "app/admin/admin_usrMgt";
 	}
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.GET)
 	public String adminUsrLoad(@PathVariable String userId, Model model) {
 		User user = userDAO.getById(userId);
 		model.addAttribute("user", user);
-		return "ajax/app/admin/ajaxUserDetails";
+		return "ajax/app/admin/admin_ajaxUserDetails";
 	}
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
@@ -213,4 +213,19 @@ public class AppController extends AbstractController {
 		user.setPassword(password);
 	}
 
+	@RequestMapping(value = "admin/emailMgt")
+	public String adminEmailMgt(Model model) {
+		model.addAttribute("adminNav", "emailMgt");
+		model.addAttribute("gmailUsername", AppHelper.getConfigValue("gmailUsername"));
+		model.addAttribute("gmailPassword", AppHelper.getConfigValue("gmailPassword"));
+		return "app/admin/admin_emailMgt";
+	}
+	
+
+	@RequestMapping(value = "admin/saveEmailSettings", method = RequestMethod.POST)
+	public String saveEmailSettings(HttpServletRequest request) {
+		AppHelper.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
+		AppHelper.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
+		return "redirect:/admin/emailMgt";
+	}
 }

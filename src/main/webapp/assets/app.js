@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 $(document).ready(function() {
        app.hideFadeouts();
 });  
@@ -34,7 +37,7 @@ var app = {
         }
         else
         {
-            this.alertDialog("Error -> app.addComponent() -> Component '" + component + "' is undefined.", true, 300);
+            alert("Error -> app.addComponent() -> Component '" + component + "' is undefined.");
         }               
     }, 
         
@@ -43,22 +46,64 @@ var app = {
      */
     components : {
 
-        json : {
-            tag : "<script type='text/javascript' src='/core/scripts/json/json2.js'></script>",
+        agilityjs : {
+            tag: '<script type="text/javascript" src="/assets/scripts/agilityjs/agility.min.js"></script>',
+            loaded : false
+        },
+
+        bootstrapDatepicker : {
+            tag: '<link href="/assets/scripts/bootstrap-datepicker-1.2.0/css/datepicker.css" rel="stylesheet">',
+            dependencies : ["bootstrapDatepicker_core"],
+            loaded : false
+        },
+
+        bootstrapDatepicker_core : {
+            tag: '<script type="text/javascript" src="/assets/scripts/bootstrap-datepicker-1.2.0/js/bootstrap-datepicker.js"></script>',
+            loaded : false
+        },
+
+        dateFormat : {
+            tag: '<script type="text/javascript" src="/assets/scripts/date-format/date.format.js"></script>',
             loaded : false
         },
         
+        fullCalendar : {
+            tag: '<link href="/assets/scripts/fullcalendar/fullcalendar.css" rel="stylesheet">',
+            dependencies : ["fullCalendar_core"],
+            loaded : false
+        },
+
+        fullCalendar_core : {
+            tag: '<script type="text/javascript" src="/assets/scripts/fullcalendar/fullcalendar.min.js"></script>',
+            loaded : false
+        },
+
         jqueryValidate : {
-            tag: "<script type='text/javascript' src='/assets/scripts/jquery-validation-1.11.1/additional-methods.min.js'></script>",
+            tag: '<script type="text/javascript" src="/assets/scripts/jquery-validation-1.11.1/additional-methods.min.js"></script>',
             dependencies : ["jqueryValidate_core"],
             loaded : false
         },
         
         jqueryValidate_core : {
-            tag: "<script type='text/javascript' src='/assets/scripts/jquery-validation-1.11.1/jquery.validate.min.js'></script>",
+            tag: '<script type="text/javascript" src="/assets/scripts/jquery-validation-1.11.1/jquery.validate.min.js"></script>',
+            loaded : false
+        },
+
+        json : {
+            tag : '<script type="text/javascript" src="/assets/scripts/json/json2.js"></script>',
+            loaded : false
+        },
+
+        momentjs : {
+            tag : '<script type="text/javascript" src="/assets/scripts/momentjs/moment.min.js"></script>',
+            loaded : false
+        },
+
+        timeOptions : {
+            tag : '<script type="text/javascript" src="/assets/scripts/timeOptions/timeOptions.js"></script>',
             loaded : false
         }
-        
+
     },
     
     
@@ -217,60 +262,6 @@ var app = {
         return happy;
     },
     
-    /**
-     * A utility for showing a standard "alert dialog"
-     * 
-     * @param message<string> - the text to be displayed in the dialog
-     * @param error<boolean> - when TRUE, the dialog will be styled as an "error alert".
-     * @param width<number>[optional] - the pixel-width of the dialog.
-     */
-    alertDialog : function (message, error, width, callback)
-    {   
-        var dName = this.createDialogDiv();
-        $("#" + dName).attr("title", "Alert");
-        var opts = {"close": function() {if($("#" + dName).is(':data(dialog)')){$("#" + dName).dialog("destroy");}}};   
-        this.resetDialog("#" + dName, this.extendOptions(opts));
-        var thisDialog = $("div[aria-labelledby='ui-dialog-title-" + dName + "']");
-        
-        if (width)
-        {
-            width = width + "px";
-        }
-        else
-        {
-            width = '';
-        }
-                    
-        $("#" + dName).dialog('option', 'width', width);
-        $("#" + dName).dialog('option', 'buttons', '');
-        $("#" + dName).dialog('option', 'buttons', {
-                                    "OK": function(){ 
-                                        $("#" + dName).dialog("close");
-                                        if(callback)
-                                        {
-                                            callback();
-                                        }
-                                    }                                                           
-                                    });
-        $("#" + dName).html("<div id='centerThis'>" + message + "</div>");      
-        $("#" + dName).dialog("open");
-        
-        if(error)
-        {
-            $("#" + dName).addClass("ui-state-error");
-            $(thisDialog).find(".ui-dialog-title").css({"color":"#FFFFFF"});        
-            $(thisDialog).find(".ui-dialog-titlebar").css({"background":"#B90101"});
-        }
-                                    
-        $(thisDialog).find(".ui-dialog-title").css({"width":"100%", "text-align":"center"});
-        $(thisDialog).find(".ui-dialog-title").css({"display" : "block", "padding-left":"0px", "padding-right":"0px"});//display title bar  
-        $(thisDialog).find(".ui-dialog-buttonpane button").css({"float":"none"}); //these 2 lines will hack the default UI settings and make the buttons center
-        $(thisDialog).find(".ui-dialog-buttonpane").css({"text-align":"center", "padding":"0px"});
-        
-        this.centerDiv("#" + dName, "#centerThis");
-        
-        return "#" + dName;     
-    },
     
     /**
      * Returns TRUE if obj is "empty", otherwise returns FALSE

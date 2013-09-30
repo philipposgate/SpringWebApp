@@ -13,13 +13,13 @@
 	<title>${pageTitle}</title>
 	
 	<style type="text/css" media="all">
-		@import url("/assets/jquery/jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css");
-		@import url("/assets/bootstrap-2.2.2/css/bootstrap.css");
+		@import url("/assets/jquery/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css");
+		@import url("/assets/bootstrap-2.3.2/css/bootstrap.css");
 		@import url("/assets/app.css");
 	</style>
-	<script type="text/javascript" src="/assets/jquery/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="/assets/jquery/jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.min.js"></script>
-	<script type="text/javascript" src="/assets/bootstrap-2.2.2/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/assets/jquery/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/assets/jquery/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="/assets/bootstrap-2.3.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/assets/app.js"></script>
 	
 	<%-- CKEditor & CKFinder --%>
@@ -47,6 +47,7 @@
 						<li class="${homeNav=='home' ? 'active' : ''}"><a href="/">Home</a></li>
 						<li class="${homeNav=='about' ? 'active' : ''}"><a href="/about">About</a></li>
 						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/contact">Contact</a></li>
+						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/appts/">Appointments</a></li>
 						<c:if test="${loggedIn}">
 							<c:if test="${isAdmin}">
 								<li class="dropdown ${not empty adminNav ? 'active' : ''}">
@@ -57,6 +58,12 @@
 										</li>
 										<li class="${adminNav=='userMgt' ? 'active' : ''}">
 											<a href="/admin/users">Manage Users</a>
+										</li>
+										<li class="${adminNav=='apptMgt' ? 'active' : ''}">
+											<a href="/appts/admin/adminHome/">Manage Appointments</a>
+										</li>
+										<li class="${adminNav=='emailMgt' ? 'active' : ''}">
+											<a href="/admin/emailMgt">Email Config</a>
 										</li>
 										<li class="${adminNav=='endPoints' ? 'active' : ''}">
 											<a href="/admin/endPoints">End Points</a>

@@ -201,6 +201,11 @@ public class AppHelper implements InitializingBean
 		return AppHelper.appConfigDAO.getAppConfig(key);
 	}
 
+	public static void saveConfig(String key, String value)
+	{
+		AppHelper.appConfigDAO.saveConfig(key, value);
+	}
+	
 	public static void toggleRole(User user, String roleName, boolean toggle)
 	{
 		if (toggle)

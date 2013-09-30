@@ -23,6 +23,22 @@ public abstract class AbstractEntity
 	{
 		return id != null ? id.hashCode() : 0;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		boolean equal = false;
+		
+		if (null != obj 
+				&& obj.getClass().isAssignableFrom(this.getClass()) 
+				&& obj instanceof AbstractEntity 
+				&& ((AbstractEntity)obj).getId() != null
+				&& ((AbstractEntity)obj).getId().equals(this.getId()))
+		{
+			equal = true;
+		}
+		
+		return equal;
+	}
 
 	@Override
 	public String toString()
