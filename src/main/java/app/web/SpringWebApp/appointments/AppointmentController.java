@@ -1,7 +1,10 @@
 package app.web.SpringWebApp.appointments;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,22 +19,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
+
 import app.web.SpringWebApp.AbstractController;
-import app.web.SpringWebApp.AppGMailer;
+import app.web.SpringWebApp.google.GoogleCalendarService;
+import app.web.SpringWebApp.google.GoogleEmailerService;
 import app.web.SpringWebApp.utils.DateUtils;
 import app.web.SpringWebApp.utils.StringUtils;
 
 @Controller
 @RequestMapping(value = "appts")
-public class AppointmentController extends AbstractController {
+public class AppointmentController extends AbstractController
+{
 
 	private static final int APPT_LENGTH_MINUTES = 30;
 	private static final String LOCATION_CODE_DEFAULT = "defaultLoc";
 	private static final String LOCATION_CODE_OTHER = "otherLoc";
-	
+
+	private static final String GOOGLE_CALENDAR_ID = "SpringWebAppApptCalendar";
+	private static final String GOOGLE_CALENDAR_NAME = "Spray Tan Appointments";
+	private static final String GOOGLE_CALENDAR_LOCATION = "St Catharines, Ontario, Canada";
+
 	@Autowired
-	private AppGMailer gmailService;
-	
+	private GoogleEmailerService gmailService;
+
+	@Autowired
+	private GoogleCalendarService gcalService;
+
 	@RequestMapping(value = "/")
 	public String displayHome(Model model)
 	{
@@ -48,38 +67,205 @@ public class AppointmentController extends AbstractController {
 		appt.setCustomerName(request.getParameter("customerName"));
 		appt.setCustomerPhone(request.getParameter("customerPhone"));
 		appt.setCustomerEmail(request.getParameter("customerEmail"));
-		
+
 		String apptDate = request.getParameter("apptDate");
 		String apptTime = request.getParameter("apptTime");
 		Date startDate = DateUtils.parseDate(apptDate + " " + apptTime, "MM/dd/yyyy HHmm");
 		appt.setApptStart(startDate);
-		
+
 		String unitAmount = request.getParameter("unitAmount");
 		appt.setUnitAmount(StringUtils.isInteger(unitAmount) ? new Integer(unitAmount) : 1);
-		
+
 		Date endDate = DateUtils.addMinute(appt.getApptStart(), appt.getUnitAmount() * APPT_LENGTH_MINUTES);
 		appt.setApptEnd(endDate);
-		
+
 		appt.setLocationCode(request.getParameter("locationCode"));
 		if (LOCATION_CODE_OTHER.equals(appt.getLocationCode()))
 		{
 			appt.setLocAddress(request.getParameter("locAddress"));
 			appt.setLocCity(request.getParameter("locCity"));
 		}
-		
+
 		appt.setCustomerMessage(request.getParameter("customerMessage"));
-		
+
 		appt.setConfirmationCode(StringUtils.getRandomAlphaNumeric(10));
 		getHt().saveOrUpdate(appt);
-		
-		
+
 		gmailService.sendMail(appt.getCustomerEmail(), "Spray Tan Appointment Confirmation", "thanks!");
-		
+
+		refreshGoogleCalendar();
+
 		return "redirect:/appts/bookingReceived/" + StringUtils.URL_encrypt(appt.getId().toString());
 	}
 
-	
-	
+	@RequestMapping(value = "/admin/adminAjaxRefreshGoogleCalendar/")
+	@ResponseBody
+	public String adminAjaxRefreshGoogleCalendar()
+	{
+		refreshGoogleCalendar();
+		return jsonBooleanResponse(SUCCESS_KEY, true);
+	}
+
+	private synchronized void refreshGoogleCalendar()
+	{
+		Calendar calendar = getCalendar();
+
+		if (calendar != null)
+		{
+			List<Appointment> apptList = getHt().createQuery("from Appointment").list();
+
+			removeDeletedEvents(calendar, apptList);
+			addNewEvents(calendar, apptList);
+		}
+	}
+
+	private void addNewEvents(Calendar calendar, List<Appointment> apptList)
+	{
+		try
+		{
+			List<Event> events = getAllEvents(calendar);
+			List<Appointment> apptsToInsert = new ArrayList<Appointment>();
+			boolean found = false;
+
+			for (Appointment appt : apptList)
+			{
+				found = false;
+
+				for (Event event : events)
+				{
+					if (appt.getConfirmationCode().equals(event.getId()))
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+				{
+					apptsToInsert.add(appt);
+				}
+			}
+
+			for (Appointment appt : apptsToInsert)
+			{
+				Event event = new Event();
+				event.setId(appt.getConfirmationCode());
+				event.setSummary(appt.getCustomerName() + " x" + appt.getUnitAmount());
+				
+				ArrayList<EventAttendee> attendees = new ArrayList<EventAttendee>();
+				EventAttendee attendee = new EventAttendee();
+				attendee.setEmail(appt.getCustomerEmail());
+				attendee.setDisplayName(appt.getCustomerName());
+				attendee.setAdditionalGuests(appt.getUnitAmount() - 1);
+				attendee.setComment(appt.getCustomerMessage());
+				attendees.add(attendee);
+				event.setAttendees(attendees);
+				
+				DateTime start = new DateTime(appt.getApptStart(), TimeZone.getTimeZone("UTC"));
+				event.setStart(new EventDateTime().setDateTime(start));
+				
+				DateTime end = new DateTime(appt.getApptEnd(), TimeZone.getTimeZone("UTC"));
+				event.setEnd(new EventDateTime().setDateTime(end));
+				
+				gcalService.getService().events().insert(GOOGLE_CALENDAR_ID, event).execute();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void removeDeletedEvents(Calendar calendar, List<Appointment> apptList)
+	{
+		try
+		{
+			List<Event> events = getAllEvents(calendar);
+			List<Event> eventsToDelete = new ArrayList<Event>();
+			boolean found = false;
+
+			for (Event event : events)
+			{
+				found = false;
+
+				for (Appointment appt : apptList)
+				{
+					if (appt.getConfirmationCode().equals(event.getId()))
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+				{
+					eventsToDelete.add(event);
+				}
+			}
+
+			for (Event delete : eventsToDelete)
+			{
+				gcalService.getService().events().delete(GOOGLE_CALENDAR_ID, delete.getId()).execute();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private List<Event> getAllEvents(Calendar calendar)
+	{
+		List<Event> ret = new ArrayList<Event>();
+
+		try
+		{
+			String pageToken = null;
+			do
+			{
+				Events events = gcalService.getService().events().list(GOOGLE_CALENDAR_ID).setPageToken(pageToken)
+						.execute();
+
+				ret.addAll(events.getItems());
+
+				pageToken = events.getNextPageToken();
+			}
+			while (pageToken != null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return ret;
+	}
+
+	private Calendar getCalendar()
+	{
+		Calendar calendar = null;
+		try
+		{
+			calendar = gcalService.getService().calendars().get(GOOGLE_CALENDAR_ID).execute();
+		}
+		catch (Exception e)
+		{
+			calendar = new Calendar();
+			calendar.setSummary(GOOGLE_CALENDAR_NAME);
+			calendar.setTimeZone("America/Toronto");
+			calendar.setLocation(GOOGLE_CALENDAR_LOCATION);
+
+			try
+			{
+				calendar = gcalService.getService().calendars().insert(calendar).execute();
+			}
+			catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+		}
+		return calendar;
+	}
+
 	@RequestMapping(value = "/bookingReceived/{encryptedApptId}")
 	@Transactional
 	public String bookingReceived(@PathVariable String encryptedApptId, Model model)
@@ -89,30 +275,29 @@ public class AppointmentController extends AbstractController {
 		model.addAttribute("appt", appt);
 		return "/appt/appt_bookingReceived";
 	}
-	
+
 	@RequestMapping(value = "/admin/adminHome/")
 	public String adminHome(Model model)
 	{
 		model.addAttribute("adminNav", "apptMgt");
 		return "/appt/appt_adminHome";
 	}
-	
-	
+
 	@RequestMapping(value = "/admin/ajaxLoadAppts")
 	@ResponseBody
 	public String ajaxLoadAppts(HttpServletRequest request)
 	{
 		JSONArray appts = new JSONArray();
-		
-		try 
+
+		try
 		{
 			Date start = new Date(new Long(request.getParameter("start")) * 1000);
 			Date end = new Date(new Long(request.getParameter("end")) * 1000);
-			List<Appointment> apptList = getHt()
-					.createQuery("from Appointment a where a.apptStart between ? and ?").setParameter(0, start).setParameter(1, end).list();
-			
+			List<Appointment> apptList = getHt().createQuery("from Appointment a where a.apptStart between ? and ?")
+					.setParameter(0, start).setParameter(1, end).list();
+
 			Date now = new Date();
-			for (Appointment a : apptList) 
+			for (Appointment a : apptList)
 			{
 				JSONObject appt = new JSONObject();
 				appt.put("id", a.getId());
@@ -123,12 +308,12 @@ public class AppointmentController extends AbstractController {
 				appt.put("past", now.after(a.getApptStart()));
 				appts.put(appt);
 			}
-		} 
-		catch (Exception e) 
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		
+
 		return appts.toString();
 	}
 }

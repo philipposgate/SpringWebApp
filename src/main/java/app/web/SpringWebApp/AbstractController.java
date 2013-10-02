@@ -108,7 +108,6 @@ public abstract class AbstractController
 		}
 		catch (JSONException e)
 		{
-			// e.printStackTrace();
 		}
 		return j.toString();
 	}

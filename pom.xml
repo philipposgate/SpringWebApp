@@ -16,6 +16,9 @@
 		<org.springframework-version>3.1.4.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.7.0</org.aspectj-version>
 		<org.slf4j-version>1.5.8</org.slf4j-version>
+		<project.http.version>1.17.0-rc</project.http.version>
+		<project.oauth.version>1.17.0-rc</project.oauth.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
 	<dependencies>
@@ -187,6 +190,23 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Google APIs -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-calendar</artifactId>
+			<version>v3-rev62-1.17.0-rc</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>${project.http.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>${project.oauth.version}</version>
+		</dependency>
+
 		<!-- Other -->
 		<dependency>
 			<groupId>javassist</groupId>
@@ -263,7 +283,12 @@
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-calendar</artifactId>
+			<version>v3-rev62-1.17.0-rc</version>
+		</dependency>
+   	</dependencies>
 
     <build>
         <plugins>

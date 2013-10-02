@@ -12,13 +12,13 @@ import app.web.SpringWebApp.AbstractEntity;
 @Table(name = "appointment")
 public class Appointment extends AbstractEntity
 {
-	@Column
+	@Column(nullable = false)
 	private Date dateCreated;
 
-	@Column
+	@Column(unique = true, nullable = false)
 	private String confirmationCode;
 
-	@Column
+	@Column(nullable = false)
 	private String customerName;
 
 	@Column

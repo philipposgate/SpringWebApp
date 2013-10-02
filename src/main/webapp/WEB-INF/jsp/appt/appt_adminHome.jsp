@@ -50,11 +50,15 @@
 				}
 			}
 		});
+		
+		$("#refreshGCalBtn").on("click", function(){$.ajax("/appts/admin/adminAjaxRefreshGoogleCalendar/");});
 	});
 </script>
 
 <H1>Manage Appointments</H1>
-<HR>
+<div class="topBottomMargin">
+	<a id="refreshGCalBtn" class="btn btn-small btn-inverse" href="javascript:void(0)">Refresh Google Calendar</a>
+</div>
 <div class="row-fluid">
 	<div class="span8">
 		<div id="calendar"></div>

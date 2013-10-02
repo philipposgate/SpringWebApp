@@ -18,6 +18,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import app.web.SpringWebApp.google.GoogleEmailerService;
 import app.web.SpringWebApp.user.User;
 import app.web.SpringWebApp.user.UserDAO;
 
@@ -33,6 +34,9 @@ public class AppController extends AbstractController {
 	public AppController(RequestMappingHandlerMapping handlerMapping) {
 		this.handlerMapping = handlerMapping;
 	}
+
+	@Autowired
+	private GoogleEmailerService gmailService;
 
 	@RequestMapping(value = "/login")
 	public String login() {
@@ -226,6 +230,7 @@ public class AppController extends AbstractController {
 	public String saveEmailSettings(HttpServletRequest request) {
 		AppHelper.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
 		AppHelper.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
+		gmailService.resetUsernameAndPassword();
 		return "redirect:/admin/emailMgt";
 	}
 }
