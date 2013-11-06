@@ -27,6 +27,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
 import app.web.SpringWebApp.AbstractController;
+import app.web.SpringWebApp.AppHelper;
 import app.web.SpringWebApp.google.GoogleCalendarService;
 import app.web.SpringWebApp.google.GoogleEmailerService;
 import app.web.SpringWebApp.utils.DateUtils;
@@ -41,7 +42,7 @@ public class AppointmentController extends AbstractController
 	private static final String LOCATION_CODE_DEFAULT = "defaultLoc";
 	private static final String LOCATION_CODE_OTHER = "otherLoc";
 
-	private static final String GOOGLE_CALENDAR_ID = "SpringWebAppApptCalendar";
+	private static final String GOOGLE_CALENDAR_ID = "appointmentGoogleCalendarId";
 	private static final String GOOGLE_CALENDAR_NAME = "Spray Tan Appointments";
 	private static final String GOOGLE_CALENDAR_LOCATION = "St Catharines, Ontario, Canada";
 
@@ -98,9 +99,9 @@ public class AppointmentController extends AbstractController
 		return "redirect:/appts/bookingReceived/" + StringUtils.URL_encrypt(appt.getId().toString());
 	}
 
-	@RequestMapping(value = "/admin/adminAjaxRefreshGoogleCalendar/")
+	@RequestMapping(value = "/admin/ajaxRefreshGoogleCalendar/")
 	@ResponseBody
-	public String adminAjaxRefreshGoogleCalendar()
+	public String ajaxRefreshGoogleCalendar()
 	{
 		refreshGoogleCalendar();
 		return jsonBooleanResponse(SUCCESS_KEY, true);
@@ -110,6 +111,7 @@ public class AppointmentController extends AbstractController
 	{
 		Calendar calendar = getCalendar();
 
+		System.out.println("\nCalendar ID: " + calendar.getId());
 		if (calendar != null)
 		{
 			List<Appointment> apptList = getHt().createQuery("from Appointment").list();
@@ -133,7 +135,7 @@ public class AppointmentController extends AbstractController
 
 				for (Event event : events)
 				{
-					if (appt.getConfirmationCode().equals(event.getId()))
+					if (null != appt.getGoogleEventId() && appt.getGoogleEventId().equals(event.getId()))
 					{
 						found = true;
 						break;
@@ -149,9 +151,9 @@ public class AppointmentController extends AbstractController
 			for (Appointment appt : apptsToInsert)
 			{
 				Event event = new Event();
-				event.setId(appt.getConfirmationCode());
+				// event.setId(appt.getConfirmationCode());
 				event.setSummary(appt.getCustomerName() + " x" + appt.getUnitAmount());
-				
+
 				ArrayList<EventAttendee> attendees = new ArrayList<EventAttendee>();
 				EventAttendee attendee = new EventAttendee();
 				attendee.setEmail(appt.getCustomerEmail());
@@ -160,14 +162,18 @@ public class AppointmentController extends AbstractController
 				attendee.setComment(appt.getCustomerMessage());
 				attendees.add(attendee);
 				event.setAttendees(attendees);
-				
+
 				DateTime start = new DateTime(appt.getApptStart(), TimeZone.getTimeZone("UTC"));
 				event.setStart(new EventDateTime().setDateTime(start));
-				
+
 				DateTime end = new DateTime(appt.getApptEnd(), TimeZone.getTimeZone("UTC"));
 				event.setEnd(new EventDateTime().setDateTime(end));
-				
-				gcalService.getService().events().insert(GOOGLE_CALENDAR_ID, event).execute();
+
+				Event createdEvent = gcalService.getService().events().insert(calendar.getId(), event).execute();
+				System.out.println(createdEvent.getId());
+
+				appt.setGoogleEventId(createdEvent.getId());
+				getHt().update(appt);
 			}
 		}
 		catch (Exception e)
@@ -190,7 +196,7 @@ public class AppointmentController extends AbstractController
 
 				for (Appointment appt : apptList)
 				{
-					if (appt.getConfirmationCode().equals(event.getId()))
+					if (null != appt.getGoogleEventId() && appt.getGoogleEventId().equals(event.getId()))
 					{
 						found = true;
 						break;
@@ -203,9 +209,9 @@ public class AppointmentController extends AbstractController
 				}
 			}
 
-			for (Event delete : eventsToDelete)
+			for (Event deleteThis : eventsToDelete)
 			{
-				gcalService.getService().events().delete(GOOGLE_CALENDAR_ID, delete.getId()).execute();
+				gcalService.getService().events().delete(calendar.getId(), deleteThis.getId()).execute();
 			}
 		}
 		catch (Exception e)
@@ -223,7 +229,7 @@ public class AppointmentController extends AbstractController
 			String pageToken = null;
 			do
 			{
-				Events events = gcalService.getService().events().list(GOOGLE_CALENDAR_ID).setPageToken(pageToken)
+				Events events = gcalService.getService().events().list(calendar.getId()).setPageToken(pageToken)
 						.execute();
 
 				ret.addAll(events.getItems());
@@ -243,32 +249,48 @@ public class AppointmentController extends AbstractController
 	private Calendar getCalendar()
 	{
 		Calendar calendar = null;
+		
 		try
 		{
-			calendar = gcalService.getService().calendars().get(GOOGLE_CALENDAR_ID).execute();
+			calendar = gcalService.getService().calendars().get(AppHelper.getConfigValue(GOOGLE_CALENDAR_ID)).execute();
+			
+			if (calendar == null)
+			{
+				calendar = initGoogleCalendar();
+			}
 		}
 		catch (Exception e)
 		{
-			calendar = new Calendar();
-			calendar.setSummary(GOOGLE_CALENDAR_NAME);
-			calendar.setTimeZone("America/Toronto");
-			calendar.setLocation(GOOGLE_CALENDAR_LOCATION);
-
-			try
-			{
-				calendar = gcalService.getService().calendars().insert(calendar).execute();
-			}
-			catch (IOException e1)
-			{
-				e1.printStackTrace();
-			}
+			calendar = initGoogleCalendar();
 		}
+		
+		return calendar;
+	}
+
+	private Calendar initGoogleCalendar()
+	{
+		Calendar calendar = null;
+		calendar = new Calendar();
+		calendar.setSummary(GOOGLE_CALENDAR_NAME);
+		calendar.setTimeZone("America/Toronto");
+		calendar.setLocation(GOOGLE_CALENDAR_LOCATION);
+
+		try
+		{
+			calendar = gcalService.getService().calendars().insert(calendar).execute();
+			AppHelper.saveConfig(GOOGLE_CALENDAR_ID, calendar.getId());
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+		}
+
 		return calendar;
 	}
 
 	@RequestMapping(value = "/bookingReceived/{encryptedApptId}")
 	@Transactional
-	public String bookingReceived(@PathVariable String encryptedApptId, Model model)
+	public String displayBookingReceived(@PathVariable String encryptedApptId, Model model)
 	{
 		Integer apptId = new Integer(StringUtils.URL_decrypt(encryptedApptId));
 		Appointment appt = (Appointment) getHt().load(Appointment.class, apptId);
@@ -277,7 +299,7 @@ public class AppointmentController extends AbstractController
 	}
 
 	@RequestMapping(value = "/admin/adminHome/")
-	public String adminHome(Model model)
+	public String displayAdminHome(Model model)
 	{
 		model.addAttribute("adminNav", "apptMgt");
 		return "/appt/appt_adminHome";
@@ -316,4 +338,26 @@ public class AppointmentController extends AbstractController
 
 		return appts.toString();
 	}
+	
+	@RequestMapping(value = "/admin/adminConfig/")
+	public String displayAdminConfig(HttpServletRequest request, Model model)
+	{
+		model.addAttribute("adminNav", "apptMgt");
+		
+		if (null != request.getSession().getAttribute("adminConfigSaved"))
+		{
+			model.addAttribute("successMessage", "Appointment Configuration Saved.");
+			request.getSession().removeAttribute("adminConfigSaved");
+		}
+		
+		return "/appt/appt_adminConfig";
+	}
+	
+	@RequestMapping(value = "/admin/adminSaveConfig/")
+	public String saveConfig(HttpServletRequest request)
+	{
+		request.getSession().setAttribute("adminConfigSaved", true);
+		return "redirect:/appts/admin/adminConfig/";
+	}
+	
 }

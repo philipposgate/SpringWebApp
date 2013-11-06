@@ -48,6 +48,19 @@ public class Appointment extends AbstractEntity
 	@Column(columnDefinition = "TEXT")
 	private String customerMessage;
 
+	@Column
+	private String googleEventId;
+
+	public String getGoogleEventId()
+	{
+		return googleEventId;
+	}
+
+	public void setGoogleEventId(String googleEventId)
+	{
+		this.googleEventId = googleEventId;
+	}
+
 	public String getConfirmationCode() {
 		return confirmationCode;
 	}

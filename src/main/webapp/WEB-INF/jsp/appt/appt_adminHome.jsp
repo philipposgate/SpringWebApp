@@ -55,10 +55,17 @@
 	});
 </script>
 
-<H1>Manage Appointments</H1>
-<div class="topBottomMargin">
-	<a id="refreshGCalBtn" class="btn btn-small btn-inverse" href="javascript:void(0)">Refresh Google Calendar</a>
+<div class="row-fluid">
+	<div class="span8">
+		<H1>Manage Appointments</H1>
+	</div>
+	<div class="span4">
+		<div class="topBottomMargin">
+			<a class="btn btn-small pull-right" href="/appts/admin/adminConfig/"><i class="icon-cog"></i> Configurations</a>
+		</div>
+	</div>
 </div>
+<HR>
 <div class="row-fluid">
 	<div class="span8">
 		<div id="calendar"></div>
