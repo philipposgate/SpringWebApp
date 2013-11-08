@@ -289,7 +289,7 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-calendar</artifactId>
-			<version>v3-rev62-1.17.0-rc</version>
+			<version>v3-rev67-1.17.0-rc</version>
 		</dependency>
    	</dependencies>
 
