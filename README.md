@@ -12,7 +12,7 @@ A boiler-plate template project for Eclipse that demonstrates a typical Spring-b
 * MySql 5.6.7-rc
 
 ## Core APIs
-* Spring/MVC 3.2.8
+* Spring/MVC 3.2.4
 * Spring Security 3.1.4
 * Servlet 3.1
 * JSP 2.2.1
