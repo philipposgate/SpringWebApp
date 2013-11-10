@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import app.rest.AbstractHibernateDAO;
+import app.AbstractHibernateDAO;
 
 import com.google.common.base.Preconditions;
 

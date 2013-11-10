@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
+import app.AppHelper;
+import app.ByteArrayDownloadView;
+import app.PageContent;
 import app.user.User;
 
-public abstract class AbstractController
+public abstract class AbstractRestController
 {
 	public static final String SUCCESS_KEY = "successful";
 

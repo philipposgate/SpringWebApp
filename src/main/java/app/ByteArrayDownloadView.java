@@ -1,4 +1,4 @@
-package app.rest;
+package app;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;

@@ -26,16 +26,16 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
+import app.AppHelper;
 import app.modules.google.GoogleCalendarService;
 import app.modules.google.GoogleEmailerService;
-import app.rest.AbstractController;
-import app.rest.AppHelper;
+import app.rest.AbstractRestController;
 import app.utils.DateUtils;
 import app.utils.StringUtils;
 
 @Controller
 @RequestMapping(value = "appts")
-public class AppointmentController extends AbstractController
+public class AppointmentController extends AbstractRestController
 {
 
 	private static final int APPT_LENGTH_MINUTES = 30;

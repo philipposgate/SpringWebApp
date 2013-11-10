@@ -1,4 +1,4 @@
-package app.rest;
+package app;
 
 import java.util.List;
 

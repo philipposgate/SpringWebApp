@@ -1,4 +1,4 @@
-package app.rest;
+package app;
 
 import org.springframework.web.servlet.View;
 
