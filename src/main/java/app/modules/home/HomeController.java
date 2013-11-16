@@ -14,21 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.AbstractWebController;
+import app.web.PathElement;
+import app.web.PathElementAbstractController;
 
 @Component(value = "homeController")
-public class HomeController extends AbstractWebController {
+public class HomeController extends PathElementAbstractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     public ModelAndView displayHome(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response) {
     	logger.info("displayHome");
         ModelAndView mv = new ModelAndView("home");
         mv.addObject("homeNav", "home");
         return mv;
     }
-    
-
 
 }

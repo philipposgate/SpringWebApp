@@ -29,12 +29,13 @@ public class AppController extends AbstractRestController {
 	@Autowired
 	private UserDAO userDAO;
 
-	private final RequestMappingHandlerMapping handlerMapping;
+//	@Autowired
+//	private RequestMappingHandlerMapping handlerMapping;
 
-	@Autowired
-	public AppController(RequestMappingHandlerMapping handlerMapping) {
-		this.handlerMapping = handlerMapping;
-	}
+//	@Autowired
+//	public AppController(RequestMappingHandlerMapping handlerMapping) {
+//		this.handlerMapping = handlerMapping;
+//	}
 
 	@Autowired
 	private GoogleEmailerService gmailService;
@@ -83,9 +84,9 @@ public class AppController extends AbstractRestController {
 
 	@RequestMapping(value = "admin/endPoints")
 	public String endPoints(Model model) {
-		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
-				.getHandlerMethods();
-		model.addAttribute("handlerMethods", handlerMethods);
+//		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
+//				.getHandlerMethods();
+//		model.addAttribute("handlerMethods", handlerMethods);
 		model.addAttribute("adminNav", "endPoints");
 
 		return "app/admin/admin_endPoints";

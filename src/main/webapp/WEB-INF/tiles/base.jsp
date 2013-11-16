@@ -47,10 +47,10 @@
 				
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class="${homeNav=='home' ? 'active' : ''}"><a href="/">Home</a></li>
-						<li class="${homeNav=='about' ? 'active' : ''}"><a href="/about">About</a></li>
-						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/contact">Contact</a></li>
-						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/appts/">Appointments</a></li>
+						<li class="${homeNav=='home' ? 'active' : ''}"><a href="/home.htm">Home</a></li>
+						<li class="${homeNav=='about' ? 'active' : ''}"><a href="/about.htm">About</a></li>
+						<li class="${homeNav=='contact' ? 'active' : ''}"><a href="/contact.htm">Contact</a></li>
+						<li class="${homeNav=='appts' ? 'active' : ''}"><a href="/appts/">Appointments</a></li>
 						<c:if test="${loggedIn}">
 							<c:if test="${isAdmin}">
 								<li class="dropdown ${not empty adminNav ? 'active' : ''}">

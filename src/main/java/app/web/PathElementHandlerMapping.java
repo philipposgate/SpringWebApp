@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
-public class SiteElementHandlerMapping extends SimpleUrlHandlerMapping {
+public class PathElementHandlerMapping extends SimpleUrlHandlerMapping {
 
 	@Override
 	public void initApplicationContext() throws BeansException {
@@ -18,6 +18,7 @@ public class SiteElementHandlerMapping extends SimpleUrlHandlerMapping {
 		super.initApplicationContext();
 		
 		hmap.put("/contact.htm", "contactController");
+		hmap.put("/pe.htm", "peAdminController");
 		registerHandlers(hmap);
 
 	}

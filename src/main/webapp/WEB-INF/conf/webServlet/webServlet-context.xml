@@ -15,7 +15,7 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 
-    <bean class="app.web.SiteElementHandlerMapping">
+    <bean class="app.web.PathElementHandlerMapping">
     </bean>
 
 	<!-- Make DispatcherServlet the 'default servlet' -->

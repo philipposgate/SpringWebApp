@@ -8,19 +8,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.AbstractWebController;
+import app.web.PathElement;
+import app.web.PathElementAbstractController;
 
 @Component(value = "contactController")
-public class ContactController extends AbstractWebController {
+public class ContactController extends PathElementAbstractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
     public ModelAndView displayHome(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response) {
     	logger.info("displayHome");
         ModelAndView mv = new ModelAndView("contact");
         mv.addObject("homeNav", "contact");
         return mv;
     }
-    
+
 }
