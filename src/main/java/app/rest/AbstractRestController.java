@@ -16,32 +16,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.AppHelper;
+import app.AppService;
 import app.ByteArrayDownloadView;
 import app.PageContent;
 import app.user.User;
 
 public abstract class AbstractRestController
 {
-	public static final String SUCCESS_KEY = "successful";
+	protected static final String SUCCESS_KEY = "successful";
+
+	@Autowired (required = true)
+	protected AppService appService;
 
 	@Autowired
-	private ServletContext servletContext;
+	protected ServletContext servletContext;
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	protected SessionFactory sessionFactory;
 
-	public void setSessionFactory(SessionFactory sessionFactory)
-	{
-		this.sessionFactory = sessionFactory;
-	}
-
-	public Session getCurrentSession()
+	protected Session getCurrentSession()
 	{
 		return sessionFactory.getCurrentSession();
 	}
 
-	public Session getHt()
+	protected Session getHt()
 	{
 		return getCurrentSession();
 	}
@@ -53,7 +51,7 @@ public abstract class AbstractRestController
 	 * This is just a debugging tool that will dump HttpServletRequest
 	 * parameters to the console.
 	 */
-	public void dumpRequestParameters(HttpServletRequest request)
+	protected void dumpRequestParameters(HttpServletRequest request)
 	{
 		System.out.println("\n******* REQUEST PARAMETERS @ " + new Date()
 				+ " *******");
@@ -79,7 +77,7 @@ public abstract class AbstractRestController
 		}
 	}
 
-	public ServletContext getServletContext()
+	protected ServletContext getServletContext()
 	{
 		return servletContext;
 	}
@@ -95,14 +93,14 @@ public abstract class AbstractRestController
 	 * @param fileData
 	 *            - the contents of the downloaded file
 	 */
-	public ModelAndView getDownloadView(String mimeType, String fileName,
+	protected ModelAndView getDownloadView(String mimeType, String fileName,
 			ByteArrayOutputStream fileData)
 	{
 		return new ModelAndView(new ByteArrayDownloadView(mimeType, fileName,
 				fileData));
 	}
 
-	public String jsonBooleanResponse(String key, boolean value)
+	protected String jsonBooleanResponse(String key, boolean value)
 	{
 		JSONObject j = new JSONObject();
 		try
@@ -115,12 +113,12 @@ public abstract class AbstractRestController
 		return j.toString();
 	}
 
-	public String jsonObjectResponse(JSONObject object)
+	protected String jsonObjectResponse(JSONObject object)
 	{
 		return object.toString();
 	}
 
-	public String getContentPage(String page, HttpServletRequest request,
+	protected String getContentPage(String page, HttpServletRequest request,
 			Model model, String defaultContent)
 	{
 		PageContent pageContent = null;
@@ -147,10 +145,10 @@ public abstract class AbstractRestController
 		}
 
 		String pageContentAction = request.getParameter("pageContentAction");
-		User userLoggedIn = AppHelper.getUserLoggedIn();
+		User userLoggedIn = appService.getUserLoggedIn();
 
 		if (pageContentAction != null && userLoggedIn != null
-				&& userLoggedIn.hasRole(AppHelper.ROLE_ADMIN))
+				&& userLoggedIn.hasRole(AppService.ROLE_ADMIN))
 		{
 			if (pageContentAction.equalsIgnoreCase("edit"))
 			{

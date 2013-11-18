@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.WebAttributes;
@@ -16,11 +17,13 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
-import app.AppHelper;
+import app.AppService;
 import app.user.User;
 
 public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler
 {
+	@Autowired
+	private AppService appService;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request,
@@ -29,7 +32,7 @@ public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthentic
 	{
 		User user = (User) authentication.getPrincipal();
 		user.setLastLoggedInDate(new Date());
-		AppHelper.updateUser(user);
+		appService.updateUser(user);
 
 		String redirectUrl = null;
 		
@@ -45,7 +48,7 @@ public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthentic
     		Set<String> roles = AuthorityUtils.authorityListToSet(authentication
     				.getAuthorities());
 
-    		if (roles.contains(AppHelper.ROLE_ADMIN))
+    		if (roles.contains(AppService.ROLE_ADMIN))
     		{
             	redirectUrl = "/admin/";
     		}

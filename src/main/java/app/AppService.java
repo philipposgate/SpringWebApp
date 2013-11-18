@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.user.Role;
@@ -18,17 +18,20 @@ import app.user.RoleDAO;
 import app.user.User;
 import app.user.UserDAO;
 
-@Component(value = "appHelper")
-public class AppHelper implements InitializingBean
+@Service(value="appService")
+public class AppService implements InitializingBean
 {
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER = "ROLE_USER";
 
-	private static UserDAO userDAO;
+	@Autowired
+	private UserDAO userDAO;
 
-	private static RoleDAO roleDAO;
+	@Autowired
+	private RoleDAO roleDAO;
 
-	private static AppConfigDAO appConfigDAO;
+	@Autowired
+	private AppConfigDAO appConfigDAO;
 
 	@Resource(name = "appSettings")
 	private final Map<String, String> appSettings = null;
@@ -103,12 +106,12 @@ public class AppHelper implements InitializingBean
 
 	}
 
-	public static User getUserByUsername(String username)
+	public User getUserByUsername(String username)
 	{
 		return userDAO.getUserByUsername(username);
 	}
 
-	public static User getUserById(String id)
+	public User getUserById(String id)
 	{
 		return userDAO.getById(id);
 	}
@@ -128,12 +131,12 @@ public class AppHelper implements InitializingBean
 	}
 
 	@Transactional
-	public static void updateUser(User user)
+	public void updateUser(User user)
 	{
 		userDAO.update(user);
 	}
 
-	public static User getUserLoggedIn()
+	public User getUserLoggedIn()
 	{
 		User user = null;
 		Authentication authentic = SecurityContextHolder.getContext()
@@ -147,19 +150,7 @@ public class AppHelper implements InitializingBean
 		return user;
 	}
 
-	@Autowired
-	public void setUserDAO(UserDAO userDAO)
-	{
-		AppHelper.userDAO = userDAO;
-	}
-
-	@Autowired
-	public void setRoleDAO(RoleDAO roleDAO)
-	{
-		AppHelper.roleDAO = roleDAO;
-	}
-
-	public static void setUserLoggedIn(User user)
+	public void setUserLoggedIn(User user)
 	{
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 				user, user.getPassword(), user.getAuthorities());
@@ -167,7 +158,7 @@ public class AppHelper implements InitializingBean
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
-	public static Role getRole(String roleName)
+	public Role getRole(String roleName)
 	{
 		Role role = roleDAO.getRoleByName(roleName);
 
@@ -180,33 +171,27 @@ public class AppHelper implements InitializingBean
 		return role;
 	}
 
-	public static boolean userHasRole(User user, Role role)
+	public boolean userHasRole(User user, Role role)
 	{
 		return user.getAuthorities().contains(role);
 	}
 
-	@Autowired
-	public void setAppConfigDAO(AppConfigDAO appConfigDAO)
+	public String getConfigValue(String key)
 	{
-		AppHelper.appConfigDAO = appConfigDAO;
+		return appConfigDAO.getValue(key);
 	}
 
-	public static String getConfigValue(String key)
+	public AppConfig getAppConfig(String key)
 	{
-		return AppHelper.appConfigDAO.getValue(key);
+		return appConfigDAO.getAppConfig(key);
 	}
 
-	public static AppConfig getAppConfig(String key)
+	public void saveConfig(String key, String value)
 	{
-		return AppHelper.appConfigDAO.getAppConfig(key);
-	}
-
-	public static void saveConfig(String key, String value)
-	{
-		AppHelper.appConfigDAO.saveConfig(key, value);
+		appConfigDAO.saveConfig(key, value);
 	}
 	
-	public static void toggleRole(User user, String roleName, boolean toggle)
+	public void toggleRole(User user, String roleName, boolean toggle)
 	{
 		if (toggle)
 		{

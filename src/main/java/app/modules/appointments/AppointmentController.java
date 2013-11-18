@@ -26,7 +26,7 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
-import app.AppHelper;
+import app.AppService;
 import app.modules.google.GoogleCalendarService;
 import app.modules.google.GoogleEmailerService;
 import app.rest.AbstractRestController;
@@ -252,7 +252,7 @@ public class AppointmentController extends AbstractRestController
 		
 		try
 		{
-			calendar = gcalService.getService().calendars().get(AppHelper.getConfigValue(GOOGLE_CALENDAR_ID)).execute();
+			calendar = gcalService.getService().calendars().get(appService.getConfigValue(GOOGLE_CALENDAR_ID)).execute();
 			
 			if (calendar == null)
 			{
@@ -278,7 +278,7 @@ public class AppointmentController extends AbstractRestController
 		try
 		{
 			calendar = gcalService.getService().calendars().insert(calendar).execute();
-			AppHelper.saveConfig(GOOGLE_CALENDAR_ID, calendar.getId());
+			appService.saveConfig(GOOGLE_CALENDAR_ID, calendar.getId());
 		}
 		catch (IOException e1)
 		{

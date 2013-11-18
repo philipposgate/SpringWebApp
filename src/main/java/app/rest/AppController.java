@@ -18,7 +18,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import app.AppHelper;
+import app.AppService;
 import app.modules.google.GoogleEmailerService;
 import app.user.User;
 import app.user.UserDAO;
@@ -28,7 +28,7 @@ public class AppController extends AbstractRestController {
 	
 	@Autowired
 	private UserDAO userDAO;
-
+	
 //	@Autowired
 //	private RequestMappingHandlerMapping handlerMapping;
 
@@ -54,16 +54,16 @@ public class AppController extends AbstractRestController {
 	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
 	public String userUpdate(@PathVariable String userId, Model model,
 			HttpServletRequest request) {
-		User userLoggedIn = AppHelper.getUserLoggedIn();
+		User userLoggedIn = appService.getUserLoggedIn();
 
 		if (userLoggedIn != null
 				&& userLoggedIn.getId().equals(new Integer(userId))) {
-			User user = AppHelper.getUserById(userId);
+			User user = appService.getUserById(userId);
 			bindUser(request, user);
 
 			userDAO.update(user);
 
-			AppHelper.setUserLoggedIn(user);
+			appService.setUserLoggedIn(user);
 
 			model.addAttribute("saved", true);
 		}
@@ -140,11 +140,11 @@ public class AppController extends AbstractRestController {
 
 		userDAO.create(user);
 
-		user.getRoles().add(AppHelper.getRole(AppHelper.ROLE_USER));
+		user.getRoles().add(appService.getRole(AppService.ROLE_USER));
 
 		userDAO.update(user);
 
-		AppHelper.setUserLoggedIn(user);
+		appService.setUserLoggedIn(user);
 
 		return "redirect:/user/";
 	}
@@ -155,10 +155,10 @@ public class AppController extends AbstractRestController {
 		boolean ok = false;
 
 		if (username != null) {
-			User userLoggedIn = AppHelper.getUserLoggedIn();
+			User userLoggedIn = appService.getUserLoggedIn();
 
 			if (userLoggedIn == null) {
-				ok = AppHelper.getUserByUsername(username) == null;
+				ok = appService.getUserByUsername(username) == null;
 			} else {
 				ok = getCurrentSession()
 						.createQuery(
@@ -184,7 +184,7 @@ public class AppController extends AbstractRestController {
 			User user = userDAO.getById(userId);
 
 			if (user == null) {
-				ok = AppHelper.getUserByUsername(username) == null;
+				ok = appService.getUserByUsername(username) == null;
 			} else {
 				ok = getCurrentSession()
 						.createQuery(
@@ -222,16 +222,16 @@ public class AppController extends AbstractRestController {
 	@RequestMapping(value = "admin/emailMgt")
 	public String adminEmailMgt(Model model) {
 		model.addAttribute("adminNav", "emailMgt");
-		model.addAttribute("gmailUsername", AppHelper.getConfigValue("gmailUsername"));
-		model.addAttribute("gmailPassword", AppHelper.getConfigValue("gmailPassword"));
+		model.addAttribute("gmailUsername", appService.getConfigValue("gmailUsername"));
+		model.addAttribute("gmailPassword", appService.getConfigValue("gmailPassword"));
 		return "app/admin/admin_emailMgt";
 	}
 	
 
 	@RequestMapping(value = "admin/saveEmailSettings", method = RequestMethod.POST)
 	public String saveEmailSettings(HttpServletRequest request) {
-		AppHelper.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
-		AppHelper.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
+		appService.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
+		appService.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
 		gmailService.resetUsernameAndPassword();
 		return "redirect:/admin/emailMgt";
 	}

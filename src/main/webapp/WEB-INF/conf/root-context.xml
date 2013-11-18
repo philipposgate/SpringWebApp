@@ -17,6 +17,7 @@
 	
 	<!-- Activate Component Scanner -->
 	<context:component-scan base-package="app" />
+	<context:annotation-config/>
 	
 	<!-- Multipart Resolver -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

@@ -17,37 +17,37 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		return PathElement.class;
 	}
 
-	public User getUserByUsername(String username)
+	public PathElement getRootPathElement()
 	{
-		User user = null;
+		PathElement root = null;
+		
+		List<PathElement> roots =  sessionFactory.getCurrentSession()
+				.createQuery("from PathElement pe where pe.parent is null").list();
 
-		if (username != null)
+		if (!roots.isEmpty() && roots.size() == 1)
 		{
-			List<User> users = sessionFactory.getCurrentSession()
-					.createQuery("from User u where u.username=?")
-					.setParameter(0, username).list();
-
-			if (!users.isEmpty() && users.size() == 1)
-			{
-				user = users.get(0);
-			}
+			root = roots.get(0);
+			populateChildren(root);
 		}
+		
+		return root;
+	}
 
-		return user;
+	private void populateChildren(PathElement parent) {
+		List<PathElement> children =  sessionFactory.getCurrentSession()
+				.createQuery("from PathElement pe where pe.parent=?").setParameter(0, parent).list();
+		
+		for (PathElement child : children) {
+			populateChildren(child);
+		}
+		
+		parent.setChildren(children);
 	}
 
 	@Override
-	public void check(User user)
+	public void check(PathElement pathElement)
 	{
-		Preconditions.checkNotNull(user);
-		Preconditions.checkNotNull(user.getCreateDate());
-		Preconditions.checkNotNull(user.getFirstName());
-		Preconditions.checkNotNull(user.getLastName());
-		Preconditions.checkNotNull(user.getEmail());
-		Preconditions.checkNotNull(user.getUsername());
-		Preconditions.checkNotNull(user.getPassword());
-		Preconditions.checkState(user.getUsername().length() >= 1);
-		Preconditions.checkState(user.getPassword().length() >= 1);
+		Preconditions.checkNotNull(pathElement);
 	}
 
 }

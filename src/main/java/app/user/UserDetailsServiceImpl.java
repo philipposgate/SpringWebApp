@@ -1,18 +1,22 @@
 package app.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import app.AppHelper;
+import app.AppService;
 
 public class UserDetailsServiceImpl implements UserDetailsService
 {
+	@Autowired
+	private AppService appService;
+
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException
 	{
-		User user = AppHelper.getUserByUsername(username);
+		User user = appService.getUserByUsername(username);
 
 		if (user == null)
 		{

@@ -13,9 +13,9 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	<context:annotation-config/>
 
-    <bean class="app.web.PathElementHandlerMapping">
+    <bean id="pathElementHandlerMapping" class="app.web.PathElementHandlerMapping">
     </bean>
 
 	<!-- Make DispatcherServlet the 'default servlet' -->
