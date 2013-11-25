@@ -8,9 +8,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
+import app.common.pathElement.PathElementService;
+
 public class PathElementHandlerMapping extends SimpleUrlHandlerMapping implements InitializingBean {
 
-//	@Autowired (required = true)
+	@Autowired
 	private PathElementService pathElementService;
 
 	@Override

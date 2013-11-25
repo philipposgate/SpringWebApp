@@ -11,7 +11,7 @@ import app.AppService;
 @Service(value="userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService
 {
-//	@Autowired
+	@Autowired
 	private AppService appService;
 
 	@Override

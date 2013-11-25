@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.PathElement;
+import app.common.pathElement.PathElement;
 import app.web.PathElementAbstractController;
 
 @Component

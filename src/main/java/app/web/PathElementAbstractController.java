@@ -7,6 +7,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver;
 
+import app.common.pathElement.PathElement;
+
 public abstract class PathElementAbstractController extends MultiActionController {
 
 	public PathElementAbstractController()
