@@ -19,7 +19,6 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		return PathElement.class;
 	}
 
-	@Transactional
 	public PathElement getRootPathElement()
 	{
 		PathElement root = null;

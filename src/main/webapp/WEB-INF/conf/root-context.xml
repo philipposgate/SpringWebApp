@@ -20,7 +20,6 @@
 	<context:component-scan base-package="app.common" annotation-config="true" >
 		<context:exclude-filter type="regex" expression="app.rest.*"/>
 		<context:exclude-filter type="regex" expression="app.web.*"/>
-<!-- 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
 	</context:component-scan>
 	
 	<!-- Multipart Resolver -->
@@ -30,8 +29,6 @@
 	</bean>
 
 	<!-- Security Stuff -->
-	<bean id="userDetailsService" class="app.common.user.UserDetailsServiceImpl"/>
-	<bean id="authenticationSuccessHandler" class="app.common.user.AuthenticationSuccessHandlerImpl"/>
 	<security:authentication-manager>
     	<security:authentication-provider user-service-ref="userDetailsService"/>
 	</security:authentication-manager>

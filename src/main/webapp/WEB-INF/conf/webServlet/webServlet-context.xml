@@ -16,9 +16,6 @@
 	<!-- Activate Component Scanner -->
 	<context:component-scan base-package="app.web"  />
 
-    <bean id="pathElementHandlerMapping" class="app.web.PathElementHandlerMapping">
-    </bean>
-
 	<!-- Make DispatcherServlet the 'default servlet' -->
 	<mvc:default-servlet-handler />
 

@@ -49,7 +49,7 @@ public class AppService implements ApplicationContextAware, InitializingBean
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
-        this.applicationContext = applicationContext;
+		AppService.applicationContext = applicationContext;
 	}
 
 	@Override

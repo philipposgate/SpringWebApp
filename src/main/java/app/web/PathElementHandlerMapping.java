@@ -6,10 +6,12 @@ import java.util.Map;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import app.common.pathElement.PathElementService;
 
+@Component
 public class PathElementHandlerMapping extends SimpleUrlHandlerMapping implements InitializingBean {
 
 	@Autowired

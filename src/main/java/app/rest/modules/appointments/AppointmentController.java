@@ -26,7 +26,6 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
-import app.common.AppService;
 import app.common.google.GoogleCalendarService;
 import app.common.google.GoogleEmailerService;
 import app.common.utils.DateUtils;
