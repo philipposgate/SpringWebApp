@@ -8,19 +8,19 @@ public final class ClassUtils
 	/**
 	 * key: class name, value: class
 	 */
-	private static Map classMap = new HashMap();
+	private static Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 
 	private ClassUtils()
 	{
 	}
 
-	public static Class loadClass(String className)
+	public static Class<?> loadClass(String className)
 			throws ClassNotFoundException
 	{
-		Class ret = null;
+		Class<?> ret = null;
 		if (classMap.containsKey(className))
 		{
-			ret = (Class) classMap.get(className);
+			ret = classMap.get(className);
 		}
 		else
 		{

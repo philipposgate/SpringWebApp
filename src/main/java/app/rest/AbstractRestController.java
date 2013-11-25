@@ -65,10 +65,10 @@ public abstract class AbstractRestController
 					+ trace[2].getLineNumber() + " *******");
 		}
 
-		Enumeration requestParams = request.getParameterNames();
+		Enumeration<String> requestParams = request.getParameterNames();
 		while (requestParams.hasMoreElements())
 		{
-			String name = (String) requestParams.nextElement();
+			String name = requestParams.nextElement();
 			String[] values = request.getParameterValues(name);
 			for (int i = 0; i < values.length; i++)
 			{

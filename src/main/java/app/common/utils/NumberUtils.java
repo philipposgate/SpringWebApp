@@ -31,13 +31,12 @@ public class NumberUtils
 		return ret;
 	}
 
-	public static float getAverage(List integers)
+	public static float getAverage(List<Integer> integers)
 	{
 		float ret = 0;
 
-		for (Iterator iterator = integers.iterator(); iterator.hasNext();)
+		for (Integer i : integers)
 		{
-			Integer i = (Integer) iterator.next();
 			ret += i.intValue();
 		}
 
@@ -138,21 +137,20 @@ public class NumberUtils
 	}
 
 	/**
-	 * List of from-to pairs in the form of Object[]{Integer,Integer}
+	 * List of from-to pairs in the form of Integer[]{Integer,Integer}
 	 * 
 	 * @param ranges
 	 * @return true if from <= to for each row, and both from and to are either
 	 *         zero on non-zero and there are no overlapping from-to ranges
 	 *         between the rows
 	 */
-	public static boolean areValidRanges(List ranges)
+	public static boolean areValidRanges(List<Integer[]> ranges)
 	{
 		boolean ret = true;
-		for (Iterator iterator = ranges.iterator(); iterator.hasNext();)
+		for (Integer[] range : ranges)
 		{
-			Object[] o = (Object[]) iterator.next();
-			Integer a = (Integer) o[0];
-			Integer b = (Integer) o[1];
+			Integer a = range[0];
+			Integer b = range[1];
 			if (a.intValue() > b.intValue()
 					|| (a.intValue() == 0 && b.intValue() != 0)
 					|| (b.intValue() == 0 && a.intValue() != 0))

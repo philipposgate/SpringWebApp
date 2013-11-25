@@ -470,9 +470,9 @@ public final class StringUtils
 		return isEmpty(setVal) ? defaultVal : setVal;
 	}
 
-	public static List getEmailList(String emails)
+	public static List<String> getEmailList(String emails)
 	{
-		List ret = new ArrayList();
+		List<String> ret = new ArrayList<String>();
 		if (!StringUtils.isEmpty(emails))
 		{
 			String[] temp = emails.replaceAll(" ", "").split(",");
