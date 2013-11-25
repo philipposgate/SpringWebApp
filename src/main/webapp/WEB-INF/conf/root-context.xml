@@ -17,7 +17,7 @@
 	
 	
 	<!-- Activate Component Scanner -->
-	<context:component-scan base-package="app" annotation-config="true" >
+	<context:component-scan base-package="app.common" annotation-config="true" >
 		<context:exclude-filter type="regex" expression="app.rest.*"/>
 		<context:exclude-filter type="regex" expression="app.web.*"/>
 <!-- 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
@@ -55,7 +55,7 @@
 	</bean>
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="app" />
+        <property name="packagesToScan" value="app.common" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>

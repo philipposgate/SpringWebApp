@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import app.AbstractEntity;
+import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "user")

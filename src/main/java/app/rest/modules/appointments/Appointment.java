@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import app.AbstractEntity;
+import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "appointment")

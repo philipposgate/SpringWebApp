@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.AbstractHibernateDAO;
+import app.common.AbstractHibernateDAO;
 
 import com.google.common.base.Preconditions;
 

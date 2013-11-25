@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.AppService;
-import app.ByteArrayDownloadView;
-import app.PageContent;
+import app.common.AppService;
+import app.common.ByteArrayDownloadView;
+import app.common.PageContent;
 import app.common.user.User;
 
 public abstract class AbstractRestController

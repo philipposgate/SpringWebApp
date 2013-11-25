@@ -1,4 +1,4 @@
-package app;
+package app.common;
 
 import org.springframework.web.servlet.View;
 

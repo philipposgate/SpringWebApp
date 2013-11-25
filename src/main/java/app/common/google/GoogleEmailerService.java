@@ -6,7 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
-import app.AppConfigDAO;
+import app.common.AppConfigDAO;
 
 @Service("gmailService")
 public class GoogleEmailerService implements InitializingBean

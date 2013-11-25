@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import app.AbstractEntity;
+import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "path_element")

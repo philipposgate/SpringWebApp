@@ -18,7 +18,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import app.AppService;
+import app.common.AppService;
 import app.common.google.GoogleEmailerService;
 import app.common.user.User;
 import app.common.user.UserDAO;

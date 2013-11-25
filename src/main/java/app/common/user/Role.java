@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import app.AbstractEntity;
+import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "role")
