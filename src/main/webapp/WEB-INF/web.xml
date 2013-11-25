@@ -61,7 +61,7 @@
 			<param-name>debug</param-name>
 			<param-value>false</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>3</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ConnectorServlet</servlet-name>

@@ -1,14 +1,16 @@
-package app.user;
+package app.common.user;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.AbstractHibernateDAO;
 
 import com.google.common.base.Preconditions;
 
-@Repository(value = "roleDAO")
+@Repository
+@Transactional
 public class RoleDAO extends AbstractHibernateDAO<Role>
 {
 

@@ -18,11 +18,11 @@ import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import app.AppService;
-import app.user.User;
+import app.common.user.User;
 
 public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler
 {
-	@Autowired
+//	@Autowired
 	private AppService appService;
 
 	@Override

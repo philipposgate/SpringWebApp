@@ -15,9 +15,12 @@
 		
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
+	
 	<!-- Activate Component Scanner -->
-	<context:component-scan base-package="app" />
-	<context:annotation-config/>
+	<context:component-scan base-package="app" annotation-config="true" >
+		<context:exclude-filter type="regex" expression="app.rest.*"/>
+		<context:exclude-filter type="regex" expression="app.web.*"/>
+	</context:component-scan>
 	
 	<!-- Multipart Resolver -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -26,7 +29,7 @@
 	</bean>
 
 	<!-- Security Stuff -->
-	<bean id="userDetailsService" class="app.user.UserDetailsServiceImpl"/>
+	<bean id="userDetailsService" class="app.common.user.UserDetailsServiceImpl"/>
 	<bean id="authenticationSuccessHandler" class="app.rest.AuthenticationSuccessHandlerImpl"/>
 	<security:authentication-manager>
     	<security:authentication-provider user-service-ref="userDetailsService"/>
@@ -81,7 +84,7 @@
         </property>
     </bean>
     	
-	<!-- App Settings (see AppHelper.appSettings) -->
+	<!-- App Settings (see AppService.appSettings) -->
 	<util:map id="appSettings" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
 		<entry key="fooSetting" value="foo!" />
 		<entry key="barSetting" value="bar!" />

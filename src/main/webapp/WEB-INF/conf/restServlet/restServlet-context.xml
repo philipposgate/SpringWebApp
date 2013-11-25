@@ -13,8 +13,11 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
+	<!-- Activate Component Scanner -->
+<!-- 	<context:component-scan base-package="app.rest"  /> -->
+
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<mvc:annotation-driven />
+<!--  	<mvc:annotation-driven  />  -->
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
@@ -24,7 +27,5 @@
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-
-	<context:annotation-config/>
 	
 </beans>

@@ -1,4 +1,4 @@
-package app.user;
+package app.common.user;
 
 import java.util.Collection;
 import java.util.Date;

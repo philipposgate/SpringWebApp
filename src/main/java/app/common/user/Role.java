@@ -1,4 +1,4 @@
-package app.user;
+package app.common.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

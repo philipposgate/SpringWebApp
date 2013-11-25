@@ -5,23 +5,29 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.user.Role;
-import app.user.RoleDAO;
-import app.user.User;
-import app.user.UserDAO;
+import app.common.user.Role;
+import app.common.user.RoleDAO;
+import app.common.user.User;
+import app.common.user.UserDAO;
 
-@Service(value="appService")
-public class AppService implements InitializingBean
+@Service
+@Transactional
+public class AppService implements ApplicationContextAware, InitializingBean 
 {
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static ApplicationContext applicationContext = null;
+
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER = "ROLE_USER";
 
 	@Autowired
@@ -35,6 +41,16 @@ public class AppService implements InitializingBean
 
 	@Resource(name = "appSettings")
 	private final Map<String, String> appSettings = null;
+
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+        this.applicationContext = applicationContext;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception
@@ -116,21 +132,6 @@ public class AppService implements InitializingBean
 		return userDAO.getById(id);
 	}
 
-	public static boolean isInteger(String s)
-	{
-		boolean ret = false;
-		try
-		{
-			Integer.parseInt(s);
-			ret = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return ret;
-	}
-
-	@Transactional
 	public void updateUser(User user)
 	{
 		userDAO.update(user);

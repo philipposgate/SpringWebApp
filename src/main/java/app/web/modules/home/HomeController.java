@@ -1,6 +1,4 @@
-package app.modules.home;
-
-import java.util.Locale;
+package app.web.modules.home;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,16 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.PathElement;
 import app.web.PathElementAbstractController;
 
-@Component(value = "homeController")
+@Component
 public class HomeController extends PathElementAbstractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);

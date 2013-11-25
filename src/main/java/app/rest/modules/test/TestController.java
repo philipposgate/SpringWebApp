@@ -1,4 +1,4 @@
-package app.modules.test;
+package app.rest.modules.test;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

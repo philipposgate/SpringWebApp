@@ -19,13 +19,13 @@ import org.springframework.web.servlet.ModelAndView;
 import app.AppService;
 import app.ByteArrayDownloadView;
 import app.PageContent;
-import app.user.User;
+import app.common.user.User;
 
 public abstract class AbstractRestController
 {
 	protected static final String SUCCESS_KEY = "successful";
 
-	@Autowired (required = true)
+	@Autowired
 	protected AppService appService;
 
 	@Autowired

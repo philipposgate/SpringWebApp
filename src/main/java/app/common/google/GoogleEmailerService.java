@@ -1,4 +1,4 @@
-package app.modules.google;
+package app.common.google;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

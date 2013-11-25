@@ -3,8 +3,10 @@ package app;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-@Repository(value = "appConfigDAO")
+@Repository
+@Transactional
 public class AppConfigDAO extends AbstractHibernateDAO<AppConfig>
 {
 	@Override

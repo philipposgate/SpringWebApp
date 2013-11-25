@@ -1,4 +1,4 @@
-package app.utils;
+package app.common.utils;
 
 import java.text.DecimalFormat;
 import java.util.Iterator;

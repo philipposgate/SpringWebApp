@@ -1,4 +1,4 @@
-package app.modules.home;
+package app.web.modules.home;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import app.web.PathElement;
 import app.web.PathElementAbstractController;
 
-@Component(value = "aboutController")
+@Component
 public class AboutController extends PathElementAbstractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AboutController.class);

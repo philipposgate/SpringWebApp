@@ -1,4 +1,4 @@
-package app.modules.google;
+package app.common.google;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

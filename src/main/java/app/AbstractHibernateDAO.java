@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
 
-@Transactional
 public abstract class AbstractHibernateDAO<T extends AbstractEntity>
 {
 

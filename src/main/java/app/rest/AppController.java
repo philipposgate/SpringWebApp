@@ -19,9 +19,9 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import app.AppService;
-import app.modules.google.GoogleEmailerService;
-import app.user.User;
-import app.user.UserDAO;
+import app.common.google.GoogleEmailerService;
+import app.common.user.User;
+import app.common.user.UserDAO;
 
 @Controller
 public class AppController extends AbstractRestController {

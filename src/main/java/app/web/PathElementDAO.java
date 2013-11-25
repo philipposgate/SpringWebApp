@@ -3,12 +3,14 @@ package app.web;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.AbstractHibernateDAO;
 
 import com.google.common.base.Preconditions;
 
-@Repository(value = "pathElementDAO")
+@Repository
+@Transactional
 public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 {
 	@Override
@@ -17,6 +19,7 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		return PathElement.class;
 	}
 
+	@Transactional
 	public PathElement getRootPathElement()
 	{
 		PathElement root = null;

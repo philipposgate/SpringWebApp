@@ -6,8 +6,10 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service(value="pathElementService")
+@Service
+@Transactional
 public class PathElementService implements InitializingBean {
 
 	@Autowired(required = true)
