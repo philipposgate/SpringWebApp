@@ -3,9 +3,14 @@ package app.common.pathElement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import app.common.utils.StringUtils;
 
 @Service
 public class PathElementService implements InitializingBean {
@@ -16,6 +21,7 @@ public class PathElementService implements InitializingBean {
 	private PathElement rootElement;
 	
 	@Override
+	@Transactional
 	public void afterPropertiesSet() throws Exception 
 	{
 		rootElement = pathElementDAO.getRootPathElement();
@@ -23,11 +29,26 @@ public class PathElementService implements InitializingBean {
 		if (null == rootElement)
 		{
 			rootElement = new PathElement();
-			rootElement.setPath("index");
-			rootElement.setController("pathElementAdminController");
+			rootElement.setPath("");
+			rootElement.setController("");
 			rootElement.setParent(null);
+			rootElement.setTitle("root");
 			pathElementDAO.create(rootElement);
 		}
+		
+		PathElement homeElement = pathElementDAO.getHomePathElement();
+		
+		if (null == homeElement)
+		{
+			homeElement = new PathElement();
+			homeElement.setPath("index");
+			homeElement.setController("homeController");
+			homeElement.setParent(rootElement);
+			homeElement.setTitle("Home");
+			pathElementDAO.create(homeElement);
+		}
+		
+		pathElementDAO.populateChildren(rootElement);
 	}
 
 	public PathElement getRootElement() 
@@ -42,7 +63,16 @@ public class PathElementService implements InitializingBean {
 	public Map<String, Object> getUrlMap() 
 	{
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		populateUrlMap(map, getRootElement());
+		PathElement root = getRootElement();
+		
+		if (null != root && null != root.getChildren() && !root.getChildren().isEmpty())
+		{
+			for (PathElement child : root.getChildren())
+			{
+				populateUrlMap(map, child);
+			}
+		}
+
 		return map;
 	}
 
@@ -59,5 +89,4 @@ public class PathElementService implements InitializingBean {
 			}
 		}
 	}
-
 }

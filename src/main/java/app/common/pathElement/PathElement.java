@@ -22,7 +22,10 @@ public class PathElement extends AbstractEntity {
 	
 	@Column(nullable = false)
 	private String controller;
-	
+
+	@Column
+	private String title;
+
 	@Transient
 	private List<PathElement> children;
 
@@ -30,7 +33,7 @@ public class PathElement extends AbstractEntity {
 	{
 		String ret = "";
 		
-		if (null != parent)
+		if (null != parent && null != parent.getParent())
 		{
 			ret = parent.getFullPath();
 		}
@@ -70,5 +73,13 @@ public class PathElement extends AbstractEntity {
 
 	public void setChildren(List<PathElement> children) {
 		this.children = children;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

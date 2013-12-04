@@ -29,15 +29,21 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		if (!roots.isEmpty() && roots.size() == 1)
 		{
 			root = roots.get(0);
-			populateChildren(root);
+			//populateChildren(root);
 		}
 		
 		return root;
 	}
 
-	private void populateChildren(PathElement parent) {
+	public List<PathElement> getChildren(PathElement parent)
+	{
 		List<PathElement> children =  sessionFactory.getCurrentSession()
 				.createQuery("from PathElement pe where pe.parent=?").setParameter(0, parent).list();
+		return children;
+	}
+	
+	public void populateChildren(PathElement parent) {
+		List<PathElement> children =  getChildren(parent);
 		
 		for (PathElement child : children) {
 			populateChildren(child);
@@ -50,6 +56,26 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 	public void check(PathElement pathElement)
 	{
 		Preconditions.checkNotNull(pathElement);
+	}
+
+	public PathElement getHomePathElement() 
+	{
+		PathElement home = null;
+	
+		PathElement root = getRootPathElement();
+		
+		if (null != root)
+		{
+			List<PathElement> children =  sessionFactory.getCurrentSession()
+					.createQuery("from PathElement pe where pe.parent=? and path='index'").setParameter(0, root).list();
+			
+			if (children.size() == 1)
+			{
+				home = children.get(0);
+			}
+		}
+		
+		return home;
 	}
 
 }

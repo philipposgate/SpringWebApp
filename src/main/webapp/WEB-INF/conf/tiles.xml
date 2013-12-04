@@ -15,6 +15,9 @@
     <definition name="*/*/*" extends="base">
         <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
     </definition>
+    <definition name="*/*/*/*" extends="base">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+    </definition>
 
 	<!-- AJAX TEMPLATE -->
     <definition name="ajax" template="/WEB-INF/tiles/ajax.jsp">
@@ -28,6 +31,9 @@
     </definition>
     <definition name="ajax/*/*/*" extends="ajax">
         <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+    </definition>
+    <definition name="ajax/*/*/*/*" extends="ajax">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
     </definition>
 
 

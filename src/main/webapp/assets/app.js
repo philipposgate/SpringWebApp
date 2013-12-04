@@ -102,8 +102,12 @@ var app = {
         timeOptions : {
             tag : '<script type="text/javascript" src="/assets/scripts/timeOptions/timeOptions.js"></script>',
             loaded : false
-        }
+        },
 
+        jsTree : {
+            tag : '<script type="text/javascript" src="/assets/scripts/jsTree/jquery.jstree.js"></script>',
+            loaded : false
+        }
     },
     
     

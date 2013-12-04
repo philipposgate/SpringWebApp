@@ -49,6 +49,7 @@ public abstract class AbstractHibernateDAO<T extends AbstractEntity>
 				.createQuery("from " + getEntityClass().getName()).list();
 	}
 
+	@Transactional
 	public void create(final T entity)
 	{
 		check(entity);

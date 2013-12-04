@@ -5,11 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.common.pathElement.PathElementService;
 
-@Component(value = "pathElementAdminController")
+@Controller
 public class PathElementAdminController extends
 		PathElementAbstractController {
 
@@ -19,7 +20,7 @@ public class PathElementAdminController extends
 	@Override
 	public ModelAndView displayHome(HttpServletRequest request,
 			HttpServletResponse response) {
-        ModelAndView mv = new ModelAndView("web/admin/pe/pe_adminHome");
+        ModelAndView mv = new ModelAndView("pe/pe_adminHome");
         mv.addObject("root", pathElementService.getRootElement());
         return mv;
 	}

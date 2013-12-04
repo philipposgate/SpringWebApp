@@ -6,11 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.web.PathElementAbstractController;
 
-@Component
+@Controller
 public class AboutController extends PathElementAbstractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AboutController.class);
@@ -19,7 +20,7 @@ public class AboutController extends PathElementAbstractController {
     public ModelAndView displayHome(HttpServletRequest request,
             HttpServletResponse response) {
     	logger.info("displayHome");
-        ModelAndView mv = new ModelAndView("about");
+        ModelAndView mv = new ModelAndView("home/about");
         mv.addObject("homeNav", "about");
         return mv;
     }
