@@ -57,6 +57,29 @@ public class PathElementRestController extends AbstractRestController
 			JSONObject node = new JSONObject();
 			node.put("id", child.getId());
 			node.put("data", child.getTitle());
+			node.put("state", "open");
+			
+			JSONObject attr = new JSONObject();
+			attr.put("id", child.getId());
+			node.put("attr", attr);
+			
+			List<PathElement> grandChildren = pathElementDAO.getChildren(child);
+			
+			if (!grandChildren.isEmpty())
+			{
+				JSONArray c = new JSONArray();
+				
+				for (PathElement gc : grandChildren) 
+				{
+					JSONObject gco = new JSONObject();
+					gco.put("data", gc.getTitle());
+					gco.put("state", "closed");
+					c.put(gco);
+				}
+				
+				node.put("children", c);
+			}
+			
 			nodes.put(node);
 		}
 		

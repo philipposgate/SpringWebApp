@@ -10,9 +10,10 @@
 	<script type="text/javascript">
 		app.addComponent("jsTree");
 		
-		$(document).ready(function(){
+		$(document).ready(function() {
+		
 			$("#peTree").jstree({
-				"plugins" : [ "themes", "json_data", "ui" ],
+				"plugins" : [ "themes", "json_data", "ui", "crrm" ],
 				"json_data" : {
 					ajax : {
 						url : "/rest/pe/json",
@@ -22,6 +23,10 @@
 					}
 				}
 			});
+			
+			$("#addNode").on("click", function() {
+				$("#peTree").jstree("create");
+			});
 		});
 	</script>
 </head>
@@ -29,6 +34,10 @@
 
 <h1>Path Element Admin</h1>
 
+<div>
+	<a id="addNode" class="btn btn-mini" href="javascript:void(0)">Add Node</a>
+</div>
+<BR>
 <div id="peTree"></div>
 
 </body>
