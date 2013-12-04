@@ -35,7 +35,7 @@ public class PathElementRestController extends AbstractRestController
 	@ResponseBody
 	public String getJson(HttpServletRequest request) throws Exception
 	{
-		dumpRequestParameters(request);
+		dumpRequestParameters(request); 
 		PathElement pe = null;
 		String id = request.getParameter("id");
 		
