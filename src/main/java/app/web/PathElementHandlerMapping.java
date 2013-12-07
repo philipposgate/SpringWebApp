@@ -10,18 +10,26 @@ import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import app.common.pathElement.PathElementService;
 
 @Component
-public class PathElementHandlerMapping extends SimpleUrlHandlerMapping {
+public class PathElementHandlerMapping extends SimplePathElementHandler {
 
 	@Autowired
 	private PathElementService pathElementService;
 
 	@Override
-	public void initApplicationContext() throws BeansException {
-
+	public void initApplicationContext() throws BeansException 
+	{
 		Map<String, Object> hmap = pathElementService.getUrlMap();
 		this.setUrlMap(hmap);
 		
 		super.initApplicationContext();
+		
+		pathElementService.setPathElementHandlerMapping(this);
+	}
+
+	public void refreshUrlMappings() 
+	{
+		clearHandlers();
+		registerHandlers(pathElementService.getUrlMap());
 	}
 
 }

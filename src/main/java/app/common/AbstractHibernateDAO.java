@@ -55,23 +55,27 @@ public abstract class AbstractHibernateDAO<T extends AbstractEntity>
 		check(entity);
 		Preconditions.checkNotNull(entity);
 		Preconditions.checkState(entity.getId() == null);
-		this.getCurrentSession().persist(entity);
+		this.getCurrentSession().save(entity);
 	}
 
+	@Transactional
 	public void update(final T entity)
 	{
 		check(entity);
 		Preconditions.checkNotNull(entity.getId());
 
-		this.getCurrentSession().merge(entity);
+		this.getCurrentSession().saveOrUpdate(entity);
+		
 	}
 
+	@Transactional
 	public void delete(final T entity)
 	{
 		Preconditions.checkNotNull(entity);
 		this.getCurrentSession().delete(entity);
 	}
 
+	@Transactional
 	public void deleteById(final Integer entityId)
 	{
 		final T entity = this.getById(entityId);

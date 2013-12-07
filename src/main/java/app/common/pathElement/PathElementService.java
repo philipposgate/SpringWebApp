@@ -5,18 +5,27 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.common.utils.StringUtils;
+import app.web.PathElementHandlerMapping;
 
 @Service
-public class PathElementService implements InitializingBean {
+public class PathElementService implements InitializingBean   {
 
 	@Autowired
 	private PathElementDAO pathElementDAO;
+	
+	private PathElementHandlerMapping pathElementHandlerMapping;
 	
 	private PathElement rootElement;
 	
@@ -32,7 +41,8 @@ public class PathElementService implements InitializingBean {
 			rootElement.setPath("");
 			rootElement.setController("");
 			rootElement.setParent(null);
-			rootElement.setTitle("root");
+			rootElement.setTitle("Web Root");
+			rootElement.setActive(true);
 			pathElementDAO.create(rootElement);
 		}
 		
@@ -45,6 +55,7 @@ public class PathElementService implements InitializingBean {
 			homeElement.setController("homeController");
 			homeElement.setParent(rootElement);
 			homeElement.setTitle("Home");
+			homeElement.setActive(true);
 			pathElementDAO.create(homeElement);
 		}
 		
@@ -89,4 +100,20 @@ public class PathElementService implements InitializingBean {
 			}
 		}
 	}
+	
+	public void refreshUrlMappings()
+	{
+		rootElement = null;
+		pathElementHandlerMapping.refreshUrlMappings();
+	}
+
+	public PathElementHandlerMapping getPathElementHandlerMapping() {
+		return pathElementHandlerMapping;
+	}
+
+	public void setPathElementHandlerMapping(
+			PathElementHandlerMapping pathElementHandlerMapping) {
+		this.pathElementHandlerMapping = pathElementHandlerMapping;
+	}
+
 }

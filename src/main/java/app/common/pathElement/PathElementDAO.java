@@ -29,7 +29,7 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		if (!roots.isEmpty() && roots.size() == 1)
 		{
 			root = roots.get(0);
-			//populateChildren(root);
+			populateChildren(root);
 		}
 		
 		return root;
@@ -38,7 +38,7 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 	public List<PathElement> getChildren(PathElement parent)
 	{
 		List<PathElement> children =  sessionFactory.getCurrentSession()
-				.createQuery("from PathElement pe where pe.parent=?").setParameter(0, parent).list();
+				.createQuery("from PathElement pe where pe.parent=? and pe.active=1").setParameter(0, parent).list();
 		return children;
 	}
 	

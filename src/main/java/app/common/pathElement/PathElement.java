@@ -26,6 +26,9 @@ public class PathElement extends AbstractEntity {
 	@Column
 	private String title;
 
+	@Column
+	private  boolean active;
+
 	@Transient
 	private List<PathElement> children;
 
@@ -81,5 +84,13 @@ public class PathElement extends AbstractEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }
