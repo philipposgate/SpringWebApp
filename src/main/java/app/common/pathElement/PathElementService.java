@@ -107,13 +107,12 @@ public class PathElementService implements InitializingBean   {
 		pathElementHandlerMapping.refreshUrlMappings();
 	}
 
-	public PathElementHandlerMapping getPathElementHandlerMapping() {
-		return pathElementHandlerMapping;
-	}
-
-	public void setPathElementHandlerMapping(
-			PathElementHandlerMapping pathElementHandlerMapping) {
-		this.pathElementHandlerMapping = pathElementHandlerMapping;
+	public void setPathElementHandlerMapping(PathElementHandlerMapping pathElementHandlerMapping) 
+	{
+		if (null == this.pathElementHandlerMapping)
+		{
+			this.pathElementHandlerMapping = pathElementHandlerMapping;
+		}
 	}
 
 }

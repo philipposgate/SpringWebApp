@@ -46,6 +46,11 @@ public class PathElement extends AbstractEntity {
 		return ret;
 	}
 
+	public boolean isLeaf()
+	{
+		return null == children || children.isEmpty();
+	}
+	
 	public PathElement getParent() {
 		return parent;
 	}
