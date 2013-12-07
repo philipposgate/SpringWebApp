@@ -3,14 +3,20 @@ package app.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver;
+import org.springframework.web.util.UrlPathHelper;
 
 import app.common.pathElement.PathElement;
+import app.common.pathElement.PathElementService;
 
-public abstract class PathElementAbstractController extends MultiActionController {
-
+public abstract class PathElementAbstractController extends MultiActionController 
+{
+	@Autowired
+	private PathElementService pathElementService;
+	
 	public PathElementAbstractController()
 	{
 		ParameterMethodNameResolver r = new ParameterMethodNameResolver();
@@ -33,7 +39,14 @@ public abstract class PathElementAbstractController extends MultiActionControlle
 	
 	public PathElement getPathElement(HttpServletRequest request)
 	{
-		PathElement ret = null;
-		return ret;
+		return pathElementService.getPathElement(request);
+	}
+	
+	@Override
+	protected ModelAndView handleRequestInternal(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		ModelAndView mv = super.handleRequestInternal(request, response);
+		mv.addObject("pathElement", getPathElement(request));
+		return mv;
 	}
 }

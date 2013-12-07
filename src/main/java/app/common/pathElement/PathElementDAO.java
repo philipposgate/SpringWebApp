@@ -41,6 +41,15 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 				.createQuery("from PathElement pe where pe.parent=? and pe.active=1").setParameter(0, parent).list();
 		return children;
 	}
+
+	public boolean hasChildren(PathElement pathElement)
+	{
+		long count = (Long) sessionFactory.getCurrentSession()
+				.createQuery("select count(pe.id) from PathElement pe where pe.parent=? and pe.active=1").setParameter(0, pathElement).list().get(0);
+		
+		return count > 0;
+	}
+
 	
 	public void populateChildren(PathElement parent) {
 		List<PathElement> children =  getChildren(parent);

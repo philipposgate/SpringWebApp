@@ -12,12 +12,19 @@
 		
 		$(document).ready(function() {
 		
-			$("#peTree").jstree({
+			$("#jsTree").jstree({
 				plugins : [ "themes", "json_data", "ui", "crrm", "contextmenu" ],
+				
+				themes : {
+					theme : "classic",
+					icons : false,
+					dots : true
+				},
+				
 				json_data : {
 					data : [${rootElement}],
 					ajax : {
-						url : "/rest/pe/json",
+						url : "/rest/pe/jstree",
 						type : "GET",
 						data : function(n) {
 							return {id : n.attr ? n.attr("id") : 0 }
@@ -26,6 +33,7 @@
 		            'progressive_render': true,
 		            'progressive_unload': false
 				},
+				
 				contextmenu : {
 			        "items": function (node) {
 			        	console.log(node[0].id);
@@ -52,10 +60,10 @@
 			        }
 			    }
 			})
+			.bind("select_node.jstree", function(e, data) {
+				$("#pathElementPanel").load("/rest/pe/pathElementPanel/" + data.rslt.obj[0].id);
+			})
 			.bind("create.jstree", function (e, data) {
-				console.log(e);
-				console.log(data);
-				
 		        $.ajax({
 		            url: "/rest/pe/pathElement", 
 		            type: "POST",
@@ -64,45 +72,44 @@
 		                "name" : data.rslt.name
 		            },
 		            success: function (result) {
-		            	console.log(result);
+		            	var newNode = $.parseJSON(result);
+		            	data.rslt.obj[0].id = newNode.attr.id;
 		            }
 		        });
 		    })
 			.bind("remove.jstree", function (e, data) {
-				console.log(e);
-				console.log(data);
-				
 		        $.ajax({
 		            url: "/rest/pe/pathElement/" + data.rslt.obj[0].id, 
-		            type: "DELETE",
-		            success: function (result) {
-		            	console.log(result);
-		            }
+		            type: "DELETE"
 		        });
 		    })
 			.bind("rename.jstree", function (e, data) {
-				console.log(e);
-				console.log(data);
-				
 		        $.ajax({
 		            url: "/rest/pe/pathElement/" + data.rslt.obj[0].id, 
 		            type: "PUT",
 		            data: {
 		                "name" : data.rslt.new_name
-		            },
-		            success: function (result) {
-		            	console.log(result);
 		            }
 		        });
 		    });
 		});
+		
 	</script>
 </head>
 <body>
 
 <h1>Path Element Admin</h1>
 
-<div id="peTree"></div>
+<div class="content-fluid">
+	<div class="row-fluid">
+		<div class="span4">
+			<div id="jsTree"></div>
+		</div>
+		<div class="span8">
+			<div id="pathElementPanel"></div>
+		</div>
+	</div>
+</div>
 
 </body>
 </html>
