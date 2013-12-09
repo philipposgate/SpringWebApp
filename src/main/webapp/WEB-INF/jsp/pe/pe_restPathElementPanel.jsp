@@ -1,3 +1,5 @@
+<%@ include file="/WEB-INF/jsp/include.jsp"%>
+
 <table class="table table-condensed">
 	<thead>
 	<tr>
@@ -13,7 +15,7 @@
 		<td>${pathElement.id}</td>
 		<td>${pathElement.title}</td>
 		<td>${pathElement.path}</td>
-		<td><a href="${pathElement.fullPath}.htm">${pathElement.fullPath}.htm</a></td>
+		<td><a href="${pathElement.fullPath}">${pathElement.fullPath}</a></td>
 		<td>${pathElement.controller}</td>
 	</tr>
 	</tbody>

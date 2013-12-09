@@ -32,19 +32,36 @@ public class PathElement extends AbstractEntity {
 	@Transient
 	private List<PathElement> children;
 
-	@Override
-	public String toString() 
+	@Transient
+	public boolean isRoot()
 	{
-		return getFullPath() + ".htm";
+		return null == parent;
 	}
 	
+	@Transient
 	public String getFullPath() 
+	{
+		String fullPath = null;
+		
+		if (!isRoot())
+		{
+			fullPath = buildPath() + ".htm";
+		}
+		else
+		{
+			fullPath = "/";
+		}
+		
+		return fullPath;
+	}
+	
+	private String buildPath()
 	{
 		String ret = "";
 		
-		if (null != parent && null != parent.getParent())
+		if (null != parent && !parent.isRoot())
 		{
-			ret = parent.getFullPath();
+			ret = parent.buildPath();
 		}
 		
 		ret += "/" + path;
@@ -52,6 +69,7 @@ public class PathElement extends AbstractEntity {
 		return ret;
 	}
 
+	@Transient
 	public boolean isLeaf()
 	{
 		return null == children || children.isEmpty();

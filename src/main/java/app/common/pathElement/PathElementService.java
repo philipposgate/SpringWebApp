@@ -48,7 +48,7 @@ public class PathElementService implements InitializingBean   {
 			rootElement.setPath("");
 			rootElement.setController("");
 			rootElement.setParent(null);
-			rootElement.setTitle("Web Root");
+			rootElement.setTitle("Spring Web App");
 			rootElement.setActive(true);
 			pathElementDAO.create(rootElement);
 		}
@@ -64,6 +64,19 @@ public class PathElementService implements InitializingBean   {
 			homeElement.setTitle("Home");
 			homeElement.setActive(true);
 			pathElementDAO.create(homeElement);
+		}
+		
+		PathElement loginElement = pathElementDAO.getLoginPathElement();
+		
+		if (null == loginElement)
+		{
+			loginElement = new PathElement();
+			loginElement.setPath("login");
+			loginElement.setController("loginController");
+			loginElement.setParent(rootElement);
+			loginElement.setTitle("Login");
+			loginElement.setActive(true);
+			pathElementDAO.create(loginElement);
 		}
 		
 		pathElementDAO.populateChildren(rootElement);
@@ -84,7 +97,7 @@ public class PathElementService implements InitializingBean   {
 
 	private void populatePathElementMap(PathElement pathElement) 
 	{
-		pathElementMap.put(pathElement.getFullPath() + ".htm", pathElement);
+		pathElementMap.put(pathElement.getFullPath(), pathElement);
 		for (PathElement child : pathElement.getChildren())
 		{
 			populatePathElementMap(child);
@@ -118,7 +131,7 @@ public class PathElementService implements InitializingBean   {
 
 	private void populateUrlMap(Map<String, Object> map, PathElement pathElement) {
 
-		String urlPath = pathElement.getFullPath() + ".htm";
+		String urlPath = pathElement.getFullPath();
 		map.put(urlPath, pathElement.getController());
 		
 		if (null != pathElement.getChildren() && !pathElement.getChildren().isEmpty())

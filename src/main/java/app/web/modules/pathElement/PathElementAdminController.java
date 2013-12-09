@@ -1,4 +1,4 @@
-package app.web;
+package app.web.modules.pathElement;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.common.pathElement.PathElementService;
+import app.web.PathElementAbstractController;
 
 @Controller
 public class PathElementAdminController extends
