@@ -32,7 +32,7 @@ import app.web.PathElementAbstractController;
 import app.web.PathElementHandlerMapping;
 
 @Service
-public class PathElementService implements InitializingBean, ApplicationContextAware   {
+public class PathElementService implements InitializingBean   {
 
 	@Autowired
 	private PathElementDAO pathElementDAO;
@@ -42,8 +42,6 @@ public class PathElementService implements InitializingBean, ApplicationContextA
 	private PathElementHandlerMapping pathElementHandlerMapping;
 	
 	private PathElement rootElement;
-	
-	private ApplicationContext applicationContext;
 	
 	private final Map<String, PathElement> pathElementMap = new HashMap<String, PathElement>();
 	
@@ -164,12 +162,6 @@ public class PathElementService implements InitializingBean, ApplicationContextA
 	public Map<String, PathElementAbstractController> getPathElementControllers()
 	{
 		return pathElementHandlerMapping.getPathElementControllers();
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException 
-	{
-		this.applicationContext = applicationContext;
 	}
 
 	public void populate(PathElement pathElement) 
