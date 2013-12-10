@@ -48,11 +48,13 @@ public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthentic
 
     		if (roles.contains(AppService.ROLE_ADMIN))
     		{
-            	redirectUrl = "/admin/";
+//            	redirectUrl = "/rest/admin/";
+            	redirectUrl = "/";
     		}
     		else
     		{
-            	redirectUrl = "/user/";
+            	//redirectUrl = "/rest/admin/";
+            	redirectUrl = "/";
     		}
         }
 

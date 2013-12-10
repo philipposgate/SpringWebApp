@@ -3,6 +3,7 @@ package app.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -12,7 +13,7 @@ import org.springframework.web.util.UrlPathHelper;
 import app.common.pathElement.PathElement;
 import app.common.pathElement.PathElementService;
 
-public abstract class PathElementAbstractController extends MultiActionController 
+public abstract class PathElementAbstractController extends MultiActionController
 {
 	@Autowired
 	private PathElementService pathElementService;
@@ -27,7 +28,9 @@ public abstract class PathElementAbstractController extends MultiActionControlle
 	
 	public abstract ModelAndView displayHome(HttpServletRequest request,
             HttpServletResponse response);
-	
+
+	public abstract String getLabel();
+
 	/**
 	 * To be called when a PathElement gets bound to this controller instance.  
 	 * This method provides an opportunity to associate (bind) the path element 
@@ -49,4 +52,5 @@ public abstract class PathElementAbstractController extends MultiActionControlle
 		mv.addObject("pathElement", getPathElement(request));
 		return mv;
 	}
+	
 }

@@ -1,29 +1,38 @@
 package app.common.pathElement;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.annotation.AnnotationBeanNameGenerator;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UrlPathHelper;
 
 import app.common.utils.StringUtils;
+import app.web.PathElementAbstractController;
 import app.web.PathElementHandlerMapping;
 
 @Service
-public class PathElementService implements InitializingBean   {
+public class PathElementService implements InitializingBean, ApplicationContextAware   {
 
 	@Autowired
 	private PathElementDAO pathElementDAO;
@@ -33,6 +42,8 @@ public class PathElementService implements InitializingBean   {
 	private PathElementHandlerMapping pathElementHandlerMapping;
 	
 	private PathElement rootElement;
+	
+	private ApplicationContext applicationContext;
 	
 	private final Map<String, PathElement> pathElementMap = new HashMap<String, PathElement>();
 	
@@ -64,19 +75,6 @@ public class PathElementService implements InitializingBean   {
 			homeElement.setTitle("Home");
 			homeElement.setActive(true);
 			pathElementDAO.create(homeElement);
-		}
-		
-		PathElement loginElement = pathElementDAO.getLoginPathElement();
-		
-		if (null == loginElement)
-		{
-			loginElement = new PathElement();
-			loginElement.setPath("login");
-			loginElement.setController("loginController");
-			loginElement.setParent(rootElement);
-			loginElement.setTitle("Login");
-			loginElement.setActive(true);
-			pathElementDAO.create(loginElement);
 		}
 		
 		pathElementDAO.populateChildren(rootElement);
@@ -161,5 +159,29 @@ public class PathElementService implements InitializingBean   {
 	public PathElement getPathElement(HttpServletRequest request)
 	{
 		return getPathElementMap().get(urlPathHelper.getLookupPathForRequest(request));
+	}
+	
+	public Map<String, PathElementAbstractController> getPathElementControllers()
+	{
+		return pathElementHandlerMapping.getPathElementControllers();
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException 
+	{
+		this.applicationContext = applicationContext;
+	}
+
+	public void populate(PathElement pathElement) 
+	{
+		PathElementAbstractController c = getPathElementControllers().get(pathElement.getController());
+		if (null != c)
+		{
+			pathElement.setControllerLabel(c.getLabel());
+		}
+		else
+		{
+			pathElement.setControllerLabel(pathElement.getController());
+		}
 	}
 }

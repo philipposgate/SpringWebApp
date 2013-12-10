@@ -26,4 +26,11 @@ public class PathElementAdminController extends
         return mv;
 	}
 
+
+	@Override
+	public String getLabel() 
+	{
+		return "Path Element Admin Controller";
+	}
+
 }

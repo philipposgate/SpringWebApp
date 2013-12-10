@@ -1,6 +1,9 @@
 package app.web;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ public class PathElementHandlerMapping extends SimplePathElementHandler {
 
 	@Autowired
 	private PathElementService pathElementService;
+
+	private final Map<String, PathElementAbstractController> controllers = new TreeMap<String, PathElementAbstractController>();
 
 	@Override
 	public void initApplicationContext() throws BeansException 
@@ -32,4 +37,13 @@ public class PathElementHandlerMapping extends SimplePathElementHandler {
 		registerHandlers(pathElementService.getUrlMap());
 	}
 
+	public Map<String, PathElementAbstractController> getPathElementControllers()
+	{
+		if (controllers.isEmpty())
+		{
+			controllers.putAll(getApplicationContext().getBeansOfType(PathElementAbstractController.class));
+		}
+		
+		return Collections.unmodifiableMap(controllers);
+	}
 }

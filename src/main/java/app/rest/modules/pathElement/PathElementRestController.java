@@ -35,7 +35,7 @@ public class PathElementRestController extends AbstractRestController
 	public String displayHome(Model model)
 	{
 		PathElement rootElement = pathElementService.getRootElement();
-		JSONObject rootNode = getNode(rootElement);
+		JSONObject rootNode = getTreeNode(rootElement);
 
 		try 
 		{
@@ -47,7 +47,7 @@ public class PathElementRestController extends AbstractRestController
 
 				for (PathElement child : rootElement.getChildren())
 				{
-					JSONObject childNode = getNode(child);
+					JSONObject childNode = getTreeNode(child);
 
 					if (!child.isLeaf())
 					{
@@ -69,18 +69,27 @@ public class PathElementRestController extends AbstractRestController
 		return "/pe/pe_restHome";
 	}
 
-	@RequestMapping(value = "/pathElementPanel/{id}")
-	public String displayPathElementPanel(@PathVariable Integer id, Model model)
+	@RequestMapping(value = "/pathElementView/{id}")
+	public String displayPathElementView(@PathVariable Integer id, Model model)
 	{
 		PathElement pathElement = pathElementDAO.getById(id);
-
+		pathElementService.populate(pathElement);
 		model.addAttribute("pathElement", pathElement);
-		return "/pe/pe_restPathElementPanel";
+		return "/pe/pe_restPathElementView";
 	}
 
-	@RequestMapping(value = "/jstree", method=RequestMethod.GET)
+	@RequestMapping(value = "/pathElementEdit/{id}")
+	public String displayPathElementEdit(@PathVariable Integer id, Model model)
+	{
+		PathElement pathElement = pathElementDAO.getById(id);
+		model.addAttribute("pathElement", pathElement);
+		model.addAttribute("controllers", pathElementService.getPathElementControllers());
+		return "/pe/pe_restPathElementEdit";
+	}
+
+	@RequestMapping(value = "/treeNodes", method=RequestMethod.GET)
 	@ResponseBody
-	public String getJSTreeNodes(HttpServletRequest request) throws Exception
+	public String getTreeNodes(HttpServletRequest request) throws Exception
 	{
 		PathElement parent = pathElementDAO.getById(request.getParameter("id"));
 		
@@ -90,7 +99,7 @@ public class PathElementRestController extends AbstractRestController
 		
 		for (PathElement child : children) 
 		{
-			JSONObject childNode = getNode(child);
+			JSONObject childNode = getTreeNode(child);
 			
 			if (pathElementDAO.hasChildren(child))
 			{
@@ -103,7 +112,7 @@ public class PathElementRestController extends AbstractRestController
 		return nodes.toString();
 	}
 	
-	private JSONObject getNode(PathElement pe)
+	private JSONObject getTreeNode(PathElement pe)
 	{
 		JSONObject node = new JSONObject();
 		try 
@@ -120,9 +129,9 @@ public class PathElementRestController extends AbstractRestController
 		return node;
 	}
 	
-	@RequestMapping(value = "/pathElement", method=RequestMethod.POST)
+	@RequestMapping(value = "/treeNode", method=RequestMethod.POST)
 	@ResponseBody
-	public String createPathElement(HttpServletRequest request) throws Exception
+	public String createTreeNode(HttpServletRequest request) throws Exception
 	{
 		PathElement parent = pathElementDAO.getById(request.getParameter("parentId"));
 		PathElement newElement = null;
@@ -141,12 +150,12 @@ public class PathElementRestController extends AbstractRestController
 			pathElementService.refreshUrlMappings();
 		}
 
-		return getNode(newElement).toString();
+		return getTreeNode(newElement).toString();
 	}
 	
-	@RequestMapping(value = "/pathElement/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value = "/treeNode/{id}", method=RequestMethod.DELETE)
 	@ResponseBody
-	public String deletePathElement(@PathVariable Integer id) throws Exception
+	public String deleteTreeNode(@PathVariable Integer id) throws Exception
 	{
 		PathElement pe = pathElementDAO.getById(id);
 		pe.setActive(false);
@@ -154,16 +163,47 @@ public class PathElementRestController extends AbstractRestController
 		pathElementService.refreshUrlMappings();
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "/pathElement/{id}", method=RequestMethod.PUT)
 	@ResponseBody
 	public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception
 	{
 		PathElement pe = pathElementDAO.getById(id);
-		String name = StringUtils.isEmpty(request.getParameter("name")) ? "Path Element " + id : request.getParameter("name");
-		pe.setTitle(name);
-		pathElementDAO.update(pe);
-		return "success";
+		
+		if (null != pe)
+		{
+			boolean updated = false;
+			
+			String title = request.getParameter("title");
+			if (!StringUtils.isEmpty(title) && !title.equals(pe.getTitle()))
+			{
+				pe.setTitle(title);
+				updated = true;
+			}
+			
+			String path = request.getParameter("path");
+			if (!StringUtils.isEmpty(path) && !path.equals(pe.getPath()))
+			{
+				pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
+				updated = true;
+			}
+			
+			String controller = request.getParameter("controller");
+			if (!StringUtils.isEmpty(controller) && !controller.equals(pe.getController()))
+			{
+				pe.setController(controller);
+				updated = true;
+			}
+			
+			if (updated)
+			{
+				pathElementDAO.update(pe);
+				pathElementService.refreshUrlMappings();
+			}
+			
+		}
+		
+		return getTreeNode(pe).toString();
 	}	
 
 }

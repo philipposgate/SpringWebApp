@@ -87,24 +87,4 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		return home;
 	}
 
-	public PathElement getLoginPathElement() 
-	{
-		PathElement login = null;
-		
-		PathElement root = getRootPathElement();
-		
-		if (null != root)
-		{
-			List<PathElement> children =  sessionFactory.getCurrentSession()
-					.createQuery("from PathElement pe where pe.parent=? and path='login' and controller='loginController'").setParameter(0, root).list();
-			
-			if (children.size() == 1)
-			{
-				login = children.get(0);
-			}
-		}
-		
-		return login;
-	}
-
 }

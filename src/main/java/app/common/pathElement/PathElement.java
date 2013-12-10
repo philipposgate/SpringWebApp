@@ -33,6 +33,9 @@ public class PathElement extends AbstractEntity {
 	private List<PathElement> children;
 
 	@Transient
+	private String controllerLabel;
+	
+	@Transient
 	public boolean isRoot()
 	{
 		return null == parent;
@@ -75,6 +78,7 @@ public class PathElement extends AbstractEntity {
 		return null == children || children.isEmpty();
 	}
 	
+
 	public PathElement getParent() {
 		return parent;
 	}
@@ -121,5 +125,13 @@ public class PathElement extends AbstractEntity {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public String getControllerLabel() {
+		return controllerLabel;
+	}
+
+	public void setControllerLabel(String controllerLabel) {
+		this.controllerLabel = controllerLabel;
 	}
 }

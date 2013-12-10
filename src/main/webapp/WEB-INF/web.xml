@@ -48,6 +48,10 @@
 		<servlet-name>restServlet</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>restServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
 
 	<!-- CKFINDER SERVLET -->
 	<servlet>

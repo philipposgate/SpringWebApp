@@ -56,21 +56,13 @@
 									Logged in as <B><sec:authentication	property="principal.username" /></B> <b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
-									<c:choose>
-										<c:when test="${isAdmin}">
-											<li><a href="/admin/">Site Administration</a></li>
-										</c:when>
-										<c:otherwise>
-											<li><a href="/user/">My Account</a></li>
-										</c:otherwise>
-									</c:choose>
 									<li><a href="/j_spring_security_logout">Logout</a></li>
 								</ul>
 							</li>
 						</c:if>
 						<c:if test="${!loggedIn}">
-							<li class="${pathElement.path=='login' ? 'active' : ''}">
-								<a href="/login.htm">Login</a>
+							<li>
+								<a href="/login">Login</a>
 							</li>
 						</c:if>
 					</ul>

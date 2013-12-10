@@ -110,7 +110,6 @@ var app = {
         }
     },
     
-    
     hideFadeouts: function() {
         $(".successFadeout").addClass("alert");
         $(".successFadeout").addClass("alert-success");
@@ -497,4 +496,27 @@ $.fn.htmlEditorByConfig = function(config, useFinder, maxChars) {
     }
     
     return editor;
+};
+
+
+$.fn.serializeFormToObject = function(){
+	var serializedArray = $(this).serializeArray();
+	var ret = new Object();
+
+	$.each(serializedArray, function() {
+	    if (ret[this.name])
+	    {
+	        if (!ret[this.name].push) 
+	        {
+	     	   ret[this.name] = [ret[this.name]];
+	        }
+
+	        ret[this.name].push(this.value || '');
+	    } 
+	    else 
+	    {
+	 	   ret[this.name] = this.value || '';
+	    }
+	});
+	return ret;
 };

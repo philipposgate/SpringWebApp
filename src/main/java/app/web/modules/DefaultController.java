@@ -18,4 +18,10 @@ public class DefaultController extends PathElementAbstractController {
         return mv;
 	}
 
+	@Override
+	public String getLabel() 
+	{
+		return "Default Controller";
+	}
+
 }

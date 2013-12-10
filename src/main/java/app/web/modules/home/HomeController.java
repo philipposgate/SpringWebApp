@@ -24,4 +24,10 @@ public class HomeController extends PathElementAbstractController {
         return mv;
     }
 
+	@Override
+	public String getLabel() 
+	{
+		return "Home Controller";
+	}
+
 }
