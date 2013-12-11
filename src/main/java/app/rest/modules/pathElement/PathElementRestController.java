@@ -34,11 +34,42 @@ public class PathElementRestController extends AbstractRestController
 	@RequestMapping(value = "/")
 	public String displayHome(Model model)
 	{
-		PathElement rootElement = pathElementService.getRootElement();
-		JSONObject rootNode = getTreeNode(rootElement);
+		return "/pe/pe_restHome";
+	}
 
-		try 
+	@RequestMapping(value = "/treeNodes", method=RequestMethod.GET)
+	@ResponseBody
+	public String getTreeNodes(HttpServletRequest request) throws Exception
+	{
+		JSONArray nodes = new JSONArray();
+
+		Integer id = new Integer(request.getParameter("id"));
+		
+		if (id > 0)
 		{
+			// Return children of node...
+			PathElement node = pathElementDAO.getById(id);
+			
+			List<PathElement> children = pathElementDAO.getChildren(node);
+			
+			for (PathElement child : children) 
+			{
+				JSONObject childNode = getTreeNode(child);
+				
+				if (pathElementDAO.hasChildren(child))
+				{
+					childNode.put("state", "closed");
+				}
+				
+				nodes.put(childNode);
+			}
+		}
+		else
+		{
+			// Return root-node plus root's children...
+			PathElement rootElement = pathElementService.getRootElement();
+			JSONObject rootNode = getTreeNode(rootElement);
+
 			if (!rootElement.isLeaf())
 			{
 				rootNode.put("state", "open");
@@ -59,54 +90,8 @@ public class PathElementRestController extends AbstractRestController
 				
 				rootNode.put("children", children);
 			}
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		
-		model.addAttribute("rootElement", rootNode);
-		return "/pe/pe_restHome";
-	}
-
-	@RequestMapping(value = "/pathElementView/{id}")
-	public String displayPathElementView(@PathVariable Integer id, Model model)
-	{
-		PathElement pathElement = pathElementDAO.getById(id);
-		pathElementService.populate(pathElement);
-		model.addAttribute("pathElement", pathElement);
-		return "/pe/pe_restPathElementView";
-	}
-
-	@RequestMapping(value = "/pathElementEdit/{id}")
-	public String displayPathElementEdit(@PathVariable Integer id, Model model)
-	{
-		PathElement pathElement = pathElementDAO.getById(id);
-		model.addAttribute("pathElement", pathElement);
-		model.addAttribute("controllers", pathElementService.getPathElementControllers());
-		return "/pe/pe_restPathElementEdit";
-	}
-
-	@RequestMapping(value = "/treeNodes", method=RequestMethod.GET)
-	@ResponseBody
-	public String getTreeNodes(HttpServletRequest request) throws Exception
-	{
-		PathElement parent = pathElementDAO.getById(request.getParameter("id"));
-		
-		List<PathElement> children = pathElementDAO.getChildren(parent);
-		
-		JSONArray nodes = new JSONArray();
-		
-		for (PathElement child : children) 
-		{
-			JSONObject childNode = getTreeNode(child);
 			
-			if (pathElementDAO.hasChildren(child))
-			{
-				childNode.put("state", "closed");
-			}
-			
-			nodes.put(childNode);
+			nodes.put(rootNode);
 		}
 		
 		return nodes.toString();
@@ -138,7 +123,9 @@ public class PathElementRestController extends AbstractRestController
 		
 		if (null != parent)
 		{
-			String name = StringUtils.isEmpty(request.getParameter("name")) ? "New Path Element" : request.getParameter("name");
+			String name = request.getParameter("name");
+			name = StringUtils.isEmpty(name) ? "New Path Element" : name;
+			
 			newElement = new PathElement();
 			newElement.setPath(name.replaceAll("\\s+", "").toLowerCase());
 			newElement.setController("defaultController");
@@ -205,5 +192,23 @@ public class PathElementRestController extends AbstractRestController
 		
 		return getTreeNode(pe).toString();
 	}	
+
+	@RequestMapping(value = "/pathElementView/{id}")
+	public String displayPathElementView(@PathVariable Integer id, Model model)
+	{
+		PathElement pathElement = pathElementDAO.getById(id);
+		pathElementService.populate(pathElement);
+		model.addAttribute("pathElement", pathElement);
+		return "/pe/pe_restPathElementView";
+	}
+
+	@RequestMapping(value = "/pathElementEdit/{id}")
+	public String displayPathElementEdit(@PathVariable Integer id, Model model)
+	{
+		PathElement pathElement = pathElementDAO.getById(id);
+		model.addAttribute("pathElement", pathElement);
+		model.addAttribute("controllers", pathElementService.getPathElementControllers());
+		return "/pe/pe_restPathElementEdit";
+	}
 
 }

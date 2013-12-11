@@ -6,7 +6,6 @@
 		
 		<script type="text/javascript">
 			app.addComponent("jsTree");
-			var treeData = [${rootElement}];
 			
 			$(document).ready(function() {
 			
@@ -20,7 +19,6 @@
 					},
 					
 					json_data : {
-						data : treeData,
 						ajax : {
 							url : "/rest/pe/treeNodes",
 							type : "GET",

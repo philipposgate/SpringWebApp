@@ -19,7 +19,7 @@
 		</tr>
 		<c:if test="${!pathElement.root}">
 		<tr>
-			<td style="vertical-align:middle">Path Element</td>
+			<td style="vertical-align:middle">Path</td>
 			<td><input type="text" name="path" value="${pathElement.path}"></td>
 		</tr>
 		<tr>
