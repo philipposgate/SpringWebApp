@@ -37,6 +37,7 @@ public abstract class AbstractHibernateDAO<T extends AbstractEntity>
 		return getById(new Integer(id));
 	}
 
+	@Transactional
 	public T getById(final Integer id)
 	{
 		Preconditions.checkArgument(id != null);
