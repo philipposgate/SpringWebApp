@@ -4,26 +4,27 @@
 <tiles:insertDefinition name="base" flush="true">
 	<tiles:putAttribute name="body">
 		
-		<script type="text/javascript">
-			$(document).ready(function(){
-			    $("input[name=j_username]").focus();
-			});
-		</script>
 		<div class="container">
 			<div class="row">
 				<div class="span6 offset3">
 					<div class="well">
 						<h1>Login</h1>
 		
-						<c:if test="${!loggedIn}">
+						<shiro:notAuthenticated>
+							<script type="text/javascript">
+								$(document).ready(function(){
+								    $("input[name=username]").focus();
+								});
+							</script>
+
 							<c:if test="${not empty error}">
-								<div class="errorFadeout"><B>${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</B></div>
+								<div class="errorFadeout"><B>Something bad happened</B></div>
 							</c:if>
 							
-							<form name="f" action="/j_spring_security_check" method="POST">
+							<form action="" method="POST">
 								<table class="table table-striped">
-									<tr><td>User:</td><td><input type="text" name="j_username"> <code>eg: 'admin' or 'user'</code></td></tr>
-									<tr><td>Password:</td><td><input type="password" name="j_password"> <code>eg: 1</code></td></tr>
+									<tr><td>User:</td><td><input type="text" name="username"> <code>eg: 'admin' or 'user'</code></td></tr>
+									<tr><td>Password:</td><td><input type="password" name="password"> <code>eg: 1</code></td></tr>
 									<tr>
 										<td colspan="2">
 											<input class="btn btn-primary btn-large" name="submit" type="submit" value="Login"/>
@@ -33,12 +34,12 @@
 									</tr>
 								</table>
 							</form>
-						</c:if>
+						</shiro:notAuthenticated>
 		
-						<c:if test="${loggedIn}">
-							<P>Dude, you're already logged in as <B><sec:authentication property="principal.username"/></B>!</P>
-							<P><a class="btn" href="/j_spring_security_logout">Logout</a></P>
-						</c:if>
+						<shiro:authenticated>
+							<P>Dude, you're already logged in as <B><shiro:principal property="username" /></B>!</P>
+							<P><a class="btn" href="/logout">Logout</a></P>
+						</shiro:authenticated>
 		
 					</div>
 				</div>

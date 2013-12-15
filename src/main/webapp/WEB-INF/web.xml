@@ -11,13 +11,8 @@
 	</listener>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/conf/root-context.xml</param-value>
+		<param-value>/WEB-INF/conf/spring-rootContext.xml</param-value>
 	</context-param>
-
-	<!-- SPRING SECURITY LISTENER -->
-	<listener>
-		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-	</listener>
 
 	<!-- WEB APPLICATION SERVLET -->
 	<servlet>
@@ -25,7 +20,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/conf/webServlet/webServlet-context.xml</param-value>
+			<param-value>/WEB-INF/conf/spring-webContext.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -40,7 +35,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/conf/restServlet/restServlet-context.xml</param-value>
+			<param-value>/WEB-INF/conf/spring-restContext.xml</param-value>
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
@@ -51,6 +46,10 @@
 	<servlet-mapping>
 		<servlet-name>restServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>restServlet</servlet-name>
+		<url-pattern>/accessDenied</url-pattern>
 	</servlet-mapping>
 
 	<!-- CKFINDER SERVLET -->
@@ -73,6 +72,20 @@
 			/assets/ckfinder/core/connector/java/connector.java
 		</url-pattern>
 	</servlet-mapping>
+
+	<!-- Shiro Security Filter -->
+	<filter>
+	    <filter-name>shiroFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	    <init-param>
+	        <param-name>targetFilterLifecycle</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>shiroFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<!-- CKFINDER FILTER -->
 	<filter>
@@ -119,15 +132,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
-	<!-- SPRING SECURITY FILTER -->
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
 	<!-- PUT FILTER -->
 	<filter>

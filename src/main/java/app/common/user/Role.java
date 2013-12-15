@@ -4,22 +4,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
 
 import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "role")
-public class Role extends AbstractEntity implements GrantedAuthority
+public class Role extends AbstractEntity
 {
 	@Column(unique = true, nullable = false)
 	private String role;
-
-	@Override
-	public String getAuthority()
-	{
-		return this.role;
-	}
 
 	public String getRole()
 	{

@@ -2,13 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:security="http://www.springframework.org/schema/security"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
-		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
@@ -27,22 +25,27 @@
 	    <!-- one of the properties available; the maximum file size in bytes -->
 	    <property name="maxUploadSize" value="1000000"/>
 	</bean>
-
-	<!-- Security Stuff -->
-	<security:authentication-manager>
-    	<security:authentication-provider user-service-ref="userDetailsService"/>
-	</security:authentication-manager>
-	<security:http auto-config="true" use-expressions="true">
-		<security:intercept-url pattern="/rest/admin/**" access="hasRole('ROLE_ADMIN')" />
-		<security:intercept-url pattern="/rest/appts/admin/**" access="hasRole('ROLE_ADMIN')" />
-		<security:intercept-url pattern="/rest/user/**" access="hasRole('ROLE_USER')" />
-		<security:form-login authentication-success-handler-ref="authenticationSuccessHandler" login-page="/login" default-target-url="/" always-use-default-target="false" authentication-failure-url="/loginError" />
-		<security:access-denied-handler error-page="/WEB-INF/jsp/app/accessDenied.jsp" />
-		<security:logout logout-success-url="/"/>
-	    <!-- security:session-management invalid-session-url="/login" /-->
-	</security:http>
-     <security:global-method-security proxy-target-class="true"/>
      
+	<!-- Shiro Security: Filter Config -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+	    <property name="securityManager" ref="securityManager"/>
+	    <property name="loginUrl" value="/login" />
+	    <property name="successUrl" value="/" />
+	    <property name="unauthorizedUrl" value="/accessDenied"/>
+	    <property name="filterChainDefinitions">
+	        <value>
+	            /admin/** = authc, roles[admin]
+	            /docs/** = authc, perms[document:read]
+	            /login = authc
+	            /logout = logout
+	        </value>
+	    </property>
+	</bean>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	    <property name="realm" ref="appRealm"/>
+	</bean>
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
 	<!-- Database Stuff -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>

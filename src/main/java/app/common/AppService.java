@@ -10,11 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import app.common.user.Role;
 import app.common.user.RoleDAO;
@@ -22,7 +18,6 @@ import app.common.user.User;
 import app.common.user.UserDAO;
 
 @Service
-@Transactional
 public class AppService implements ApplicationContextAware, InitializingBean 
 {
     private static ApplicationContext applicationContext = null;
@@ -140,23 +135,23 @@ public class AppService implements ApplicationContextAware, InitializingBean
 	public User getUserLoggedIn()
 	{
 		User user = null;
-		Authentication authentic = SecurityContextHolder.getContext()
-				.getAuthentication();
-
-		if (authentic != null)
-		{
-			user = getUserByUsername(authentic.getName());
-		}
+//		Authentication authentic = SecurityContextHolder.getContext()
+//				.getAuthentication();
+//
+//		if (authentic != null)
+//		{
+//			user = getUserByUsername(authentic.getName());
+//		}
 
 		return user;
 	}
 
 	public void setUserLoggedIn(User user)
 	{
-		Authentication authentication = new UsernamePasswordAuthenticationToken(
-				user, user.getPassword(), user.getAuthorities());
-
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		Authentication authentication = new UsernamePasswordAuthenticationToken(
+//				user, user.getPassword(), user.getAuthorities());
+//
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	public Role getRole(String roleName)
@@ -174,7 +169,8 @@ public class AppService implements ApplicationContextAware, InitializingBean
 
 	public boolean userHasRole(User user, Role role)
 	{
-		return user.getAuthorities().contains(role);
+		//return user.getAuthorities().contains(role);
+		return true;
 	}
 
 	public String getConfigValue(String key)

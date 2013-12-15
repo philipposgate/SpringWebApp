@@ -50,21 +50,21 @@
 						<li class="${pathElement.path=='appts' ? 'active' : ''}"><a href="/rest/appts/">Appointments</a></li>
 					</ul>
 					<ul class="nav pull-right">
-						<c:if test="${loggedIn}">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle"	data-toggle="dropdown"> 
-									Logged in as <B><sec:authentication	property="principal.username" /></B> <b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="/j_spring_security_logout">Logout</a></li>
-								</ul>
-							</li>
-						</c:if>
-						<c:if test="${!loggedIn}">
+						<shiro:notAuthenticated>
 							<li>
 								<a href="/login">Login</a>
 							</li>
-						</c:if>
+						</shiro:notAuthenticated>
+						<shiro:authenticated>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle"	data-toggle="dropdown"> 
+									Logged in as <B><shiro:principal property="username" /></B> <b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="/logout">Logout</a></li>
+								</ul>
+							</li>
+						</shiro:authenticated>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->

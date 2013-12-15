@@ -1,6 +1,5 @@
 package app.common.user;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,14 +13,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import app.common.AbstractEntity;
 
 @Entity
 @Table(name = "user")
-public class User extends AbstractEntity implements UserDetails
+public class User extends AbstractEntity
 {
 	@Column(unique = true, nullable = false)
 	private String username;
@@ -65,43 +61,31 @@ public class User extends AbstractEntity implements UserDetails
 		return this.firstName + " " + this.lastName;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities()
-	{
-		return this.roles;
-	}
-
-	@Override
 	public String getPassword()
 	{
 		return this.password;
 	}
 
-	@Override
 	public String getUsername()
 	{
 		return this.username;
 	}
 
-	@Override
 	public boolean isAccountNonExpired()
 	{
 		return this.accountNonExpired;
 	}
 
-	@Override
 	public boolean isAccountNonLocked()
 	{
 		return this.accountNonLocked;
 	}
 
-	@Override
 	public boolean isCredentialsNonExpired()
 	{
 		return this.credentialsNonExpired;
 	}
 
-	@Override
 	public boolean isEnabled()
 	{
 		return this.enabled;

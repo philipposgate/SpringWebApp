@@ -36,17 +36,6 @@ public class AppController extends AbstractRestController {
 	@Autowired
 	private GoogleEmailerService gmailService;
 
-	@RequestMapping(value = "/login")
-	public String login() {
-		return "/app/login";
-	}
-
-	@RequestMapping(value = "/loginError")
-	public String loginError(ModelMap model) {
-		model.addAttribute("error", "true");
-		return "/app/login";
-	}
-
 	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
 	public String userUpdate(@PathVariable String userId, Model model,
 			HttpServletRequest request) {
