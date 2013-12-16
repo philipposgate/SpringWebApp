@@ -23,7 +23,7 @@ public class PathElementHandlerMapping extends SimplePathElementHandler {
 	@Override
 	public void initApplicationContext() throws BeansException 
 	{
-		Map<String, Object> hmap = pathElementService.getUrlMap();
+		Map<String, Object> hmap = pathElementService.getUrlControllerMap();
 		this.setUrlMap(hmap);
 		
 		super.initApplicationContext();
@@ -34,9 +34,12 @@ public class PathElementHandlerMapping extends SimplePathElementHandler {
 	public void refreshUrlMappings() 
 	{
 		clearHandlers();
-		registerHandlers(pathElementService.getUrlMap());
+		registerHandlers(pathElementService.getUrlControllerMap());
 	}
 
+	/**
+	 * Returns a Map where key=controller-bean-name, and value=controller-bean-instance
+	 */
 	public Map<String, PathElementAbstractController> getPathElementControllers()
 	{
 		if (controllers.isEmpty())

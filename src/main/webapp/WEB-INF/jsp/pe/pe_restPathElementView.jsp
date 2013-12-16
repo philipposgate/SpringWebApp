@@ -24,5 +24,9 @@
 			<td>${pathElement.controllerLabel}</td>
 		</tr>
 	</c:if>
+	<tr>
+		<td>Authentication Required</td>
+		<td><span class="badge ${pathElement.authRequired ? "badge-important" : ""}">${pathElement.authRequired ? "YES" : "NO"}</span></td>
+	</tr>
 </table>
 <a class="btn btn-primary" href="javascript:void(0)" onclick="editPE(${pathElement.id})">Edit</a>

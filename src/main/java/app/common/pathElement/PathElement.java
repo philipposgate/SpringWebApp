@@ -27,7 +27,10 @@ public class PathElement extends AbstractEntity {
 	private String title;
 
 	@Column
-	private  boolean active;
+	private boolean active;
+
+	@Column
+	private boolean authRequired;
 
 	@Transient
 	private List<PathElement> children;
@@ -133,5 +136,13 @@ public class PathElement extends AbstractEntity {
 
 	public void setControllerLabel(String controllerLabel) {
 		this.controllerLabel = controllerLabel;
+	}
+
+	public boolean isAuthRequired() {
+		return authRequired;
+	}
+
+	public void setAuthRequired(boolean authRequired) {
+		this.authRequired = authRequired;
 	}
 }

@@ -18,21 +18,25 @@
 			<td><input type="text" name="title" value="${pathElement.title}"></td>
 		</tr>
 		<c:if test="${!pathElement.root}">
-		<tr>
-			<td style="vertical-align:middle">Path</td>
-			<td><input type="text" name="path" value="${pathElement.path}"></td>
-		</tr>
-		<tr>
-			<td style="vertical-align:middle">Controller</td>
-			<td>
-				<select name="controller" style="width:auto;">
-					<c:forEach var="controller" items="${controllers}">
-						<option value="${controller.key}" ${pathElement.controller == controller.key ? "selected" : ""}>${controller.value.label}</option>
-					</c:forEach>
-				</select>
-			</td>
-		</tr>
+			<tr>
+				<td style="vertical-align:middle">Path</td>
+				<td><input type="text" name="path" value="${pathElement.path}"></td>
+			</tr>
+			<tr>
+				<td style="vertical-align:middle">Controller</td>
+				<td>
+					<select name="controller" style="width:auto;">
+						<c:forEach var="controller" items="${controllers}">
+							<option value="${controller.key}" ${pathElement.controller == controller.key ? "selected" : ""}>${controller.value.label}</option>
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
 		</c:if>
+		<tr>
+			<td>Authentication Required</td>
+			<td><input type="checkbox" name="authRequired" ${pathElement.authRequired ? "checked" : ""} /></td>
+		</tr>
 	</table>
 </form>
 <a class="btn btn-primary" href="javascript:void(0)" onclick="savePE(${pathElement.id})">Save</a>

@@ -4,11 +4,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
+import org.apache.shiro.web.filter.mgt.FilterChainManager;
+import org.apache.shiro.web.filter.mgt.NamedFilterList;
+import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UrlPathHelper;
@@ -22,6 +32,9 @@ public class PathElementService implements InitializingBean   {
 	@Autowired
 	private PathElementDAO pathElementDAO;
 	
+	@Autowired
+	private AbstractShiroFilter shiroFilter;
+	
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
 	private PathElementHandlerMapping pathElementHandlerMapping;
@@ -33,8 +46,6 @@ public class PathElementService implements InitializingBean   {
 	@Override
 	public void afterPropertiesSet() throws Exception 
 	{
-		if (null != pathElementDAO)
-		{
 		rootElement = pathElementDAO.getRootPathElement();
 		
 		if (null == rootElement)
@@ -62,28 +73,29 @@ public class PathElementService implements InitializingBean   {
 		}
 		
 		pathElementDAO.populateChildren(rootElement);
-		}
+		
+		resetSecurityFilters();
 	}
 	
-	public Map<String, PathElement> getPathElementMap()
+	public Map<String, PathElement> getUrlPathElementMap()
 	{
 		if (pathElementMap.isEmpty())
 		{
 			PathElement rootElement = getRootElement();
 			for (PathElement child : rootElement.getChildren())
 			{
-				populatePathElementMap(child);
+				populateUrlPathElementMap(child);
 			}
 		}
 		return Collections.unmodifiableMap(pathElementMap);
 	}
 
-	private void populatePathElementMap(PathElement pathElement) 
+	private void populateUrlPathElementMap(PathElement pathElement) 
 	{
 		pathElementMap.put(pathElement.getFullPath(), pathElement);
 		for (PathElement child : pathElement.getChildren())
 		{
-			populatePathElementMap(child);
+			populateUrlPathElementMap(child);
 		}
 	}
 
@@ -96,7 +108,7 @@ public class PathElementService implements InitializingBean   {
 		return rootElement;
 	}
 
-	public Map<String, Object> getUrlMap() 
+	public Map<String, Object> getUrlControllerMap() 
 	{
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		PathElement root = getRootElement();
@@ -105,14 +117,14 @@ public class PathElementService implements InitializingBean   {
 		{
 			for (PathElement child : root.getChildren())
 			{
-				populateUrlMap(map, child);
+				populateUrlControllerMap(map, child);
 			}
 		}
 
 		return map;
 	}
 
-	private void populateUrlMap(Map<String, Object> map, PathElement pathElement) {
+	private void populateUrlControllerMap(Map<String, Object> map, PathElement pathElement) {
 
 		String urlPath = pathElement.getFullPath();
 		map.put(urlPath, pathElement.getController());
@@ -121,7 +133,7 @@ public class PathElementService implements InitializingBean   {
 		{
 			for (PathElement child : pathElement.getChildren())
 			{
-				populateUrlMap(map, child);
+				populateUrlControllerMap(map, child);
 			}
 		}
 	}
@@ -131,6 +143,38 @@ public class PathElementService implements InitializingBean   {
 		rootElement = null;
 		pathElementMap.clear();
 		pathElementHandlerMapping.refreshUrlMappings();
+		resetSecurityFilters();
+	}
+
+	private void resetSecurityFilters() 
+	{
+		Map<String, NamedFilterList> newfilterChains = new LinkedHashMap<String, NamedFilterList>();
+		
+		PathMatchingFilterChainResolver chainResolver = (PathMatchingFilterChainResolver) this.shiroFilter.getFilterChainResolver();
+		DefaultFilterChainManager filterChainManager = (DefaultFilterChainManager)chainResolver.getFilterChainManager();
+		
+		for (String chainName : filterChainManager.getChainNames())
+		{
+			if (!chainName.endsWith(".htm"))
+			{
+				newfilterChains.put(chainName, filterChainManager.getChain(chainName));
+			}
+		}
+		 
+		filterChainManager.setFilterChains(newfilterChains);
+
+		for (Map.Entry<String, PathElement> e : getUrlPathElementMap().entrySet())
+		{
+			if (e.getValue().isAuthRequired())
+			{
+				filterChainManager.addToChain(e.getKey(), "authc");
+			}
+		}
+		
+		for (String chainName : filterChainManager.getChainNames())
+		{
+			System.out.println(chainName);
+		}
 	}
 
 	public void setPathElementHandlerMapping(PathElementHandlerMapping pathElementHandlerMapping) 
@@ -143,7 +187,7 @@ public class PathElementService implements InitializingBean   {
 
 	public PathElement getPathElement(HttpServletRequest request)
 	{
-		return getPathElementMap().get(urlPathHelper.getLookupPathForRequest(request));
+		return getUrlPathElementMap().get(urlPathHelper.getLookupPathForRequest(request));
 	}
 	
 	public Map<String, PathElementAbstractController> getPathElementControllers()
@@ -163,4 +207,5 @@ public class PathElementService implements InitializingBean   {
 			pathElement.setControllerLabel(pathElement.getController());
 		}
 	}
+
 }

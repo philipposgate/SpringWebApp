@@ -132,6 +132,7 @@ public class PathElementRestController extends AbstractRestController
 			newElement.setParent(parent);
 			newElement.setTitle(name);
 			newElement.setActive(true);
+			newElement.setAuthRequired(true);
 			pathElementDAO.create(newElement);
 			
 			pathElementService.refreshUrlMappings();
@@ -179,6 +180,13 @@ public class PathElementRestController extends AbstractRestController
 			if (!StringUtils.isEmpty(controller) && !controller.equals(pe.getController()))
 			{
 				pe.setController(controller);
+				updated = true;
+			}
+
+			boolean authRequired = null != request.getParameter("authRequired");
+			if (authRequired ^ pe.isAuthRequired())
+			{
+				pe.setAuthRequired(authRequired);
 				updated = true;
 			}
 			
