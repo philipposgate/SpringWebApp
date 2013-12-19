@@ -86,7 +86,7 @@ public class AppService implements ApplicationContextAware, InitializingBean
 
 			userDAO.create(adminUser);
 
-			adminUser.getRoles().add(userRole);
+			// adminUser.getRoles().add(userRole);
 			adminUser.getRoles().add(adminRole);
 
 			userDAO.update(adminUser);

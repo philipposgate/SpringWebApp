@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UrlPathHelper;
 
+import app.common.shiro.AnyRolesAuthorizationFilter;
 import app.common.user.Role;
 import app.common.user.RoleDAO;
 import app.web.PathElementAbstractController;
@@ -52,6 +53,9 @@ public class PathElementService implements InitializingBean
 
     @Autowired
     private AbstractShiroFilter shiroFilter;
+    
+    @Autowired
+    private AnyRolesAuthorizationFilter anyRoles;
 
     private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
@@ -203,10 +207,10 @@ public class PathElementService implements InitializingBean
                     rString += i.next().getRole();
                     if (i.hasNext())
                     {
-                        rString += ", ";
+                        rString += ",";
                     }
                 }
-                filterChainManager.addToChain(peURL, "roles", rString);
+                filterChainManager.addToChain(peURL, "anyRoles", rString);
             }
         }
 
@@ -237,7 +241,6 @@ public class PathElementService implements InitializingBean
                         sb.append("[");
                         for (int j = 0; j < roles.length; j++)
                         {
-                            //System.out.println(roles[j]);
                             sb.append(roles[j].toString());
                             if (j < roles.length -1)
                             {

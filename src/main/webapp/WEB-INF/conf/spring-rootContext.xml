@@ -32,11 +32,16 @@
 	    <property name="loginUrl" value="/login" />
 	    <property name="successUrl" value="/" />
 	    <property name="unauthorizedUrl" value="/accessDenied"/>
+	    <property name="filters">
+	    	<util:map>
+	    		<entry key="anyRoles" value-ref="anyRolesAuthorizationFilter" />
+	    	</util:map>
+	    </property>
 	    <property name="filterChainDefinitions">
 	        <value>
 	            /login = authc
 	            /logout = logout
-	        	/rest/pe/** = authc, roles[ROLE_ADMIN]
+	        	/rest/pe/** = authc, anyRoles[ROLE_ADMIN]
 	        </value>
 	    </property>
 	</bean>
