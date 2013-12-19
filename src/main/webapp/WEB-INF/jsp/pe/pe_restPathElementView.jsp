@@ -38,7 +38,7 @@
 				</c:forEach>
 			</c:if>
 			<c:if test="${empty activeRoles}">
-				none
+				<span class="label">NONE</span>
 			</c:if>
 		</td>
 	</tr>
