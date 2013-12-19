@@ -40,6 +40,11 @@
 		<tr>
 			<td>Required User Role(s)</td>
 			<td>
+				<div style="margin-bottom:5px;">
+					<input type="radio" name="allRolesRequired" value="false" ${!pathElement.allRolesRequired ? "checked" : ""} style="margin-top:-4px;" /> Any
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="radio" name="allRolesRequired" value="true" ${pathElement.allRolesRequired ? "checked" : ""} style="margin-top:-4px;" /> All
+				</div>
 				<select size="6" name="roleId" multiple="multiple">
 					<c:forEach var="rm" items="${roleMap}">
 						<option value="${rm.key.id}" ${rm.value ? "selected" : ""}>${rm.key.role}</option>

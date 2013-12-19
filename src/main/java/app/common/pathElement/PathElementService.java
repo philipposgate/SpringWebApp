@@ -53,7 +53,7 @@ public class PathElementService implements InitializingBean
 
     @Autowired
     private AbstractShiroFilter shiroFilter;
-    
+
     @Autowired
     private AnyRolesAuthorizationFilter anyRoles;
 
@@ -210,7 +210,15 @@ public class PathElementService implements InitializingBean
                         rString += ",";
                     }
                 }
-                filterChainManager.addToChain(peURL, "anyRoles", rString);
+                
+                if (pathElement.isAllRolesRequired())
+                {
+                    filterChainManager.addToChain(peURL, "roles", rString);
+                }
+                else
+                {
+                    filterChainManager.addToChain(peURL, "anyRoles", rString);
+                }
             }
         }
 
@@ -232,17 +240,21 @@ public class PathElementService implements InitializingBean
 
                 if (f instanceof RolesAuthorizationFilter)
                 {
+                    /* Here we must use java-reflection to access the
+                     * "appliedPaths" private property of the Filter (f) so that
+                     * we can capture the authorization "role names" for the
+                     * log-output. */
                     try
                     {
                         Field field = PathMatchingFilter.class.getDeclaredField("appliedPaths");
                         field.setAccessible(true);
-                        Map map = (Map)field.get(f);
-                        String[] roles = (String[])map.get(chainName);
+                        Map map = (Map) field.get(f);
+                        String[] roles = (String[]) map.get(chainName);
                         sb.append("[");
                         for (int j = 0; j < roles.length; j++)
                         {
                             sb.append(roles[j].toString());
-                            if (j < roles.length -1)
+                            if (j < roles.length - 1)
                             {
                                 sb.append(", ");
                             }
@@ -254,7 +266,7 @@ public class PathElementService implements InitializingBean
                         e.printStackTrace();
                     }
                 }
-                
+
                 if (i.hasNext())
                 {
                     sb.append(", ");

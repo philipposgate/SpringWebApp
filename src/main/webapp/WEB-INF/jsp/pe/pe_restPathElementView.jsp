@@ -26,14 +26,15 @@
 	</c:if>
 	<tr>
 		<td>Authentication Required</td>
-		<td><span class="badge ${pathElement.authRequired ? "badge-important" : ""}">${pathElement.authRequired ? "YES" : "NO"}</span></td>
+		<td><span class="label ${pathElement.authRequired ? "label-inverse" : ""}">${pathElement.authRequired ? "YES" : "NO"}</span></td>
 	</tr>
 	<tr>
 		<td>Required User Role(s)</td>
 		<td>
 			<c:if test="${not empty activeRoles}">
+				${pathElement.allRolesRequired ? "All: " : "Any: "}
 				<c:forEach var="r" items="${activeRoles}">
-					<span class="label">${r.role}</span>
+					<span class="label label-inverse">${r.role}</span>
 				</c:forEach>
 			</c:if>
 			<c:if test="${empty activeRoles}">

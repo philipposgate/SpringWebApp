@@ -165,11 +165,13 @@ public class PathElementRestController extends AbstractRestController
             String path = request.getParameter("path");
             String controller = request.getParameter("controller");
             boolean authRequired = null != request.getParameter("authRequired");
+            boolean allRolesRequired = "true".equalsIgnoreCase(request.getParameter("allRolesRequired"));
 
             pe.setTitle(title);
             pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
             pe.setController(controller);
             pe.setAuthRequired(authRequired);
+            pe.setAllRolesRequired(allRolesRequired);
 
             pathElementDAO.update(pe);
             

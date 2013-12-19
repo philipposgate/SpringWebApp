@@ -32,6 +32,9 @@ public class PathElement extends AbstractEntity {
 	@Column
 	private boolean authRequired;
 
+    @Column
+    private boolean allRolesRequired;
+
 	@Transient
 	private List<PathElement> children;
 
@@ -145,4 +148,14 @@ public class PathElement extends AbstractEntity {
 	public void setAuthRequired(boolean authRequired) {
 		this.authRequired = authRequired;
 	}
+
+    public boolean isAllRolesRequired()
+    {
+        return allRolesRequired;
+    }
+
+    public void setAllRolesRequired(boolean allRolesRequired)
+    {
+        this.allRolesRequired = allRolesRequired;
+    }
 }
