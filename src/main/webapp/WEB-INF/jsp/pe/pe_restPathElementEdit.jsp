@@ -37,6 +37,17 @@
 			<td>Authentication Required</td>
 			<td><input type="checkbox" name="authRequired" ${pathElement.authRequired ? "checked" : ""} /></td>
 		</tr>
+		<tr>
+			<td>Required User Role(s)</td>
+			<td>
+				<select size="6" name="roleId" multiple="multiple">
+					<c:forEach var="rm" items="${roleMap}">
+						<option value="${rm.key.id}" ${rm.value ? "selected" : ""}>${rm.key.role}</option>
+					</c:forEach>
+				</select>
+				<BR><a href="javascript:void(0)" class="btn btn-mini" onclick="$('option:selected', 'select[name=roleId]').removeAttr('selected')">clear</a>
+			</td>
+		</tr>
 	</table>
 </form>
 <a class="btn btn-primary" href="javascript:void(0)" onclick="savePE(${pathElement.id})">Save</a>

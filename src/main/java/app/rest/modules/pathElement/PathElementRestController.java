@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import app.common.pathElement.PathElement;
 import app.common.pathElement.PathElementDAO;
+import app.common.pathElement.PathElementRole;
 import app.common.pathElement.PathElementService;
 import app.common.utils.StringUtils;
 import app.rest.AbstractRestController;
@@ -25,198 +26,179 @@ import app.rest.AbstractRestController;
 @RequestMapping(value = "pe")
 public class PathElementRestController extends AbstractRestController
 {
-	@Autowired
-	private PathElementDAO pathElementDAO;
-	
-	@Autowired
-	private PathElementService pathElementService;
-	
-	@RequestMapping(value = "/")
-	public String displayHome(Model model)
-	{
-		return "/pe/pe_restHome";
-	}
+    @Autowired
+    private PathElementDAO pathElementDAO;
 
-	@RequestMapping(value = "/treeNodes", method=RequestMethod.GET)
-	@ResponseBody
-	public String getTreeNodes(HttpServletRequest request) throws Exception
-	{
-		JSONArray nodes = new JSONArray();
+    @Autowired
+    private PathElementService pathElementService;
 
-		Integer id = new Integer(request.getParameter("id"));
-		
-		if (id > 0)
-		{
-			// Return children of node...
-			PathElement node = pathElementDAO.getById(id);
-			
-			List<PathElement> children = pathElementDAO.getChildren(node);
-			
-			for (PathElement child : children) 
-			{
-				JSONObject childNode = getTreeNode(child);
-				
-				if (pathElementDAO.hasChildren(child))
-				{
-					childNode.put("state", "closed");
-				}
-				
-				nodes.put(childNode);
-			}
-		}
-		else
-		{
-			// Return root-node plus root's children...
-			PathElement rootElement = pathElementService.getRootElement();
-			JSONObject rootNode = getTreeNode(rootElement);
+    @RequestMapping(value = "/")
+    public String displayHome(Model model)
+    {
+        return "/pe/pe_restHome";
+    }
 
-			if (!rootElement.isLeaf())
-			{
-				rootNode.put("state", "open");
+    @RequestMapping(value = "/treeNodes", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTreeNodes(HttpServletRequest request) throws Exception
+    {
+        JSONArray nodes = new JSONArray();
 
-				JSONArray children = new JSONArray();
+        Integer id = new Integer(request.getParameter("id"));
 
-				for (PathElement child : rootElement.getChildren())
-				{
-					JSONObject childNode = getTreeNode(child);
+        if (id > 0)
+        {
+            // Return children of node...
+            PathElement node = pathElementDAO.getById(id);
 
-					if (!child.isLeaf())
-					{
-						childNode.put("state", "closed");
-					}
-					
-					children.put(childNode);
-				}
-				
-				rootNode.put("children", children);
-			}
-			
-			nodes.put(rootNode);
-		}
-		
-		return nodes.toString();
-	}
-	
-	private JSONObject getTreeNode(PathElement pe)
-	{
-		JSONObject node = new JSONObject();
-		try 
-		{
-			node.put("data", pe.getTitle());
-			
-			JSONObject attr = new JSONObject();
-			attr.put("id", pe.getId());
-			node.put("attr", attr);
-		} 
-		catch (Exception e) 
-		{
-		}
-		return node;
-	}
-	
-	@RequestMapping(value = "/treeNode", method=RequestMethod.POST)
-	@ResponseBody
-	public String createTreeNode(HttpServletRequest request) throws Exception
-	{
-		PathElement parent = pathElementDAO.getById(request.getParameter("parentId"));
-		PathElement newElement = null;
-		
-		if (null != parent)
-		{
-			String name = request.getParameter("name");
-			name = StringUtils.isEmpty(name) ? "New Path Element" : name;
-			
-			newElement = new PathElement();
-			newElement.setPath(name.replaceAll("\\s+", "").toLowerCase());
-			newElement.setController("defaultController");
-			newElement.setParent(parent);
-			newElement.setTitle(name);
-			newElement.setActive(true);
-			newElement.setAuthRequired(true);
-			pathElementDAO.create(newElement);
-			
-			pathElementService.refreshUrlMappings();
-		}
+            List<PathElement> children = pathElementDAO.getChildren(node);
 
-		return getTreeNode(newElement).toString();
-	}
-	
-	@RequestMapping(value = "/treeNode/{id}", method=RequestMethod.DELETE)
-	@ResponseBody
-	public String deleteTreeNode(@PathVariable Integer id) throws Exception
-	{
-		PathElement pe = pathElementDAO.getById(id);
-		pe.setActive(false);
-		pathElementDAO.update(pe);
-		pathElementService.refreshUrlMappings();
-		return "success";
-	}
+            for (PathElement child : children)
+            {
+                JSONObject childNode = getTreeNode(child);
 
-	@RequestMapping(value = "/pathElement/{id}", method=RequestMethod.PUT)
-	@ResponseBody
-	public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception
-	{
-		PathElement pe = pathElementDAO.getById(id);
-		
-		if (null != pe)
-		{
-			boolean updated = false;
-			
-			String title = request.getParameter("title");
-			if (!StringUtils.isEmpty(title) && !title.equals(pe.getTitle()))
-			{
-				pe.setTitle(title);
-				updated = true;
-			}
-			
-			String path = request.getParameter("path");
-			if (!StringUtils.isEmpty(path) && !path.equals(pe.getPath()))
-			{
-				pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
-				updated = true;
-			}
-			
-			String controller = request.getParameter("controller");
-			if (!StringUtils.isEmpty(controller) && !controller.equals(pe.getController()))
-			{
-				pe.setController(controller);
-				updated = true;
-			}
+                if (pathElementDAO.hasChildren(child))
+                {
+                    childNode.put("state", "closed");
+                }
 
-			boolean authRequired = null != request.getParameter("authRequired");
-			if (authRequired ^ pe.isAuthRequired())
-			{
-				pe.setAuthRequired(authRequired);
-				updated = true;
-			}
-			
-			if (updated)
-			{
-				pathElementDAO.update(pe);
-				pathElementService.refreshUrlMappings();
-			}
-			
-		}
-		
-		return getTreeNode(pe).toString();
-	}	
+                nodes.put(childNode);
+            }
+        }
+        else
+        {
+            // Return root-node plus root's children...
+            PathElement rootElement = pathElementService.getRootElement();
+            JSONObject rootNode = getTreeNode(rootElement);
 
-	@RequestMapping(value = "/pathElementView/{id}")
-	public String displayPathElementView(@PathVariable Integer id, Model model)
-	{
-		PathElement pathElement = pathElementDAO.getById(id);
-		pathElementService.populate(pathElement);
-		model.addAttribute("pathElement", pathElement);
-		return "/pe/pe_restPathElementView";
-	}
+            if (!rootElement.isLeaf())
+            {
+                rootNode.put("state", "open");
 
-	@RequestMapping(value = "/pathElementEdit/{id}")
-	public String displayPathElementEdit(@PathVariable Integer id, Model model)
-	{
-		PathElement pathElement = pathElementDAO.getById(id);
-		model.addAttribute("pathElement", pathElement);
-		model.addAttribute("controllers", pathElementService.getPathElementControllers());
-		return "/pe/pe_restPathElementEdit";
-	}
+                JSONArray children = new JSONArray();
+
+                for (PathElement child : rootElement.getChildren())
+                {
+                    JSONObject childNode = getTreeNode(child);
+
+                    if (!child.isLeaf())
+                    {
+                        childNode.put("state", "closed");
+                    }
+
+                    children.put(childNode);
+                }
+
+                rootNode.put("children", children);
+            }
+
+            nodes.put(rootNode);
+        }
+
+        return nodes.toString();
+    }
+
+    private JSONObject getTreeNode(PathElement pe)
+    {
+        JSONObject node = new JSONObject();
+        try
+        {
+            node.put("data", pe.getTitle());
+
+            JSONObject attr = new JSONObject();
+            attr.put("id", pe.getId());
+            node.put("attr", attr);
+        }
+        catch (Exception e)
+        {
+        }
+        return node;
+    }
+
+    @RequestMapping(value = "/treeNode", method = RequestMethod.POST)
+    @ResponseBody
+    public String createTreeNode(HttpServletRequest request) throws Exception
+    {
+        PathElement parent = pathElementDAO.getById(request.getParameter("parentId"));
+        PathElement newElement = null;
+
+        if (null != parent)
+        {
+            String name = request.getParameter("name");
+            name = StringUtils.isEmpty(name) ? "New Path Element" : name;
+
+            newElement = new PathElement();
+            newElement.setPath(name.replaceAll("\\s+", "").toLowerCase());
+            newElement.setController("defaultController");
+            newElement.setParent(parent);
+            newElement.setTitle(name);
+            newElement.setActive(true);
+            newElement.setAuthRequired(true);
+            pathElementDAO.create(newElement);
+
+            pathElementService.refreshUrlMappings();
+        }
+
+        return getTreeNode(newElement).toString();
+    }
+
+    @RequestMapping(value = "/treeNode/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String deleteTreeNode(@PathVariable Integer id) throws Exception
+    {
+        PathElement pe = pathElementDAO.getById(id);
+        pe.setActive(false);
+        pathElementDAO.update(pe);
+        pathElementService.refreshUrlMappings();
+        return "success";
+    }
+
+    @RequestMapping(value = "/pathElement/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception
+    {
+        PathElement pe = pathElementDAO.getById(id);
+
+        if (null != pe)
+        {
+            String title = request.getParameter("title");
+            String path = request.getParameter("path");
+            String controller = request.getParameter("controller");
+            boolean authRequired = null != request.getParameter("authRequired");
+
+            pe.setTitle(title);
+            pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
+            pe.setController(controller);
+            pe.setAuthRequired(authRequired);
+
+            pathElementDAO.update(pe);
+            
+            String roleIds[] = request.getParameterValues("roleId");
+            pathElementService.updatePathElementRoles(pe, roleIds);
+            pathElementService.refreshUrlMappings();
+        }
+
+        return getTreeNode(pe).toString();
+    }
+
+    @RequestMapping(value = "/pathElementView/{id}")
+    public String displayPathElementView(@PathVariable Integer id, Model model)
+    {
+        PathElement pathElement = pathElementDAO.getById(id);
+        pathElementService.populate(pathElement);
+        model.addAttribute("pathElement", pathElement);
+        model.addAttribute("activeRoles", pathElementService.getPathElementRoleDAO().getRoles(pathElement));
+        return "/pe/pe_restPathElementView";
+    }
+
+    @RequestMapping(value = "/pathElementEdit/{id}")
+    public String displayPathElementEdit(@PathVariable Integer id, Model model)
+    {
+        PathElement pathElement = pathElementDAO.getById(id);
+        model.addAttribute("pathElement", pathElement);
+        model.addAttribute("controllers", pathElementService.getPathElementControllers());
+        model.addAttribute("roleMap", pathElementService.getPathElementRoleMap(pathElement));
+        return "/pe/pe_restPathElementEdit";
+    }
 
 }

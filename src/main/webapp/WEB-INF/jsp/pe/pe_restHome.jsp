@@ -86,11 +86,10 @@
 
 			function savePE(id)
 			{
-				var data = $("form#pathElementForm", "#pathElementPanel").serializeFormToObject(); 
 		        $.ajax({
 		            url: "/rest/pe/pathElement/" + id, 
 		            type: "PUT",
-		            data: data,
+		            data: $("form#pathElementForm", "#pathElementPanel").serialize(),
 		            success: function (result) {
 		            	var node = $.parseJSON(result);
 		            	$("#peTree").jstree("rename_node", "#" + id, node.data);
