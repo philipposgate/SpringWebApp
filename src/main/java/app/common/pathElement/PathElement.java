@@ -41,6 +41,12 @@ public class PathElement extends AbstractEntity {
 	@Transient
 	private String controllerLabel;
 	
+    @Override
+	public String toString()
+    {
+        return super.toString() + " " + getFullPath();
+    }
+	
 	@Transient
 	public boolean isRoot()
 	{

@@ -100,7 +100,7 @@
 
 		</script>
 		
-		<h1>Web Content Management</h1>
+		<h1><img class="img-rounded" src="/assets/images/classy_mustach_dude.jpg" style="max-height:50px;"> Web Content Management</h1>
 		
 		<div class="content-fluid">
 			<div class="row-fluid">

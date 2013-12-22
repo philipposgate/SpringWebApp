@@ -26,6 +26,14 @@
 	    <property name="maxUploadSize" value="1000000"/>
 	</bean>
      
+	<!-- Tiles 3 Configurer -->
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" >
+	    <property name="definitions">
+	        <value>/WEB-INF/conf/tiles.xml</value>
+	    </property>
+	    <property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory" />
+	</bean>
+     
 	<!-- Shiro Security: Filter Config -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 	    <property name="securityManager" ref="securityManager"/>

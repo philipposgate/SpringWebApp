@@ -3,7 +3,8 @@
 <tiles-definitions>
 
 	<!-- BASE TEMPLATE -->
-    <definition name="base" template="/WEB-INF/tiles/base.jsp">
+    <definition name="base" template="/WEB-INF/jsp/templates/base.jsp" preparer="baseTemplateViewPreparer" >
+        <put-attribute name="header" value="/WEB-INF/jsp/templates/baseHeader.jsp" />
         <put-attribute name="body" value="" />
     </definition>
     <definition name="*" extends="base">

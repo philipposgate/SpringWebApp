@@ -5,29 +5,26 @@
 		<h1>${empty pathElement.title ? "Default Controller" : pathElement.title}</h1>
 	</div>
 	<div class="span1">
-		<img class="img-rounded pull-right" src="/assets/images/classy_mustach_dude.jpg" style="max-height:50px;">
+		<a href="/rest/pe/"><img class="img-rounded pull-right" src="/assets/images/classy_mustach_dude.jpg" style="max-height:50px;"></a>
 	</div>
 </div>
 
 <div class="well well-small">
-	<B>Path Element Info</B><BR>
 	<table class="table table-condensed">
 		<thead>
 		<tr>
-			<th>ID</th>
 			<th>Title</th>
-			<th>Path Element</th>
-			<th>Full URL</th>
+			<th>URL</th>
 			<th>Controller</th>
+			<th>Path Element ID</th>
 		</tr>
 		</thead>
 		<tbody>
 		<tr>
-			<td>${pathElement.id}</td>
 			<td>${pathElement.title}</td>
-			<td>${pathElement.path}</td>
 			<td><a href="${pathElement.fullPath}">${pathElement.fullPath}</a></td>
 			<td>${pathElement.controller}</td>
+			<td>${pathElement.id}</td>
 		</tr>
 		</tbody>
 	</table>

@@ -20,7 +20,6 @@ public class HomeController extends PathElementAbstractController {
             HttpServletResponse response) {
     	logger.info("displayHome");
         ModelAndView mv = new ModelAndView("home/home");
-        mv.addObject("homeNav", "home");
         return mv;
     }
 
