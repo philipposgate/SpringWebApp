@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
@@ -15,32 +14,31 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
-import org.apache.shiro.web.filter.mgt.FilterChainManager;
 import org.apache.shiro.web.filter.mgt.NamedFilterList;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UrlPathHelper;
 
 import app.common.shiro.AnyRolesAuthorizationFilter;
 import app.common.user.Role;
 import app.common.user.RoleDAO;
+import app.common.user.User;
+import app.common.user.UserService;
 import app.web.PathElementAbstractController;
 import app.web.PathElementHandlerMapping;
-import app.web.modules.home.HomeController;
 
 @Service
 public class PathElementService implements InitializingBean
 {
     private static final Logger logger = LoggerFactory.getLogger(PathElementService.class);
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PathElementDAO pathElementDAO;
@@ -196,28 +194,28 @@ public class PathElementService implements InitializingBean
             if (pathElement.isAuthRequired())
             {
                 filterChainManager.addToChain(peURL, "authc");
-            }
 
-            List<Role> roles = getPathElementRoleDAO().getRoles(pathElement);
-            if (!roles.isEmpty())
-            {
-                String rString = "";
-                for (Iterator<Role> i = roles.iterator(); i.hasNext();)
+                List<Role> roles = getPathElementRoleDAO().getRoles(pathElement);
+                if (!roles.isEmpty())
                 {
-                    rString += i.next().getRole();
-                    if (i.hasNext())
+                    String rString = "";
+                    for (Iterator<Role> i = roles.iterator(); i.hasNext();)
                     {
-                        rString += ",";
+                        rString += i.next().getRole();
+                        if (i.hasNext())
+                        {
+                            rString += ",";
+                        }
                     }
-                }
-                
-                if (pathElement.isAllRolesRequired())
-                {
-                    filterChainManager.addToChain(peURL, "roles", rString);
-                }
-                else
-                {
-                    filterChainManager.addToChain(peURL, "anyRoles", rString);
+
+                    if (pathElement.isAllRolesRequired())
+                    {
+                        filterChainManager.addToChain(peURL, "roles", rString);
+                    }
+                    else
+                    {
+                        filterChainManager.addToChain(peURL, "anyRoles", rString);
+                    }
                 }
             }
         }
@@ -240,10 +238,12 @@ public class PathElementService implements InitializingBean
 
                 if (f instanceof RolesAuthorizationFilter)
                 {
-                    /* Here we must use java-reflection to access the
+                    /*
+                     * Here we must use java-reflection to access the
                      * "appliedPaths" private property of the Filter (f) so that
                      * we can capture the authorization "role names" for the
-                     * log-output. */
+                     * log-output.
+                     */
                     try
                     {
                         Field field = PathMatchingFilter.class.getDeclaredField("appliedPaths");
@@ -350,6 +350,31 @@ public class PathElementService implements InitializingBean
     public PathElementRoleDAO getPathElementRoleDAO()
     {
         return pathElementRoleDAO;
+    }
+
+    public boolean isUserAllowed(User user, PathElement pathElement)
+    {
+        boolean userCanAccess = false;
+
+        if (null != pathElement && pathElement.isActive())
+        {
+            userCanAccess = !pathElement.isAuthRequired() || null != user;
+
+            if (userCanAccess && null != pathElement.getRoles() && !pathElement.getRoles().isEmpty())
+            {
+                if (pathElement.isAllRolesRequired())
+                {
+                    userCanAccess = userService.userHasAllRoles(user, pathElement.getRoles());
+                }
+                else
+                {
+                    userCanAccess = userService.userHasAnyRoles(user, pathElement.getRoles());
+                }
+            }
+
+        }
+
+        return userCanAccess;
     }
 
 }

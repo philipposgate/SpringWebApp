@@ -20,6 +20,7 @@ import app.common.AppService;
 import app.common.ByteArrayDownloadView;
 import app.common.PageContent;
 import app.common.user.User;
+import app.common.user.UserService;
 
 public abstract class AbstractRestController
 {
@@ -27,6 +28,9 @@ public abstract class AbstractRestController
 
 	@Autowired
 	protected AppService appService;
+
+   @Autowired
+    protected UserService userService;
 
 	@Autowired
 	protected ServletContext servletContext;
@@ -145,10 +149,10 @@ public abstract class AbstractRestController
 		}
 
 		String pageContentAction = request.getParameter("pageContentAction");
-		User userLoggedIn = appService.getUserLoggedIn();
+		User userLoggedIn = userService.getUserLoggedIn();
 
 		if (pageContentAction != null && userLoggedIn != null
-				&& userLoggedIn.hasRole(AppService.ROLE_ADMIN))
+				&& userService.userHasRole(userLoggedIn, UserService.ROLE_ADMIN))
 		{
 			if (pageContentAction.equalsIgnoreCase("edit"))
 			{

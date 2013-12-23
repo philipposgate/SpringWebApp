@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import app.common.AbstractEntity;
+import app.common.user.Role;
 
 @Entity
 @Table(name = "path_element")
@@ -35,6 +36,12 @@ public class PathElement extends AbstractEntity {
     @Column
     private boolean allRolesRequired;
 
+    @Column
+    private boolean hideNavWhenUnauthorized;
+    
+    @Transient
+    private List<Role> roles;
+    
 	@Transient
 	private List<PathElement> children;
 
@@ -163,5 +170,25 @@ public class PathElement extends AbstractEntity {
     public void setAllRolesRequired(boolean allRolesRequired)
     {
         this.allRolesRequired = allRolesRequired;
+    }
+
+    public boolean isHideNavWhenUnauthorized()
+    {
+        return hideNavWhenUnauthorized;
+    }
+
+    public void setHideNavWhenUnauthorized(boolean hideNavWhenUnauthorized)
+    {
+        this.hideNavWhenUnauthorized = hideNavWhenUnauthorized;
+    }
+
+    public List<Role> getRoles()
+    {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles)
+    {
+        this.roles = roles;
     }
 }

@@ -9,6 +9,18 @@
 			
 			$(document).ready(function() {
 			
+				$(document).on("click", "input[name=authRequired]", function() {
+					if ($(this).is(":checked"))
+						$(".securityConfig").removeClass("hidden");
+					else
+						$(".securityConfig").addClass("hidden");
+				});
+				
+				initTree();
+			});
+
+			function initTree()
+			{
 				$("#peTree").jstree({
 					plugins : [ "themes", "json_data", "ui", "crrm", "contextmenu" ],
 					
@@ -72,8 +84,8 @@
 			            type: "DELETE"
 			        });
 			    });
-			});
-
+			}
+			
 			function viewPE(id)
 			{
 				$("#pathElementPanel").load("/rest/pe/pathElementView/" + id);
@@ -105,12 +117,12 @@
 		<div class="content-fluid">
 			<div class="row-fluid">
 				<div class="span4">
-					<div class="well well-small"><B>Path Element Tree</B></div>
+					<div class="well well-small"><B>Web Content Tree</B></div>
 					<div id="peTree"></div>
 					<BR>
 				</div>
 				<div class="span8">
-					<div class="well well-small"><B>Path Element Details</B></div>
+					<div class="well well-small"><B>Content Element Configuration</B></div>
 					<div id="pathElementPanel"></div>
 				</div>
 			</div>

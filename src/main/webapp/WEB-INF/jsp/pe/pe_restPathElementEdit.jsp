@@ -34,10 +34,14 @@
 			</tr>
 		</c:if>
 		<tr>
-			<td>Authentication Required</td>
+			<td>Login Required</td>
 			<td><input type="checkbox" name="authRequired" ${pathElement.authRequired ? "checked" : ""} /></td>
 		</tr>
-		<tr>
+		<tr class="securityConfig ${!pathElement.authRequired ? 'hidden' : ''}">
+			<td>Hide Nav-Menu before login</td>
+			<td><input type="checkbox" name="hideNavWhenUnauthorized" ${pathElement.hideNavWhenUnauthorized ? "checked" : ""} /></td>
+		</tr>
+		<tr class="securityConfig ${!pathElement.authRequired ? 'hidden' : ''}">
 			<td>Required User Role(s)</td>
 			<td>
 				<div style="margin-bottom:5px;">

@@ -2,6 +2,7 @@ package app.common.pathElement;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,10 @@ import com.google.common.base.Preconditions;
 @Transactional
 public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 {
+
+    @Autowired
+    private PathElementRoleDAO pathElementRoleDAO;
+
 	@Override
 	public Class<PathElement> getEntityClass()
 	{
@@ -30,12 +35,26 @@ public class PathElementDAO extends AbstractHibernateDAO<PathElement>
 		{
 			root = roots.get(0);
 			populateChildren(root);
+	        populateRoles(root);
 		}
-		
+
 		return root;
 	}
 
-	public List<PathElement> getChildren(PathElement parent)
+	private void populateRoles(PathElement pathElement)
+    {
+	    pathElement.setRoles(pathElementRoleDAO.getRoles(pathElement));
+        
+	    if (null != pathElement.getChildren() && !pathElement.getChildren().isEmpty())
+	    {
+	        for (PathElement child : pathElement.getChildren())
+	        {
+	            populateRoles(child);
+	        }
+	    }
+    }
+
+    public List<PathElement> getChildren(PathElement parent)
 	{
 		List<PathElement> children =  sessionFactory.getCurrentSession()
 				.createQuery("from PathElement pe where pe.parent=? and pe.active=1").setParameter(0, parent).list();

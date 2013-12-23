@@ -133,7 +133,6 @@ public class PathElementRestController extends AbstractRestController
             newElement.setParent(parent);
             newElement.setTitle(name);
             newElement.setActive(true);
-            newElement.setAuthRequired(true);
             pathElementDAO.create(newElement);
 
             pathElementService.refreshUrlMappings();
@@ -166,12 +165,14 @@ public class PathElementRestController extends AbstractRestController
             String controller = request.getParameter("controller");
             boolean authRequired = null != request.getParameter("authRequired");
             boolean allRolesRequired = "true".equalsIgnoreCase(request.getParameter("allRolesRequired"));
-
+            boolean hideNavWhenUnauthorized = null != request.getParameter("hideNavWhenUnauthorized");
+            
             pe.setTitle(title);
             pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
             pe.setController(controller);
             pe.setAuthRequired(authRequired);
             pe.setAllRolesRequired(allRolesRequired);
+            pe.setHideNavWhenUnauthorized(hideNavWhenUnauthorized);
 
             pathElementDAO.update(pe);
             

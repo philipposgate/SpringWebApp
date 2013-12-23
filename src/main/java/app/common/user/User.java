@@ -187,22 +187,4 @@ public class User extends AbstractEntity
 		this.lastLoggedInDate = lastLoggedInDate;
 	}
 
-	public boolean hasRole(String roleName)
-	{
-		boolean hasRole = false;
-
-		if (roles != null && !roles.isEmpty())
-		{
-			for (Role role : roles)
-			{
-				if (role.getRole().equals(roleName))
-				{
-					hasRole = true;
-					break;
-				}
-			}
-		}
-		return hasRole;
-	}
-
 }

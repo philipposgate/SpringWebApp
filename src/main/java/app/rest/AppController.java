@@ -18,6 +18,7 @@ import app.common.AppService;
 import app.common.google.GoogleEmailerService;
 import app.common.user.User;
 import app.common.user.UserDAO;
+import app.common.user.UserService;
 
 @Controller
 public class AppController extends AbstractRestController {
@@ -39,16 +40,16 @@ public class AppController extends AbstractRestController {
 	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
 	public String userUpdate(@PathVariable String userId, Model model,
 			HttpServletRequest request) {
-		User userLoggedIn = appService.getUserLoggedIn();
+		User userLoggedIn = userService.getUserLoggedIn();
 
 		if (userLoggedIn != null
 				&& userLoggedIn.getId().equals(new Integer(userId))) {
-			User user = appService.getUserById(userId);
+			User user = userService.getUserById(userId);
 			bindUser(request, user);
 
 			userDAO.update(user);
 
-			appService.setUserLoggedIn(user);
+			userService.setUserLoggedIn(user);
 
 			model.addAttribute("saved", true);
 		}
@@ -125,11 +126,11 @@ public class AppController extends AbstractRestController {
 
 		userDAO.create(user);
 
-		user.getRoles().add(appService.getRole(AppService.ROLE_USER));
+		user.getRoles().add(userService.getRole(UserService.ROLE_USER));
 
 		userDAO.update(user);
 
-		appService.setUserLoggedIn(user);
+		userService.setUserLoggedIn(user);
 
 		return "redirect:/user/";
 	}
@@ -140,10 +141,10 @@ public class AppController extends AbstractRestController {
 		boolean ok = false;
 
 		if (username != null) {
-			User userLoggedIn = appService.getUserLoggedIn();
+			User userLoggedIn = userService.getUserLoggedIn();
 
 			if (userLoggedIn == null) {
-				ok = appService.getUserByUsername(username) == null;
+				ok = userService.getUserByUsername(username) == null;
 			} else {
 				ok = getCurrentSession()
 						.createQuery(
@@ -169,7 +170,7 @@ public class AppController extends AbstractRestController {
 			User user = userDAO.getById(userId);
 
 			if (user == null) {
-				ok = appService.getUserByUsername(username) == null;
+				ok = userService.getUserByUsername(username) == null;
 			} else {
 				ok = getCurrentSession()
 						.createQuery(

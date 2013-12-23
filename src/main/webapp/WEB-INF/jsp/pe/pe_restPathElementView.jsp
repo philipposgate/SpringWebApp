@@ -25,22 +25,28 @@
 		</tr>
 	</c:if>
 	<tr>
-		<td>Authentication Required</td>
+		<td>Login Required</td>
 		<td><span class="label ${pathElement.authRequired ? "label-inverse" : ""}">${pathElement.authRequired ? "YES" : "NO"}</span></td>
 	</tr>
-	<tr>
-		<td>Required User Role(s)</td>
-		<td>
-			<c:if test="${not empty activeRoles}">
-				${pathElement.allRolesRequired ? "All: " : "Any: "}
-				<c:forEach var="r" items="${activeRoles}">
-					<span class="label label-inverse">${r.role}</span>
-				</c:forEach>
-			</c:if>
-			<c:if test="${empty activeRoles}">
-				<span class="label">NONE</span>
-			</c:if>
-		</td>
-	</tr>
+	<c:if test="${pathElement.authRequired}">
+		<tr>
+			<td>Hide Nav-Menu before login</td>
+			<td><span class="label ${pathElement.hideNavWhenUnauthorized ? "label-inverse" : ""}">${pathElement.hideNavWhenUnauthorized ? "YES" : "NO"}</span></td>
+		</tr>
+		<tr>
+			<td>Required User Role(s)</td>
+			<td>
+				<c:if test="${not empty activeRoles}">
+					${pathElement.allRolesRequired ? "All: " : "Any: "}
+					<c:forEach var="r" items="${activeRoles}">
+						<span class="label label-inverse">${r.role}</span>
+					</c:forEach>
+				</c:if>
+				<c:if test="${empty activeRoles}">
+					<span class="label">NONE</span>
+				</c:if>
+			</td>
+		</tr>
+	</c:if>
 </table>
 <a class="btn btn-primary" href="javascript:void(0)" onclick="editPE(${pathElement.id})">Edit</a>
