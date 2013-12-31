@@ -34,15 +34,11 @@
 			</tr>
 		</c:if>
 		<tr>
-			<td>Login Required</td>
+			<td>Login is required</td>
 			<td><input type="checkbox" name="authRequired" ${pathElement.authRequired ? "checked" : ""} /></td>
 		</tr>
 		<tr class="securityConfig ${!pathElement.authRequired ? 'hidden' : ''}">
-			<td>Hide Nav-Menu before login</td>
-			<td><input type="checkbox" name="hideNavWhenUnauthorized" ${pathElement.hideNavWhenUnauthorized ? "checked" : ""} /></td>
-		</tr>
-		<tr class="securityConfig ${!pathElement.authRequired ? 'hidden' : ''}">
-			<td>Required User Role(s)</td>
+			<td>Required user role(s)</td>
 			<td>
 				<div style="margin-bottom:5px;">
 					<input type="radio" name="allRolesRequired" value="false" ${!pathElement.allRolesRequired ? "checked" : ""} style="margin-top:-4px;" /> Any
@@ -56,6 +52,10 @@
 				</select>
 				<BR><a href="javascript:void(0)" class="btn btn-mini" onclick="$('option:selected', 'select[name=roleId]').removeAttr('selected')">clear</a>
 			</td>
+		</tr>
+		<tr class="securityConfig ${!pathElement.authRequired ? 'hidden' : ''}">
+			<td>Hide nav-link until permitted</td>
+			<td><input type="checkbox" name="hideNavWhenUnauthorized" ${pathElement.hideNavWhenUnauthorized ? "checked" : ""} /></td>
 		</tr>
 	</table>
 </form>

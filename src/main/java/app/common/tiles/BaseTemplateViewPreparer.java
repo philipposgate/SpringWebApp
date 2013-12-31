@@ -23,8 +23,6 @@ import app.common.user.UserService;
 @Component
 public class BaseTemplateViewPreparer implements ViewPreparer
 {
-    private static final Logger logger = LoggerFactory.getLogger(BaseTemplateViewPreparer.class);
-
     @Autowired
     private UserService userService;
 
@@ -34,10 +32,11 @@ public class BaseTemplateViewPreparer implements ViewPreparer
     @Override
     public void execute(Request request, AttributeContext context)
     {
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+
         User userLoggedIn = userService.getUserLoggedIn();
         PathElement root = pathElementService.getRootElement();
         PathElement currentPathElement = (PathElement) request.getContext("request").get("pathElement");
-        List<MenuItem> menuItems = new ArrayList<MenuItem>();
         for (PathElement pathElement : root.getChildren())
         {
             if (!pathElement.isHideNavWhenUnauthorized() || pathElementService.isUserAllowed(userLoggedIn, pathElement))

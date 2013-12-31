@@ -272,7 +272,7 @@ public class PathElementService implements InitializingBean
                     sb.append(", ");
                 }
             }
-            logger.info("resetSecurityFilters(): " + sb.toString());
+            logger.info("Applied Shiro Security Filter: " + sb.toString());
         }
     }
 
@@ -305,6 +305,8 @@ public class PathElementService implements InitializingBean
         {
             pathElement.setControllerLabel(pathElement.getController());
         }
+        
+        pathElement.setRoles(pathElementRoleDAO.getRoles(pathElement));
     }
 
     public Map<Role, Boolean> getPathElementRoleMap(PathElement pathElement)
@@ -360,7 +362,7 @@ public class PathElementService implements InitializingBean
         {
             userCanAccess = !pathElement.isAuthRequired() || null != user;
 
-            if (userCanAccess && null != pathElement.getRoles() && !pathElement.getRoles().isEmpty())
+            if (userCanAccess && pathElement.isAuthRequired() && null != pathElement.getRoles() && !pathElement.getRoles().isEmpty())
             {
                 if (pathElement.isAllRolesRequired())
                 {

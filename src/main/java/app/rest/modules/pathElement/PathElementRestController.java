@@ -190,7 +190,6 @@ public class PathElementRestController extends AbstractRestController
         PathElement pathElement = pathElementDAO.getById(id);
         pathElementService.populate(pathElement);
         model.addAttribute("pathElement", pathElement);
-        model.addAttribute("activeRoles", pathElementService.getPathElementRoleDAO().getRoles(pathElement));
         return "/pe/pe_restPathElementView";
     }
 

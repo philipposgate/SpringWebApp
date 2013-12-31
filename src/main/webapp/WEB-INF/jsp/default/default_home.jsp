@@ -9,23 +9,5 @@
 	</div>
 </div>
 
-<div class="well well-small">
-	<table class="table table-condensed">
-		<thead>
-		<tr>
-			<th>Title</th>
-			<th>URL</th>
-			<th>Controller</th>
-			<th>Path Element ID</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-			<td>${pathElement.title}</td>
-			<td><a href="${pathElement.fullPath}">${pathElement.fullPath}</a></td>
-			<td>${pathElement.controller}</td>
-			<td>${pathElement.id}</td>
-		</tr>
-		</tbody>
-	</table>
-</div>
+<%@ include file="/WEB-INF/jsp/pe/pe_view.jsp"%>
+
