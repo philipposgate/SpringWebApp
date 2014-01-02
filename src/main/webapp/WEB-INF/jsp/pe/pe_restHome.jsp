@@ -1,5 +1,10 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
+<style>
+	<%-- jstree bug fix - see: https://github.com/vakata/jstree/issues/174 --%>
+	#jstree-marker-line {pointer-events: none;}
+</style>
+
 <c:set var="pageTitle" value="Web Content Management" scope="request" />
 <tiles:insertDefinition name="base" flush="true">
 	<tiles:putAttribute name="body">
@@ -22,7 +27,7 @@
 			function initTree()
 			{
 				$("#peTree").jstree({
-					plugins : [ "themes", "json_data", "ui", "crrm", "contextmenu" ],
+					plugins : [ "themes", "json_data", "ui", "crrm", "contextmenu", "dnd" ],
 					
 					themes : {
 						theme : "classic",
@@ -38,27 +43,36 @@
 								return {id : n.attr ? n.attr("id") : 0 }
 							}
 						},
-			            'progressive_render': true,
-			            'progressive_unload': false
+			            progressive_render: true,
+			            progressive_unload: false
 					},
 					
 					contextmenu : {
-				        "items": function (node) {
+				        items: function (node) {
 				            return {
-				                "create": {
-				                    "label": "Create Node",
-				                    "action": function (obj) {
+				                create: {
+				                    label : "Create Node",
+				                    action : function (obj) {
 				                        this.create(obj);
 				                    }
 				                },
-				                "delete": {
-				                    "label": "Delete Node",
-				                    "action": function (obj) {
-				                        this.remove(obj);
+				                "delete" : {
+				                    label : "Delete Node",
+				                    action : function (obj) {
+				                       	this.remove(obj);
 				                    }
 				                }
 				            };
 				        }
+				    },
+				    
+				    crrm : {
+				    	move : {
+					    	check_move : function(m) {
+					    		if ($(m.np).attr("id") == "peTree") return false;
+					    		return true;
+					    	}
+				    	}
 				    }
 				})
 				.bind("select_node.jstree", function(e, data) {
@@ -83,6 +97,26 @@
 			            url: "/rest/pe/treeNode/" + data.rslt.obj[0].id, 
 			            type: "DELETE"
 			        });
+			    })
+			    .bind("move_node.jstree", function(e, data) {
+			    	var prevParent = $(data.rslt.op).attr("id");
+			    	var prevChildren = new Array();
+			    	$(data.rslt.op).find("> ul > li").each(function(){
+			    		prevChildren.push($(this).attr("id"));
+			    	});
+
+			    	var newParent = $(data.rslt.np).attr("id");
+			    	var newChildren = new Array();
+			    	$(data.rslt.np).find("> ul > li").each(function(){
+			    		newChildren.push($(this).attr("id"));
+			    	});
+			    	
+			    	$.post("/rest/pe/moveTreeNode", {
+			    		prevParentId: prevParent,
+			    		prevChildren: prevChildren,
+			    		newParentId: newParent,
+			    		newChildren: newChildren
+			    	});
 			    });
 			}
 			

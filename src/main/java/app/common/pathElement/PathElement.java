@@ -39,6 +39,9 @@ public class PathElement extends AbstractEntity {
     @Column
     private boolean hideNavWhenUnauthorized;
     
+    @Column
+    private int position;
+    
     @Transient
     private List<Role> roles;
     
@@ -190,5 +193,15 @@ public class PathElement extends AbstractEntity {
     public void setRoles(List<Role> roles)
     {
         this.roles = roles;
+    }
+
+    public int getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(int position)
+    {
+        this.position = position;
     }
 }

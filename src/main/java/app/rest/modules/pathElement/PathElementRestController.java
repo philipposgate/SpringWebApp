@@ -133,6 +133,7 @@ public class PathElementRestController extends AbstractRestController
             newElement.setParent(parent);
             newElement.setTitle(name);
             newElement.setActive(true);
+            newElement.setPosition(pathElementDAO.getMaxPosition(parent) + 1);
             pathElementDAO.create(newElement);
 
             pathElementService.refreshUrlMappings();
@@ -152,6 +153,53 @@ public class PathElementRestController extends AbstractRestController
         return "success";
     }
 
+    @RequestMapping(value = "/moveTreeNode", method = RequestMethod.POST)
+    @ResponseBody
+    public String moveTreeNode(HttpServletRequest request) throws Exception
+    {
+        String newParentId = request.getParameter("newParentId");
+        String newChildren[] = request.getParameterValues("newChildren[]");
+        String prevParentId = request.getParameter("prevParentId");
+        String prevChildren[] = request.getParameterValues("prevChildren[]");
+        
+        if (newParentId.equals(prevParentId))
+        {
+            for (int i = 0; i < newChildren.length; i++)
+            {
+                PathElement pe = pathElementDAO.getById(newChildren[i]);
+                pe.setPosition(i + 1);
+                pathElementDAO.update(pe);
+            }
+        }
+        else
+        {
+            PathElement newParent = pathElementDAO.getById(newParentId);
+            for (int i = 0; i < newChildren.length; i++)
+            {
+                PathElement pe = pathElementDAO.getById(newChildren[i]);
+                pe.setParent(newParent);
+                pe.setPosition(i + 1);
+                pathElementDAO.update(pe);
+            }
+
+            PathElement prevParent = pathElementDAO.getById(prevParentId);
+            if (null != prevChildren)
+            {
+                for (int i = 0; i < prevChildren.length; i++)
+                {
+                    PathElement pe = pathElementDAO.getById(prevChildren[i]);
+                    pe.setParent(prevParent);
+                    pe.setPosition(i + 1);
+                    pathElementDAO.update(pe);
+                }
+            }
+        }
+
+        pathElementService.refreshUrlMappings();
+
+        return "success";
+    }
+    
     @RequestMapping(value = "/pathElement/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception
@@ -166,17 +214,22 @@ public class PathElementRestController extends AbstractRestController
             boolean authRequired = null != request.getParameter("authRequired");
             boolean allRolesRequired = "true".equalsIgnoreCase(request.getParameter("allRolesRequired"));
             boolean hideNavWhenUnauthorized = null != request.getParameter("hideNavWhenUnauthorized");
+            String roleIds[] = request.getParameterValues("roleId");
             
             pe.setTitle(title);
-            pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
-            pe.setController(controller);
+            
+            if (!pe.isRoot())
+            {
+                pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
+                pe.setController(controller);
+            }
+
             pe.setAuthRequired(authRequired);
             pe.setAllRolesRequired(allRolesRequired);
             pe.setHideNavWhenUnauthorized(hideNavWhenUnauthorized);
 
             pathElementDAO.update(pe);
             
-            String roleIds[] = request.getParameterValues("roleId");
             pathElementService.updatePathElementRoles(pe, roleIds);
             pathElementService.refreshUrlMappings();
         }
