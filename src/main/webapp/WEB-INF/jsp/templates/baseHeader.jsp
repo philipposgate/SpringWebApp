@@ -1,12 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
-<script type="text/javascript">
-	$(document).ready(function(){
-		$(document).on("reload.nav", function(){
-			$("ul#reloadableNav").load("/rest/pe/reloadNav");
+<shiro:authenticated>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(document).on("reload.nav", function(){
+				$("ul#reloadableNav").load("/rest/pe/reloadNav");
+			});
 		});
-	});
-</script>
+	</script>
+</shiro:authenticated>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
