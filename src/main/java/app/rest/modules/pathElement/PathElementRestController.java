@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import app.common.menu.MenuItem;
 import app.common.pathElement.PathElement;
 import app.common.pathElement.PathElementDAO;
 import app.common.pathElement.PathElementRole;
@@ -33,7 +34,7 @@ public class PathElementRestController extends AbstractRestController
     private PathElementService pathElementService;
 
     @RequestMapping(value = "/")
-    public String displayHome(Model model)
+    public String displayHome()
     {
         return "/pe/pe_restHome";
     }
@@ -200,6 +201,15 @@ public class PathElementRestController extends AbstractRestController
         return "success";
     }
     
+    
+    @RequestMapping(value = "/reloadNav")
+    public String reloadNav(Model model) throws Exception
+    {
+        List<MenuItem> menuItems = pathElementService.getMenuItems(null);
+        model.addAttribute("menuItems", menuItems);
+        return "/templates/baseHeaderTopMenuItem";
+    }
+
     @RequestMapping(value = "/pathElement/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception

@@ -1,6 +1,7 @@
 package app.common.pathElement;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
 import org.apache.shiro.web.filter.mgt.NamedFilterList;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.apache.tiles.request.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UrlPathHelper;
 
+import app.common.menu.MenuItem;
 import app.common.shiro.AnyRolesAuthorizationFilter;
 import app.common.user.Role;
 import app.common.user.RoleDAO;
@@ -379,4 +382,55 @@ public class PathElementService implements InitializingBean
         return userCanAccess;
     }
 
+    public List<MenuItem> getMenuItems(PathElement currentPathElement)
+    {
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+
+        User userLoggedIn = userService.getUserLoggedIn();
+        PathElement root = getRootElement();
+        for (PathElement pathElement : root.getChildren())
+        {
+            if (!pathElement.isHideNavWhenUnauthorized() || isUserAllowed(userLoggedIn, pathElement))
+            {
+                MenuItem mi = new MenuItem();
+                mi.setName(pathElement.getTitle());
+                mi.setUrl(pathElement.getFullPath());
+                mi.setChildren(new ArrayList<MenuItem>());
+                populateMenuItems(mi, pathElement, currentPathElement, userLoggedIn);
+                menuItems.add(mi);
+            }
+        }
+        return menuItems;
+    }
+
+    private void populateMenuItems(MenuItem menuItem, PathElement pathElement, PathElement currentPathElement, User userLoggedIn)
+    {
+        if (null != currentPathElement && pathElement.equals(currentPathElement))
+        {
+            activate(menuItem);
+        }
+
+        for (PathElement child : pathElement.getChildren())
+        {
+            if (!child.isHideNavWhenUnauthorized() || isUserAllowed(userLoggedIn, child))
+            {
+                MenuItem subMI = new MenuItem();
+                subMI.setParent(menuItem);
+                subMI.setName(child.getTitle());
+                subMI.setUrl(child.getFullPath());
+                subMI.setChildren(new ArrayList<MenuItem>());
+                populateMenuItems(subMI, child, currentPathElement, userLoggedIn);
+                menuItem.getChildren().add(subMI);
+            }
+        }
+    }
+
+    private void activate(MenuItem mi)
+    {
+        mi.setActive(true);
+        if (null != mi.getParent())
+        {
+            activate(mi.getParent());
+        }
+    }
 }

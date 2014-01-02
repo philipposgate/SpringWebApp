@@ -89,13 +89,17 @@
 			            success: function (result) {
 			            	var newNode = $.parseJSON(result);
 			            	data.rslt.obj[0].id = newNode.attr.id;
+			    			$(document).trigger("reload.nav");
 			            }
 			        });
 			    })
 				.bind("remove.jstree", function (e, data) {
 			        $.ajax({
 			            url: "/rest/pe/treeNode/" + data.rslt.obj[0].id, 
-			            type: "DELETE"
+			            type: "DELETE",
+			            success: function(){
+			    			$(document).trigger("reload.nav");
+			            }
 			        });
 			    })
 			    .bind("move_node.jstree", function(e, data) {
@@ -116,6 +120,8 @@
 			    		prevChildren: prevChildren,
 			    		newParentId: newParent,
 			    		newChildren: newChildren
+			    	}, function() {
+		    			$(document).trigger("reload.nav");
 			    	});
 			    });
 			}
@@ -140,6 +146,7 @@
 		            	var node = $.parseJSON(result);
 		            	$("#peTree").jstree("rename_node", "#" + id, node.data);
 		            	viewPE(id);
+		    			$(document).trigger("reload.nav");
 		            }
 		        });
 			}
