@@ -164,6 +164,8 @@ public class PathElementService implements InitializingBean
 
     public void refreshUrlMappings()
     {
+        System.out.println();
+        logger.info("Refresh URL Mappings and Security Filters...");
         rootElement = null;
         pathElementMap.clear();
         pathElementHandlerMapping.refreshUrlMappings();

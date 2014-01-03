@@ -12,10 +12,6 @@
 	</tr>
 	<c:if test="${!pathElement.root}">
 		<tr>
-			<td style="vertical-align:middle">Path</td>
-			<td>${pathElement.path}</td>
-		</tr>
-		<tr>
 			<td style="vertical-align:middle">Controller</td>
 			<td>${not empty pathElement.controllerLabel ? pathElement.controllerLabel : pathElement.controller}</td>
 		</tr>
@@ -56,16 +52,19 @@
 		<td>Parent</td>
 		<td><ul><li><a href="${pathElement.parent.fullPath}">${pathElement.parent.fullPath}</a> (${pathElement.parent.title})</li></ul></td>
 	</tr>
-	<c:if test="${not empty pathElement.children}">
 		<tr>
 			<td>Children</td>
 			<td>
 				<ul>
-					<c:forEach var="child" items="${pathElement.children}">
-						<li><a href="${child.fullPath}">${child.fullPath}</a> (${child.title})</li>
-					</c:forEach>
+					<c:if test="${not empty pathElement.children}">
+						<c:forEach var="child" items="${pathElement.children}">
+							<li><a href="${child.fullPath}">${child.fullPath}</a> (${child.title})</li>
+						</c:forEach>
+					</c:if>
+					<c:if test="${empty pathElement.children}">
+						<li>none</li>
+					</c:if>
 				</ul>
 			</td>
 		</tr>
-	</c:if>
 </table>

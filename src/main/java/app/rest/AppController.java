@@ -1,6 +1,7 @@
 package app.rest;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import app.common.AppService;
 import app.common.google.GoogleEmailerService;
@@ -26,13 +30,8 @@ public class AppController extends AbstractRestController {
 	@Autowired
 	private UserDAO userDAO;
 	
-//	@Autowired
-//	private RequestMappingHandlerMapping handlerMapping;
-
-//	@Autowired
-//	public AppController(RequestMappingHandlerMapping handlerMapping) {
-//		this.handlerMapping = handlerMapping;
-//	}
+	@Autowired
+	private RequestMappingHandlerMapping handlerMapping;
 
 	@Autowired
 	private GoogleEmailerService gmailService;
@@ -58,21 +57,19 @@ public class AppController extends AbstractRestController {
 
 	@RequestMapping(value = "user/")
 	public String userHome(Model model) {
-		model.addAttribute("userNav", "userHome");
 		return "app/user/userHome";
 	}
 
 	@RequestMapping(value = "admin/")
 	public String adminHome(Model model) {
-		model.addAttribute("adminNav", "adminHome");
 		return "app/admin/admin_home";
 	}
 
 	@RequestMapping(value = "admin/endPoints")
 	public String endPoints(Model model) {
-//		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
-//				.getHandlerMethods();
-//		model.addAttribute("handlerMethods", handlerMethods);
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
+				.getHandlerMethods();
+		model.addAttribute("handlerMethods", handlerMethods);
 		model.addAttribute("adminNav", "endPoints");
 
 		return "app/admin/admin_endPoints";
@@ -81,7 +78,6 @@ public class AppController extends AbstractRestController {
 	@RequestMapping(value = "admin/users")
 	public String adminUsrMgt(Model model) {
 		model.addAttribute("users", userDAO.getAll());
-		model.addAttribute("adminNav", "userMgt");
 		return "app/admin/admin_usrMgt";
 	}
 
@@ -89,7 +85,7 @@ public class AppController extends AbstractRestController {
 	public String adminUsrLoad(@PathVariable String userId, Model model) {
 		User user = userDAO.getById(userId);
 		model.addAttribute("user", user);
-		return "ajax/app/admin/admin_ajaxUserDetails";
+		return "app/admin/admin_ajaxUserDetails";
 	}
 
 	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
@@ -132,7 +128,7 @@ public class AppController extends AbstractRestController {
 
 		userService.setUserLoggedIn(user);
 
-		return "redirect:/user/";
+		return "redirect:/rest/user/";
 	}
 
 	@RequestMapping(value = "/checkUsername", method = RequestMethod.GET)
@@ -219,6 +215,6 @@ public class AppController extends AbstractRestController {
 		appService.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
 		appService.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
 		gmailService.resetUsernameAndPassword();
-		return "redirect:/admin/emailMgt";
+		return "redirect:/rest/admin/emailMgt";
 	}
 }

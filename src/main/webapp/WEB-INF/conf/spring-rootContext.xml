@@ -50,6 +50,7 @@
 	            /login = authc
 	            /logout = logout
 	        	/rest/pe/** = authc, roles[ROLE_ADMIN]
+	        	/rest/admin/** = authc, roles[ROLE_ADMIN]
 	        </value>
 	    </property>
 	</bean>

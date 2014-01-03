@@ -207,7 +207,7 @@ public class PathElementRestController extends AbstractRestController
     {
         List<MenuItem> menuItems = pathElementService.getMenuItems(null);
         model.addAttribute("menuItems", menuItems);
-        return "/templates/baseHeaderTopMenuItem";
+        return "/templates/baseHeaderMenuItems";
     }
 
     @RequestMapping(value = "/pathElement/{id}", method = RequestMethod.PUT)

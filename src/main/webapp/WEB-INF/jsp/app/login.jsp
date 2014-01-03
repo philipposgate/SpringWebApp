@@ -29,7 +29,7 @@
 										<td colspan="2">
 											<input class="btn btn-primary btn-large" name="submit" type="submit" value="Login"/>
 											<a href="/" class="btn btn-large">Cancel</a>
-											<a href="/registerUser/" class="btn btn-primary btn-large pull-right">Register</a>
+											<a href="/rest/registerUser/" class="btn btn-primary btn-large pull-right">Register</a>
 										</td>
 									</tr>
 								</table>

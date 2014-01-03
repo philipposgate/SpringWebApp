@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<form id="userForm" action="/admin/users/${user.id}" method="POST">
+<form id="userForm" action="/rest/admin/users/${user.id}" method="POST">
 	<table class="table table-striped">
 		<tbody>
 			<tr>
@@ -66,7 +66,7 @@
     				required: true,
     				minlength: 3,
     				remote: {
-    				    url: "/checkUsername/${user.id}",
+    				    url: "/rest/checkUsername/${user.id}",
     				    type: "GET"
     				}
     			},

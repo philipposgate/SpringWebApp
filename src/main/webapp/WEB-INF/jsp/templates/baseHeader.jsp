@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
-<shiro:authenticated>
+<shiro:hasRole name="ROLE_ADMIN">
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$(document).on("reload.nav", function(){
@@ -8,7 +8,7 @@
 			});
 		});
 	</script>
-</shiro:authenticated>
+</shiro:hasRole>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
@@ -22,7 +22,7 @@
 			<div class="nav-collapse collapse">
 				<ul id="reloadableNav" class="nav">
 
-					<%@ include file="baseHeaderTopMenuItem.jsp"%>
+					<%@ include file="baseHeaderMenuItems.jsp"%>
 
 				</ul>
 				<ul class="nav pull-right">
@@ -38,6 +38,9 @@
 							</a>
 							<ul class="dropdown-menu">
 								<li><a href="/logout">Logout</a></li>
+								<shiro:hasRole name="ROLE_ADMIN">
+									<li><a href="/rest/admin/">Site Administration</a></li>
+								</shiro:hasRole>
 							</ul>
 						</li>
 					</shiro:authenticated>
