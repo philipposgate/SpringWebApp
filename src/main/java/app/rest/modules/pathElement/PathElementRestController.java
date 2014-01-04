@@ -24,7 +24,7 @@ import app.common.utils.StringUtils;
 import app.rest.AbstractRestController;
 
 @Controller
-@RequestMapping(value = "pe")
+@RequestMapping(value = "admin/pe")
 public class PathElementRestController extends AbstractRestController
 {
     @Autowired
@@ -33,13 +33,13 @@ public class PathElementRestController extends AbstractRestController
     @Autowired
     private PathElementService pathElementService;
 
-    @RequestMapping(value = "/")
+    @RequestMapping()
     public String displayHome()
     {
         return "/pe/pe_restHome";
     }
 
-    @RequestMapping(value = "/treeNodes", method = RequestMethod.GET)
+    @RequestMapping(value = "treeNodes", method = RequestMethod.GET)
     @ResponseBody
     public String getTreeNodes(HttpServletRequest request) throws Exception
     {
@@ -116,7 +116,7 @@ public class PathElementRestController extends AbstractRestController
         return node;
     }
 
-    @RequestMapping(value = "/treeNode", method = RequestMethod.POST)
+    @RequestMapping(value = "treeNode", method = RequestMethod.POST)
     @ResponseBody
     public String createTreeNode(HttpServletRequest request) throws Exception
     {
@@ -143,7 +143,7 @@ public class PathElementRestController extends AbstractRestController
         return getTreeNode(newElement).toString();
     }
 
-    @RequestMapping(value = "/treeNode/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "treeNode/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public String deleteTreeNode(@PathVariable Integer id) throws Exception
     {
@@ -154,7 +154,7 @@ public class PathElementRestController extends AbstractRestController
         return "success";
     }
 
-    @RequestMapping(value = "/moveTreeNode", method = RequestMethod.POST)
+    @RequestMapping(value = "moveTreeNode", method = RequestMethod.POST)
     @ResponseBody
     public String moveTreeNode(HttpServletRequest request) throws Exception
     {
@@ -202,7 +202,7 @@ public class PathElementRestController extends AbstractRestController
     }
     
     
-    @RequestMapping(value = "/reloadNav")
+    @RequestMapping(value = "reloadNav")
     public String reloadNav(Model model) throws Exception
     {
         List<MenuItem> menuItems = pathElementService.getMenuItems(null);
@@ -210,7 +210,7 @@ public class PathElementRestController extends AbstractRestController
         return "/templates/baseHeaderMenuItems";
     }
 
-    @RequestMapping(value = "/pathElement/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "pathElement/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public String updatePathElement(HttpServletRequest request, @PathVariable Integer id) throws Exception
     {
@@ -247,7 +247,7 @@ public class PathElementRestController extends AbstractRestController
         return getTreeNode(pe).toString();
     }
 
-    @RequestMapping(value = "/pathElementView/{id}")
+    @RequestMapping(value = "pathElementView/{id}")
     public String displayPathElementView(@PathVariable Integer id, Model model)
     {
         PathElement pathElement = pathElementDAO.getById(id);
@@ -256,7 +256,7 @@ public class PathElementRestController extends AbstractRestController
         return "/pe/pe_restPathElementView";
     }
 
-    @RequestMapping(value = "/pathElementEdit/{id}")
+    @RequestMapping(value = "pathElementEdit/{id}")
     public String displayPathElementEdit(@PathVariable Integer id, Model model)
     {
         PathElement pathElement = pathElementDAO.getById(id);

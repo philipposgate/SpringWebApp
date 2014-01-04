@@ -4,7 +4,7 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$(document).on("reload.nav", function(){
-				$("ul#reloadableNav").load("/rest/pe/reloadNav");
+				$("ul#reloadableNav").load("/rest/admin/pe/reloadNav");
 			});
 		});
 	</script>
@@ -39,7 +39,7 @@
 							<ul class="dropdown-menu">
 								<li><a href="/logout">Logout</a></li>
 								<shiro:hasRole name="ROLE_ADMIN">
-									<li><a href="/rest/admin/">Site Administration</a></li>
+									<li><a href="/rest/admin">Site Administration</a></li>
 								</shiro:hasRole>
 							</ul>
 						</li>

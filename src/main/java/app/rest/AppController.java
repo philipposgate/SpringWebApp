@@ -60,7 +60,7 @@ public class AppController extends AbstractRestController {
 		return "app/user/userHome";
 	}
 
-	@RequestMapping(value = "admin/")
+	@RequestMapping(value = "admin")
 	public String adminHome(Model model) {
 		return "app/admin/admin_home";
 	}

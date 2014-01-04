@@ -37,7 +37,7 @@
 					
 					json_data : {
 						ajax : {
-							url : "/rest/pe/treeNodes",
+							url : "/rest/admin/pe/treeNodes",
 							type : "GET",
 							data : function(n) {
 								return {id : n.attr ? n.attr("id") : 0 }
@@ -80,7 +80,7 @@
 				})
 				.bind("create.jstree", function (e, data) {
 			        $.ajax({
-			            url: "/rest/pe/treeNode", 
+			            url: "/rest/admin/pe/treeNode", 
 			            type: "POST",
 			            data: {
 			            	"parentId" : data.rslt.parent[0].id,
@@ -95,7 +95,7 @@
 			    })
 				.bind("remove.jstree", function (e, data) {
 			        $.ajax({
-			            url: "/rest/pe/treeNode/" + data.rslt.obj[0].id, 
+			            url: "/rest/admin/pe/treeNode/" + data.rslt.obj[0].id, 
 			            type: "DELETE",
 			            success: function(){
 			    			$(document).trigger("reload.nav");
@@ -128,18 +128,18 @@
 			
 			function viewPE(id)
 			{
-				$("#pathElementPanel").load("/rest/pe/pathElementView/" + id);
+				$("#pathElementPanel").load("/rest/admin/pe/pathElementView/" + id);
 			}
 
 			function editPE(id)
 			{
-				$("#pathElementPanel").load("/rest/pe/pathElementEdit/" + id);
+				$("#pathElementPanel").load("/rest/admin/pe/pathElementEdit/" + id);
 			}
 
 			function savePE(id)
 			{
 		        $.ajax({
-		            url: "/rest/pe/pathElement/" + id, 
+		            url: "/rest/admin/pe/pathElement/" + id, 
 		            type: "PUT",
 		            data: $("form#pathElementForm", "#pathElementPanel").serialize(),
 		            success: function (result) {
