@@ -113,7 +113,7 @@ public class AppointmentController extends AbstractRestController
 		System.out.println("\nCalendar ID: " + calendar.getId());
 		if (calendar != null)
 		{
-			List<Appointment> apptList = getHt().createQuery("from Appointment").list();
+			List<Appointment> apptList = getHt().find("from Appointment");
 
 			removeDeletedEvents(calendar, apptList);
 			addNewEvents(calendar, apptList);
@@ -314,8 +314,7 @@ public class AppointmentController extends AbstractRestController
 		{
 			Date start = new Date(new Long(request.getParameter("start")) * 1000);
 			Date end = new Date(new Long(request.getParameter("end")) * 1000);
-			List<Appointment> apptList = getHt().createQuery("from Appointment a where a.apptStart between ? and ?")
-					.setParameter(0, start).setParameter(1, end).list();
+			List<Appointment> apptList = getHt().find("from Appointment a where a.apptStart between ? and ?", new Object[]{start, end});
 
 			Date now = new Date();
 			for (Appointment a : apptList)

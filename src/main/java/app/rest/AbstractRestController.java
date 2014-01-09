@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,15 +39,16 @@ public abstract class AbstractRestController
 	@Autowired
 	protected SessionFactory sessionFactory;
 
-	protected Session getCurrentSession()
-	{
-		return sessionFactory.getCurrentSession();
-	}
+	private HibernateTemplate ht;
 
-	protected Session getHt()
-	{
-		return getCurrentSession();
-	}
+    public HibernateTemplate getHt()
+    {
+        if (null == ht)
+        {
+            ht = new HibernateTemplate(sessionFactory);
+        }
+        return ht;
+    }
 
 	/**
 	 * NOTE: don't commit controllers using this method as it'll pollute our log
@@ -131,10 +133,9 @@ public abstract class AbstractRestController
 		{
 			throw new RuntimeException("Bad Args");
 		}
-
+		
 		List<PageContent> pList = getHt()
-				.createQuery("from PageContent p where p.page = ?")
-				.setParameter(0, page).list();
+				.find("from PageContent p where p.page = ?", page);
 
 		if (pList != null && !pList.isEmpty())
 		{

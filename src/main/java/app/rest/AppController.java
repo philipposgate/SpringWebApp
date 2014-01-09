@@ -25,196 +25,204 @@ import app.common.user.UserDAO;
 import app.common.user.UserService;
 
 @Controller
-public class AppController extends AbstractRestController {
-	
-	@Autowired
-	private UserDAO userDAO;
-	
-	@Autowired
-	private RequestMappingHandlerMapping handlerMapping;
+public class AppController extends AbstractRestController
+{
 
-	@Autowired
-	private GoogleEmailerService gmailService;
+    @Autowired
+    private UserDAO userDAO;
 
-	@RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
-	public String userUpdate(@PathVariable String userId, Model model,
-			HttpServletRequest request) {
-		User userLoggedIn = userService.getUserLoggedIn();
+    @Autowired
+    private RequestMappingHandlerMapping handlerMapping;
 
-		if (userLoggedIn != null
-				&& userLoggedIn.getId().equals(new Integer(userId))) {
-			User user = userService.getUserById(userId);
-			bindUser(request, user);
+    @Autowired
+    private GoogleEmailerService gmailService;
 
-			userDAO.update(user);
+    @RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
+    public String userUpdate(@PathVariable String userId, Model model, HttpServletRequest request)
+    {
+        User userLoggedIn = userService.getUserLoggedIn();
 
-			userService.setUserLoggedIn(user);
+        if (userLoggedIn != null && userLoggedIn.getId().equals(new Integer(userId)))
+        {
+            User user = userService.getUserById(userId);
+            bindUser(request, user);
 
-			model.addAttribute("saved", true);
-		}
-		return userHome(model);
-	}
+            userDAO.update(user);
 
-	@RequestMapping(value = "user/")
-	public String userHome(Model model) {
-		return "app/user/userHome";
-	}
+            userService.setUserLoggedIn(user);
 
-	@RequestMapping(value = "admin")
-	public String adminHome(Model model) {
-		return "app/admin/admin_home";
-	}
+            model.addAttribute("saved", true);
+        }
+        return userHome(model);
+    }
 
-	@RequestMapping(value = "admin/endPoints")
-	public String endPoints(Model model) {
-		Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping
-				.getHandlerMethods();
-		model.addAttribute("handlerMethods", handlerMethods);
-		model.addAttribute("adminNav", "endPoints");
+    @RequestMapping(value = "user")
+    public String userHome(Model model)
+    {
+        return "app/user/userHome";
+    }
 
-		return "app/admin/admin_endPoints";
-	}
+    @RequestMapping(value = "admin")
+    public String adminHome(Model model)
+    {
+        return "app/admin/admin_home";
+    }
 
-	@RequestMapping(value = "admin/users")
-	public String adminUsrMgt(Model model) {
-		model.addAttribute("users", userDAO.getAll());
-		return "app/admin/admin_usrMgt";
-	}
+    @RequestMapping(value = "admin/endPoints")
+    public String endPoints(Model model)
+    {
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping.getHandlerMethods();
+        model.addAttribute("handlerMethods", handlerMethods);
+        model.addAttribute("adminNav", "endPoints");
 
-	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.GET)
-	public String adminUsrLoad(@PathVariable String userId, Model model) {
-		User user = userDAO.getById(userId);
-		model.addAttribute("user", user);
-		return "app/admin/admin_ajaxUserDetails";
-	}
+        return "app/admin/admin_endPoints";
+    }
 
-	@RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
-	public String adminUsrSave(@PathVariable String userId, Model model,
-			HttpServletRequest request) {
-		User user = userDAO.getById(userId);
+    @RequestMapping(value = "admin/users")
+    public String adminUsrMgt(Model model)
+    {
+        model.addAttribute("users", userDAO.getAll());
+        return "app/admin/admin_usrMgt";
+    }
 
-		bindUser(request, user);
-		user.setAccountNonExpired(request.getParameter("accountNonExpired") == null);
-		user.setAccountNonLocked(request.getParameter("accountNonLocked") == null);
-		user.setCredentialsNonExpired(request
-				.getParameter("credentialsNonExpired") == null);
-		user.setEnabled(request.getParameter("enabled") != null);
+    @RequestMapping(value = "admin/users/{userId}", method = RequestMethod.GET)
+    public String adminUsrLoad(@PathVariable String userId, Model model)
+    {
+        User user = userDAO.getById(userId);
+        model.addAttribute("user", user);
+        return "app/admin/admin_ajaxUserDetails";
+    }
 
-		userDAO.update(user);
+    @RequestMapping(value = "admin/users/{userId}", method = RequestMethod.POST)
+    public String adminUsrSave(@PathVariable String userId, Model model, HttpServletRequest request)
+    {
+        User user = userDAO.getById(userId);
 
-		System.out.println(user);
-		model.addAttribute("userUpdated", true);
-		return adminUsrMgt(model);
-	}
+        bindUser(request, user);
+        user.setAccountNonExpired(request.getParameter("accountNonExpired") == null);
+        user.setAccountNonLocked(request.getParameter("accountNonLocked") == null);
+        user.setCredentialsNonExpired(request.getParameter("credentialsNonExpired") == null);
+        user.setEnabled(request.getParameter("enabled") != null);
 
-	@RequestMapping(value = "/registerUser", method = RequestMethod.GET)
-	public String registerUserView() {
-		return "/app/registerUser";
-	}
+        userDAO.update(user);
 
+        System.out.println(user);
+        model.addAttribute("userUpdated", true);
+        return adminUsrMgt(model);
+    }
 
-	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	public String registerUserSave(HttpServletRequest request) {
-		User user = new User();
-		user.setCreateDate(new Date());
-		user.setEnabled(true);
-		bindUser(request, user);
+    @RequestMapping(value = "/registerUser", method = RequestMethod.GET)
+    public String registerUserView()
+    {
+        return "/app/registerUser";
+    }
 
-		userDAO.create(user);
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
+    public String registerUserSave(HttpServletRequest request)
+    {
+        User user = new User();
+        user.setCreateDate(new Date());
+        user.setEnabled(true);
+        bindUser(request, user);
 
-		user.getRoles().add(userService.getRole(UserService.ROLE_USER));
+        userDAO.create(user);
 
-		userDAO.update(user);
+        user.getRoles().add(userService.getRole(UserService.ROLE_USER));
 
-		userService.setUserLoggedIn(user);
+        userDAO.update(user);
 
-		return "redirect:/rest/user/";
-	}
+        userService.setUserLoggedIn(user);
 
-	@RequestMapping(value = "/checkUsername", method = RequestMethod.GET)
-	@ResponseBody
-	public String checkUsername(@RequestParam("username") String username) {
-		boolean ok = false;
+        return "redirect:/rest/user/";
+    }
 
-		if (username != null) {
-			User userLoggedIn = userService.getUserLoggedIn();
+    @RequestMapping(value = "/checkUsername", method = RequestMethod.GET)
+    @ResponseBody
+    public String checkUsername(@RequestParam("username") String username)
+    {
+        boolean ok = false;
 
-			if (userLoggedIn == null) {
-				ok = userService.getUserByUsername(username) == null;
-			} else {
-				ok = getCurrentSession()
-						.createQuery(
-								"from User u where u.id != ? and u.username=?")
-						.setParameter(0, userLoggedIn.getId())
-						.setParameter(1, username).list().size() == 0;
-			}
-		}
+        if (username != null)
+        {
+            User userLoggedIn = userService.getUserLoggedIn();
 
-		System.out.println("checkUsername: " + username
-				+ (ok ? " [ok]" : " [not ok]"));
+            if (userLoggedIn == null)
+            {
+                ok = userService.getUserByUsername(username) == null;
+            }
+            else
+            {
+                ok = getHt().find("from User u where u.id != ? and u.username=?", new Object[]{userLoggedIn.getId(), username}).isEmpty();
+            }
+        }
 
-		return String.valueOf(ok);
-	}
+        System.out.println("checkUsername: " + username + (ok ? " [ok]" : " [not ok]"));
 
-	@RequestMapping(value = "/checkUsername/{userId}", method = RequestMethod.GET)
-	@ResponseBody
-	public String checkUsername(@PathVariable String userId,
-			@RequestParam("username") String username) {
-		boolean ok = false;
+        return String.valueOf(ok);
+    }
 
-		if (username != null) {
-			User user = userDAO.getById(userId);
+    @RequestMapping(value = "/checkUsername/{userId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String checkUsername(@PathVariable String userId, @RequestParam("username") String username)
+    {
+        boolean ok = false;
 
-			if (user == null) {
-				ok = userService.getUserByUsername(username) == null;
-			} else {
-				ok = getCurrentSession()
-						.createQuery(
-								"from User u where u.id != ? and u.username=?")
-						.setParameter(0, user.getId())
-						.setParameter(1, username).list().size() == 0;
-			}
-		}
+        if (username != null)
+        {
+            User user = userDAO.getById(userId);
 
-		System.out.println("checkUsername: " + username
-				+ (ok ? " [ok]" : " [not ok]"));
+            if (user == null)
+            {
+                ok = userService.getUserByUsername(username) == null;
+            }
+            else
+            {
+                ok = getHt().find("from User u where u.id != ? and u.username=?", new Object[]{user.getId(), username}).isEmpty();;
+            }
+        }
 
-		return String.valueOf(ok);
-	}
+        System.out.println("checkUsername: " + username + (ok ? " [ok]" : " [not ok]"));
 
-	@RequestMapping(value = "/sessionExpired")
-	public String sessionExpired() {
-		System.out.println("session expired!");
-		return "redirect:/login";
-	}
+        return String.valueOf(ok);
+    }
 
-	private void bindUser(HttpServletRequest request, User user) {
-		user.setFirstName(request.getParameter("firstName"));
-		user.setLastName(request.getParameter("lastName"));
-		user.setEmail(request.getParameter("email"));
-		user.setUsername(request.getParameter("username"));
+    @RequestMapping(value = "/sessionExpired")
+    public String sessionExpired()
+    {
+        System.out.println("session expired!");
+        return "redirect:/login";
+    }
 
-		String password = request.getParameter("password");
-		if (!password.equals(request.getParameter("confirmPassword"))) {
-			throw new IllegalArgumentException("password mismatch!");
-		}
-		user.setPassword(password);
-	}
+    private void bindUser(HttpServletRequest request, User user)
+    {
+        user.setFirstName(request.getParameter("firstName"));
+        user.setLastName(request.getParameter("lastName"));
+        user.setEmail(request.getParameter("email"));
+        user.setUsername(request.getParameter("username"));
 
-	@RequestMapping(value = "admin/emailMgt")
-	public String adminEmailMgt(Model model) {
-		model.addAttribute("adminNav", "emailMgt");
-		model.addAttribute("gmailUsername", appService.getConfigValue("gmailUsername"));
-		model.addAttribute("gmailPassword", appService.getConfigValue("gmailPassword"));
-		return "app/admin/admin_emailMgt";
-	}
-	
+        String password = request.getParameter("password");
+        if (!password.equals(request.getParameter("confirmPassword")))
+        {
+            throw new IllegalArgumentException("password mismatch!");
+        }
+        user.setPassword(password);
+    }
 
-	@RequestMapping(value = "admin/saveEmailSettings", method = RequestMethod.POST)
-	public String saveEmailSettings(HttpServletRequest request) {
-		appService.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
-		appService.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
-		gmailService.resetUsernameAndPassword();
-		return "redirect:/rest/admin/emailMgt";
-	}
+    @RequestMapping(value = "admin/emailMgt")
+    public String adminEmailMgt(Model model)
+    {
+        model.addAttribute("adminNav", "emailMgt");
+        model.addAttribute("gmailUsername", appService.getConfigValue("gmailUsername"));
+        model.addAttribute("gmailPassword", appService.getConfigValue("gmailPassword"));
+        return "app/admin/admin_emailMgt";
+    }
+
+    @RequestMapping(value = "admin/saveEmailSettings", method = RequestMethod.POST)
+    public String saveEmailSettings(HttpServletRequest request)
+    {
+        appService.saveConfig("gmailUsername", request.getParameter("gmailUsername"));
+        appService.saveConfig("gmailPassword", request.getParameter("gmailPassword"));
+        gmailService.resetUsernameAndPassword();
+        return "redirect:/rest/admin/emailMgt";
+    }
 }

@@ -1,14 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
-<style>
-	<%-- jstree bug fix - see: https://github.com/vakata/jstree/issues/174 --%>
-	#jstree-marker-line {pointer-events: none;}
-</style>
-
 <c:set var="pageTitle" value="Web Content Management" scope="request" />
 <tiles:insertDefinition name="base" flush="true">
 	<tiles:putAttribute name="body">
-		
+
+		<style>
+			<%-- jstree bug fix - see: https://github.com/vakata/jstree/issues/174 --%>
+			#jstree-marker-line {pointer-events: none;}
+		</style>
+
 		<script type="text/javascript">
 			app.addComponent("jsTree");
 			
@@ -115,7 +115,7 @@
 			    		newChildren.push($(this).attr("id"));
 			    	});
 			    	
-			    	$.post("/rest/pe/moveTreeNode", {
+			    	$.post("/rest/admin/pe/moveTreeNode", {
 			    		prevParentId: prevParent,
 			    		prevChildren: prevChildren,
 			    		newParentId: newParent,

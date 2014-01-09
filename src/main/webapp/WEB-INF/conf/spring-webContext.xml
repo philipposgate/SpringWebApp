@@ -12,7 +12,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
 	<!-- Activate Component Scanner -->
-	<context:component-scan base-package="app.web"  />
+	<context:component-scan base-package="app.web" />
 
 	<!-- Make DispatcherServlet the 'default servlet' -->
 	<mvc:default-servlet-handler />

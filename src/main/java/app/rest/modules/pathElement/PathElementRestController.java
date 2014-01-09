@@ -5,8 +5,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import app.common.Domain;
 import app.common.menu.MenuItem;
 import app.common.pathElement.PathElement;
 import app.common.pathElement.PathElementDAO;
-import app.common.pathElement.PathElementRole;
 import app.common.pathElement.PathElementService;
 import app.common.utils.StringUtils;
 import app.rest.AbstractRestController;
@@ -27,6 +28,8 @@ import app.rest.AbstractRestController;
 @RequestMapping(value = "admin/pe")
 public class PathElementRestController extends AbstractRestController
 {
+    private static final Logger logger = LoggerFactory.getLogger(PathElementRestController.class);
+
     @Autowired
     private PathElementDAO pathElementDAO;
 
@@ -130,7 +133,7 @@ public class PathElementRestController extends AbstractRestController
 
             newElement = new PathElement();
             newElement.setPath(name.replaceAll("\\s+", "").toLowerCase());
-            newElement.setController("defaultController");
+            newElement.setControllerBeanName("defaultController");
             newElement.setParent(parent);
             newElement.setTitle(name);
             newElement.setActive(true);
@@ -221,6 +224,7 @@ public class PathElementRestController extends AbstractRestController
             String title = request.getParameter("title");
             String path = request.getParameter("path");
             String controller = request.getParameter("controller");
+            String domainName = request.getParameter("domainName");
             boolean authRequired = null != request.getParameter("authRequired");
             boolean allRolesRequired = "true".equalsIgnoreCase(request.getParameter("allRolesRequired"));
             boolean hideNavWhenUnauthorized = null != request.getParameter("hideNavWhenUnauthorized");
@@ -231,7 +235,7 @@ public class PathElementRestController extends AbstractRestController
             if (!pe.isRoot())
             {
                 pe.setPath(path.replaceAll("\\s+", "").toLowerCase());
-                pe.setController(controller);
+                pe.setControllerBeanName(controller);
             }
 
             pe.setAuthRequired(authRequired);
@@ -239,6 +243,21 @@ public class PathElementRestController extends AbstractRestController
             pe.setHideNavWhenUnauthorized(hideNavWhenUnauthorized);
 
             pathElementDAO.update(pe);
+            
+            if (null != domainName)
+            {
+                try
+                {
+                    pathElementService.populate(pe);
+                    Domain domain = pe.getController().getDomain(pe.getDomainId());
+                    domain.setDomainName(domainName);
+                    getHt().update(domain);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
             
             pathElementService.updatePathElementRoles(pe, roleIds);
             pathElementService.refreshUrlMappings();
@@ -260,10 +279,24 @@ public class PathElementRestController extends AbstractRestController
     public String displayPathElementEdit(@PathVariable Integer id, Model model)
     {
         PathElement pathElement = pathElementDAO.getById(id);
+        pathElementService.populate(pathElement);
         model.addAttribute("pathElement", pathElement);
         model.addAttribute("controllers", pathElementService.getPathElementControllers());
         model.addAttribute("roleMap", pathElementService.getPathElementRoleMap(pathElement));
         return "/pe/pe_restPathElementEdit";
     }
 
+    @RequestMapping(value = "{id}/createNewDomain")
+    @ResponseBody
+    public String createNewDomain(@PathVariable Integer id)
+    {
+        PathElement pathElement = pathElementDAO.getById(id);
+        pathElementService.populate(pathElement);
+        Domain domain = pathElement.getController().createNewDomain();
+        pathElement.setDomainId(domain.getId());
+        getHt().update(pathElement);
+        pathElementService.refreshUrlMappings();
+        logger.info("New Domain \"" + domain.getDomainName() + "\" created for PathElement " + pathElement.getFullPath());
+        return "success";
+    }
 }

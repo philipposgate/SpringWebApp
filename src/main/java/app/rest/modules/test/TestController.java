@@ -1,23 +1,25 @@
 package app.rest.modules.test;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "test")
+@RequestMapping(value = "test/{domainId}")
 public class TestController {
 
-	@RequestMapping(value = "test1/")
+	@RequestMapping(value = "test1")
 	@ResponseBody
-	public String test1()
+	public String test1(@PathVariable("domainId") Long domainId)
 	{
+	    System.out.println(domainId);
 		return "test1";
 	}
 	
-	@RequestMapping(value = "/testRedirect")
+	@RequestMapping(value = "testRedirect")
 	public String testRedirect() {
-		return "redirect:/user/";
+		return "redirect:/rest/user";
 	}
 
 }

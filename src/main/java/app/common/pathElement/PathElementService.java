@@ -32,7 +32,7 @@ import app.common.user.Role;
 import app.common.user.RoleDAO;
 import app.common.user.User;
 import app.common.user.UserService;
-import app.web.PathElementAbstractController;
+import app.web.PathElementController;
 import app.web.PathElementHandlerMapping;
 
 @Service
@@ -75,7 +75,7 @@ public class PathElementService implements InitializingBean
         {
             rootElement = new PathElement();
             rootElement.setPath("");
-            rootElement.setController("");
+            rootElement.setControllerBeanName("");
             rootElement.setParent(null);
             rootElement.setTitle("Spring Web App");
             rootElement.setActive(true);
@@ -88,7 +88,7 @@ public class PathElementService implements InitializingBean
         {
             homeElement = new PathElement();
             homeElement.setPath("index");
-            homeElement.setController("homeController");
+            homeElement.setControllerBeanName("homeController");
             homeElement.setParent(rootElement);
             homeElement.setTitle("Home");
             homeElement.setActive(true);
@@ -151,7 +151,7 @@ public class PathElementService implements InitializingBean
     {
 
         String urlPath = pathElement.getFullPath();
-        map.put(urlPath, pathElement.getController());
+        map.put(urlPath, pathElement.getControllerBeanName());
 
         if (null != pathElement.getChildren() && !pathElement.getChildren().isEmpty())
         {
@@ -294,24 +294,22 @@ public class PathElementService implements InitializingBean
         return getUrlPathElementMap().get(urlPathHelper.getLookupPathForRequest(request));
     }
 
-    public Map<String, PathElementAbstractController> getPathElementControllers()
+    public Map<String, PathElementController> getPathElementControllers()
     {
         return pathElementHandlerMapping.getPathElementControllers();
     }
 
     public void populate(PathElement pathElement)
     {
-        PathElementAbstractController c = getPathElementControllers().get(pathElement.getController());
-        if (null != c)
+        if (null == pathElement.getController())
         {
-            pathElement.setControllerLabel(c.getLabel());
+            pathElement.setController(getPathElementControllers().get(pathElement.getControllerBeanName()));
         }
-        else
+
+        if (null == pathElement.getRoles())
         {
-            pathElement.setControllerLabel(pathElement.getController());
+            pathElement.setRoles(pathElementRoleDAO.getRoles(pathElement));
         }
-        
-        pathElement.setRoles(pathElementRoleDAO.getRoles(pathElement));
     }
 
     public Map<Role, Boolean> getPathElementRoleMap(PathElement pathElement)
@@ -367,7 +365,8 @@ public class PathElementService implements InitializingBean
         {
             userCanAccess = !pathElement.isAuthRequired() || null != user;
 
-            if (userCanAccess && pathElement.isAuthRequired() && null != pathElement.getRoles() && !pathElement.getRoles().isEmpty())
+            if (userCanAccess && pathElement.isAuthRequired() && null != pathElement.getRoles()
+                    && !pathElement.getRoles().isEmpty())
             {
                 if (pathElement.isAllRolesRequired())
                 {
@@ -405,7 +404,8 @@ public class PathElementService implements InitializingBean
         return menuItems;
     }
 
-    private void populateMenuItems(MenuItem menuItem, PathElement pathElement, PathElement currentPathElement, User userLoggedIn)
+    private void populateMenuItems(MenuItem menuItem, PathElement pathElement, PathElement currentPathElement,
+            User userLoggedIn)
     {
         if (null != currentPathElement && pathElement.equals(currentPathElement))
         {

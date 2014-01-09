@@ -9,7 +9,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import app.common.AbstractEntity;
+import app.common.Domain;
 import app.common.user.Role;
+import app.web.PathElementController;
 
 @Entity
 @Table(name = "path_element")
@@ -22,7 +24,10 @@ public class PathElement extends AbstractEntity {
 	private String path;
 	
 	@Column(nullable = false)
-	private String controller;
+	private String controllerBeanName;
+	
+    @Column
+    private Integer domainId;
 
 	@Column
 	private String title;
@@ -49,7 +54,7 @@ public class PathElement extends AbstractEntity {
 	private List<PathElement> children;
 
 	@Transient
-	private String controllerLabel;
+	private PathElementController controller;
 	
     @Override
 	public String toString()
@@ -117,12 +122,12 @@ public class PathElement extends AbstractEntity {
 		this.path = path;
 	}
 
-	public String getController() {
-		return controller;
+	public String getControllerBeanName() {
+		return controllerBeanName;
 	}
 
-	public void setController(String controller) {
-		this.controller = controller;
+	public void setControllerBeanName(String controllerBeanName) {
+		this.controllerBeanName = controllerBeanName;
 	}
 
 	public List<PathElement> getChildren() {
@@ -149,12 +154,12 @@ public class PathElement extends AbstractEntity {
 		this.active = active;
 	}
 
-	public String getControllerLabel() {
-		return controllerLabel;
+	public PathElementController getController() {
+		return controller;
 	}
 
-	public void setControllerLabel(String controllerLabel) {
-		this.controllerLabel = controllerLabel;
+	public void setController(PathElementController controller) {
+		this.controller = controller;
 	}
 
 	public boolean isAuthRequired() {
@@ -203,5 +208,27 @@ public class PathElement extends AbstractEntity {
     public void setPosition(int position)
     {
         this.position = position;
+    }
+
+    public Integer getDomainId()
+    {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId)
+    {
+        this.domainId = domainId;
+    }
+    
+    public Domain getControllerDomain()
+    {
+        Domain domain = null;
+        
+        if (null != controller && null != controller.getDomainClass() && null != domainId)
+        {
+            domain = controller.getDomain(domainId);
+        }
+        
+        return domain;
     }
 }

@@ -7,18 +7,36 @@
 		<td>${pathElement.id}</td>
 	</tr>
 	<tr>
+		<td>Full Path</td>
+		<td><a href="${pathElement.fullPath}">${pathElement.fullPath}</a></td>
+	</tr>
+	<tr>
 		<td style="vertical-align:middle">Title</td>
 		<td>${pathElement.title}</td>
 	</tr>
 	<c:if test="${!pathElement.root}">
 		<tr>
 			<td style="vertical-align:middle">Controller</td>
-			<td>${not empty pathElement.controllerLabel ? pathElement.controllerLabel : pathElement.controller}</td>
+			<td>
+				${not empty pathElement.controller.label ? pathElement.controller.label : pathElement.controllerBeanName}
+			</td>
 		</tr>
 	</c:if>
 	<tr>
-		<td>Full Path</td>
-		<td><a href="${pathElement.fullPath}">${pathElement.fullPath}</a></td>
+		<td>Domain</td>
+		<td>
+			<c:if test="${empty pathElement.controller.domainClass}">
+				<span class="label">Not Supported</span>
+			</c:if>
+			<c:if test="${not empty pathElement.controller.domainClass}">
+				<c:if test="${empty pathElement.controllerDomain}">
+					<span class="label label-important">WARNING: Domain Required!</span>
+				</c:if>
+				<c:if test="${not empty pathElement.controllerDomain}">
+					${pathElement.controllerDomain.domainName}
+				</c:if>
+			</c:if>
+		</td>
 	</tr>
 	<tr>
 		<td>Login is required</td>

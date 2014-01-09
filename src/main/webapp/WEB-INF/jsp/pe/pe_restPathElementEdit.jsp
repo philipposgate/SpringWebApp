@@ -1,5 +1,29 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
+<script type="text/javascript">
+	var currentControllerBeanName = "${pathElement.controllerBeanName}";
+	
+	$(document).ready(function(){
+		$("select[name=controller]").change(function(){
+			if ($(this).val() == currentControllerBeanName)
+			{
+				$("div#controllerDomain").show();
+			}
+			else
+			{
+				$("div#controllerDomain").hide();
+			}
+		});
+	});
+	
+	function createNewDomain()
+	{
+		$.post("/rest/admin/pe/${pathElement.id}/createNewDomain",{},function(){
+			editPE(${pathElement.id});
+		});
+	}
+</script>
+
 <form id="pathElementForm">
 	<input type="hidden" name="pathElementId" value="${pathElement.id}">
 	
@@ -27,12 +51,18 @@
 				<td>
 					<select name="controller" style="width:auto;">
 						<c:forEach var="controller" items="${controllers}">
-							<option value="${controller.key}" ${pathElement.controller == controller.key ? "selected" : ""}>${controller.value.label}</option>
+							<option value="${controller.key}" ${pathElement.controllerBeanName == controller.key ? "selected" : ""}>${controller.value.label}</option>
 						</c:forEach>
 					</select>
 				</td>
 			</tr>
 		</c:if>
+		<tr>
+			<td>Domain</td>
+			<td>
+				<%@ include file="pe_restPathElementEditDomain.jsp"%>
+			</td>
+		</tr>
 		<tr>
 			<td>Login is required</td>
 			<td><input type="checkbox" name="authRequired" ${pathElement.authRequired ? "checked" : ""} /></td>

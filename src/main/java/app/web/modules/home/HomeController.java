@@ -5,28 +5,33 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.PathElementAbstractController;
+import app.web.PathElementController;
 
 @Controller
-public class HomeController extends PathElementAbstractController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+public class HomeController extends PathElementController
+{
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    public ModelAndView displayHome(HttpServletRequest request,
-            HttpServletResponse response) {
-    	logger.info("displayHome");
+    @Override
+    public ModelAndView displayHome(HttpServletRequest request, HttpServletResponse response)
+    {
+        logger.info("displayHome");
         ModelAndView mv = new ModelAndView("home/home");
         return mv;
     }
 
-	@Override
-	public String getLabel() 
-	{
-		return "Home Controller";
-	}
+    @Override
+    public String getLabel()
+    {
+        return "Home Controller";
+    }
 
+    @Override
+    public Class getDomainClass()
+    {
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-package app.web.modules;
+package app.web.modules.calendar;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,24 +9,26 @@ import org.springframework.web.servlet.ModelAndView;
 import app.web.PathElementController;
 
 @Controller
-public class DefaultController extends PathElementController
+public class CalendarController extends PathElementController<CalendarDomain>
 {
+
     @Override
     public ModelAndView displayHome(HttpServletRequest request, HttpServletResponse response)
     {
-        return new ModelAndView("default/default_home");
+        CalendarDomain d = getDomain(request);
+        return new ModelAndView("cal/cal_adminHome");
     }
 
     @Override
     public String getLabel()
     {
-        return "Default Controller";
+        return "Calendar Admin Module";
     }
 
     @Override
-    public Class getDomainClass()
+    public Class<CalendarDomain> getDomainClass()
     {
-        return null;
+        return CalendarDomain.class;
     }
 
 }
