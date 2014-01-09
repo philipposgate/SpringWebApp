@@ -7,7 +7,7 @@
 	</c:if>
 	
 	<c:if test="${not empty pathElement.controllerDomain}">
-		<input type="text" name="domainName" value="${pathElement.controllerDomain.domainName}">
+		<input type="text" name="domainName" value="${pathElement.controllerDomain.domainName}">  (${pathElement.controller.domainClass.simpleName}, ID:${pathElement.domainId})
 	</c:if>
 </c:if>
 

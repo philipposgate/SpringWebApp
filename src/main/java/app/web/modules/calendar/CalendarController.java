@@ -22,7 +22,7 @@ public class CalendarController extends PathElementController<CalendarDomain>
     @Override
     public String getLabel()
     {
-        return "Calendar Admin Module";
+        return "Calendar Module";
     }
 
     @Override

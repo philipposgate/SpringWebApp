@@ -33,7 +33,7 @@
 					<span class="label label-important">WARNING: Domain Required!</span>
 				</c:if>
 				<c:if test="${not empty pathElement.controllerDomain}">
-					${pathElement.controllerDomain.domainName}
+					${pathElement.controllerDomain.domainName} (${pathElement.controller.domainClass.simpleName}, ID:${pathElement.domainId})
 				</c:if>
 			</c:if>
 		</td>
