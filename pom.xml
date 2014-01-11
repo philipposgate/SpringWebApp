@@ -253,7 +253,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.7</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.tiles</groupId>
@@ -264,16 +264,6 @@
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
 			<version>1.0.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		    <version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-calendar</artifactId>
-			<version>v3-rev67-1.17.0-rc</version>
 		</dependency>
    	</dependencies>
 
