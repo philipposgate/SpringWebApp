@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.common.pathElement.PathElementController;
+import app.core.pathElement.PathElementController;
 
 @Controller
 public class DefaultController extends PathElementController

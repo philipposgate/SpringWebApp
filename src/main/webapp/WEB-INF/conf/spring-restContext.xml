@@ -14,8 +14,9 @@
 	<!-- Activate Component Scanner -->
 	<context:component-scan base-package="app" annotation-config="true" >
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-		<context:exclude-filter type="assignable" expression="app.common.pathElement.PathElementHandlerMapping"/>
-		<context:exclude-filter type="assignable" expression="app.common.pathElement.PathElementController"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<context:exclude-filter type="assignable" expression="app.core.pathElement.PathElementHandlerMapping"/>
+		<context:exclude-filter type="assignable" expression="app.core.pathElement.PathElementController"/>
 	</context:component-scan>
 
 	<!-- Enables the Spring MVC @Controller programming model -->

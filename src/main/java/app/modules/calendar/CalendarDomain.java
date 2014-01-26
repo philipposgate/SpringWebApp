@@ -4,8 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import app.common.AbstractEntity;
-import app.common.Domain;
+import app.core.AbstractEntity;
+import app.core.Domain;
 
 @Entity
 @Table(name = "calendar_domain")

@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import app.common.Domain;
+import app.core.Domain;
 import app.common.menu.MenuItem;
-import app.common.pathElement.PathElement;
-import app.common.pathElement.PathElementDAO;
-import app.common.pathElement.PathElementService;
-import app.common.rest.AbstractRestController;
+import app.core.pathElement.PathElement;
+import app.core.pathElement.PathElementDAO;
+import app.core.pathElement.PathElementService;
+import app.core.rest.AbstractRestController;
 import app.common.utils.StringUtils;
 
 @Controller

@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.common.menu.MenuItem;
-import app.common.pathElement.PathElement;
-import app.common.pathElement.PathElementService;
-import app.common.user.UserService;
+import app.core.pathElement.PathElement;
+import app.core.pathElement.PathElementService;
+import app.core.user.UserService;
 
 @Component
 public class BaseTemplateViewPreparer implements ViewPreparer
