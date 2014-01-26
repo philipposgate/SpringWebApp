@@ -8,7 +8,8 @@
 			<%-- jstree bug fix - see: https://github.com/vakata/jstree/issues/174 --%>
 			#jstree-marker-line {pointer-events: none;}
 			
-			table.restApiTable tbody tr:hover {font-weight:bold;}
+			table#restApiTable tbody tr:hover td {font-weight:bold;cursor:pointer;}
+			table#restApiTable tbody tr:active td {font-weight:bold;cursor:pointer;color:red;}
 		</style>
 
 		<script type="text/javascript">
