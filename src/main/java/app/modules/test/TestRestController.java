@@ -1,4 +1,4 @@
-package app.rest.modules.test;
+package app.modules.test;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "test/{domainId}")
-public class TestController {
+public class TestRestController {
 
 	@RequestMapping(value = "test1")
 	@ResponseBody

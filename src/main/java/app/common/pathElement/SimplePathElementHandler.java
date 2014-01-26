@@ -1,4 +1,4 @@
-package app.web;
+package app.common.pathElement;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package app.web;
+package app.common.pathElement;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
-
-import app.common.pathElement.PathElementService;
 
 @Component
 public class PathElementHandlerMapping extends SimplePathElementHandler implements InitializingBean

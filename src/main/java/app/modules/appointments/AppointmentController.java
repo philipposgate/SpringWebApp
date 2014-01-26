@@ -1,4 +1,4 @@
-package app.rest.modules.appointments;
+package app.modules.appointments;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ import com.google.api.services.calendar.model.Events;
 
 import app.common.google.GoogleCalendarService;
 import app.common.google.GoogleEmailerService;
+import app.common.rest.AbstractRestController;
 import app.common.utils.DateUtils;
 import app.common.utils.StringUtils;
-import app.rest.AbstractRestController;
 
 @Controller
 @RequestMapping(value = "appts")

@@ -1,4 +1,4 @@
-package app.rest;
+package app.modules.app;
 
 import java.util.Date;
 import java.util.Map;
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import app.common.AppService;
 import app.common.google.GoogleEmailerService;
+import app.common.rest.AbstractRestController;
 import app.common.user.User;
 import app.common.user.UserDAO;
 import app.common.user.UserService;

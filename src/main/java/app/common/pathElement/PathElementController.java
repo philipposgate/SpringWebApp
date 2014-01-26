@@ -1,4 +1,4 @@
-package app.web;
+package app.common.pathElement;
 
 import java.util.List;
 
@@ -15,8 +15,6 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver;
 
 import app.common.Domain;
-import app.common.pathElement.PathElement;
-import app.common.pathElement.PathElementService;
 
 public abstract class PathElementController<D extends Domain> extends MultiActionController
 {

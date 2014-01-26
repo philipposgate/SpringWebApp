@@ -1,4 +1,4 @@
-package app.rest;
+package app.common.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;

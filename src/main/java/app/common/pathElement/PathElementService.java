@@ -32,8 +32,6 @@ import app.common.user.Role;
 import app.common.user.RoleDAO;
 import app.common.user.User;
 import app.common.user.UserService;
-import app.web.PathElementController;
-import app.web.PathElementHandlerMapping;
 
 @Service
 public class PathElementService implements InitializingBean

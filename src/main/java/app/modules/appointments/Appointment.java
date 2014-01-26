@@ -1,4 +1,4 @@
-package app.rest.modules.appointments;
+package app.modules.appointments;
 
 import java.util.Date;
 

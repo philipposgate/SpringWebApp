@@ -15,9 +15,11 @@
 	
 	
 	<!-- Activate Component Scanner -->
-	<context:component-scan base-package="app.common" annotation-config="true" >
-		<context:exclude-filter type="regex" expression="app.rest.*"/>
-		<context:exclude-filter type="regex" expression="app.web.*"/>
+	<context:component-scan base-package="app" annotation-config="true" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="assignable" expression="app.common.pathElement.PathElementHandlerMapping"/>
+		<context:exclude-filter type="assignable" expression="app.common.pathElement.PathElementController"/>
+		<context:exclude-filter type="assignable" expression="app.common.rest.AbstractRestController"/>
 	</context:component-scan>
 	
 	<!-- Multipart Resolver -->

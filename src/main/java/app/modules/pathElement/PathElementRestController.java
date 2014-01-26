@@ -1,4 +1,4 @@
-package app.rest.modules.pathElement;
+package app.modules.pathElement;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ import app.common.menu.MenuItem;
 import app.common.pathElement.PathElement;
 import app.common.pathElement.PathElementDAO;
 import app.common.pathElement.PathElementService;
+import app.common.rest.AbstractRestController;
 import app.common.utils.StringUtils;
-import app.rest.AbstractRestController;
 
 @Controller
 @RequestMapping(value = "admin/pe")

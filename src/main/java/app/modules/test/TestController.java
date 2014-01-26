@@ -1,4 +1,4 @@
-package app.web.modules.foo;
+package app.modules.test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,27 +6,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-import app.web.PathElementController;
+import app.common.pathElement.PathElementController;
+
 
 @Controller
-public class FooWebController extends PathElementController
+public class TestController extends PathElementController
 {
 
-    @Override
+	@Override
     public ModelAndView displayHome(HttpServletRequest request, HttpServletResponse response)
     {
-        return new ModelAndView("foo/foo_home");
+        ModelAndView mv = new ModelAndView("test/test_home");
+        return mv;
     }
 
-    @Override
-    public String getLabel()
-    {
-        return "Foo Controller";
-    }
-
-    @Override
+	@Override
     public Class getDomainClass()
     {
-        return null;
+	    return null;
     }
+
 }

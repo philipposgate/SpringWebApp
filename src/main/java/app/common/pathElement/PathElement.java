@@ -11,7 +11,6 @@ import javax.persistence.Transient;
 import app.common.AbstractEntity;
 import app.common.Domain;
 import app.common.user.Role;
-import app.web.PathElementController;
 
 @Entity
 @Table(name = "path_element")

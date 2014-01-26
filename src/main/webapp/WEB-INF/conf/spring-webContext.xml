@@ -12,7 +12,10 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
 	<!-- Activate Component Scanner -->
-	<context:component-scan base-package="app.web" />
+	<context:component-scan base-package="app" annotation-config="true" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:exclude-filter type="assignable" expression="app.common.rest.AbstractRestController"/>
+	</context:component-scan>
 
 	<!-- Make DispatcherServlet the 'default servlet' -->
 	<mvc:default-servlet-handler />
