@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UrlPathHelper;
 
 import app.common.menu.MenuItem;
+import app.core.pathElement.handlerMapping.PathElementHandlerMapping;
 import app.core.shiro.AnyRolesAuthorizationFilter;
 import app.core.user.Role;
 import app.core.user.RoleDAO;

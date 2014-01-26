@@ -13,7 +13,6 @@
 							<li><a href="/rest/admin/pe">Web Content Management</a></li>
 							<li><a href="/rest/admin/users">User Management</a></li>
 							<li><a href="/rest/admin/emailMgt">Gmail Management</a></li>
-							<li><a href="/rest/admin/endPoints">REST End-Points</a></li>
 						</ul>
 					</div>
 				</div>

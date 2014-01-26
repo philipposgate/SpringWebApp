@@ -17,7 +17,7 @@
 	<!-- Activate Component Scanner -->
 	<context:component-scan base-package="app" annotation-config="true" >
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-		<context:exclude-filter type="assignable" expression="app.core.pathElement.PathElementHandlerMapping"/>
+		<context:exclude-filter type="assignable" expression="app.core.pathElement.handlerMapping.PathElementHandlerMapping"/>
 	</context:component-scan>
 	
 	<!-- Multipart Resolver -->

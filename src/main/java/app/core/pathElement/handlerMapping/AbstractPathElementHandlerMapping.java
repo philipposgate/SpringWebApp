@@ -1,4 +1,4 @@
-package app.core.pathElement;
+package app.core.pathElement.handlerMapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
