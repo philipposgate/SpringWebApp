@@ -7,13 +7,18 @@
 		<style>
 			<%-- jstree bug fix - see: https://github.com/vakata/jstree/issues/174 --%>
 			#jstree-marker-line {pointer-events: none;}
+			
+			table.restApiTable tbody tr:hover {font-weight:bold;}
 		</style>
 
 		<script type="text/javascript">
 			app.addComponent("jsTree");
+			app.addComponent("tableSorter");
 			
 			$(document).ready(function() {
 			
+				$("#restApiTable").tablesorter({sortList: [[1,0]], widgets: ['zebra']});
+
 				$(document).on("click", "input[name=authRequired]", function() {
 					if ($(this).is(":checked"))
 						$(".securityConfig").removeClass("hidden");
@@ -22,6 +27,7 @@
 				});
 				
 				initTree();
+				
 			});
 
 			function initTree()
@@ -155,16 +161,78 @@
 		
 		<h1><img class="img-rounded" src="/assets/images/classy_mustach_dude.jpg" style="max-height:50px;"> Web Content Management</h1>
 		
-		<div class="content-fluid">
+		<div class="content-fluid shadowBox">
 			<div class="row-fluid">
 				<div class="span4">
-					<div class="well well-small"><B>Web Content Tree</B></div>
+					<div class="well well-small"><B>Path Element Tree</B></div>
 					<div id="peTree"></div>
 					<BR>
 				</div>
 				<div class="span8">
-					<div class="well well-small"><B>Content Element Configuration</B></div>
+					<div class="well well-small"><B>Path Element Configuration</B></div>
 					<div id="pathElementPanel"></div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="content-fluid shadowBox">
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="well well-small"><B>REST API End-Points</B></div>
+
+					<table id="restApiTable" class="tablesorter">
+						<thead>
+							<tr>
+								<th>URL Pattern</th>
+								<th>Controller Class</th>
+								<th>Controller Method:</th>
+								<th>Required Methods:</th>
+								<th>Required Params:</th>
+								<th>Consumes:</th>
+								<th>Produces:</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="entry" items="${handlerMethods}">
+								<tr>
+									<td>
+										<c:if test="${not empty entry.key.patternsCondition.patterns}">
+											<c:forEach var="pattern" items="${entry.key.patternsCondition.patterns}" varStatus="loop">
+												/rest${pattern}<c:if test="${!loop.last}"><BR></c:if>
+											</c:forEach>
+										</c:if>											
+									</td>
+									<td>
+										${entry.value.method.declaringClass.name}
+									</td>
+									<td>
+										${entry.value.method.name}()
+									</td>
+									<td>
+										<c:if test="${not empty entry.key.methodsCondition.methods}">
+											${entry.key.methodsCondition.methods}
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${not empty entry.key.paramsCondition.expressions}">
+											${entry.key.paramsCondition.expressions}
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${not empty entry.key.consumesCondition.expressions}">
+											${entry.key.consumesCondition.expressions}
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${not empty entry.key.consumesCondition.expressions}">
+											${entry.key.producesCondition.expressions}
+										</c:if>
+									</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+
 				</div>
 			</div>
 		</div>

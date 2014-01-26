@@ -33,9 +33,6 @@ public class AppRestController extends AbstractRestController
     private UserDAO userDAO;
 
     @Autowired
-    private RequestMappingHandlerMapping handlerMapping;
-
-    @Autowired
     private GoogleEmailerService gmailService;
 
     @RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
@@ -67,16 +64,6 @@ public class AppRestController extends AbstractRestController
     public String adminHome(Model model)
     {
         return "app/admin/admin_home";
-    }
-
-    @RequestMapping(value = "admin/endPoints")
-    public String endPoints(Model model)
-    {
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping.getHandlerMethods();
-        model.addAttribute("handlerMethods", handlerMethods);
-        model.addAttribute("adminNav", "endPoints");
-
-        return "app/admin/admin_endPoints";
     }
 
     @RequestMapping(value = "admin/users")

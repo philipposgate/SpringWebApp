@@ -99,6 +99,23 @@ var app = {
             loaded : false
         },
 
+//        tableSorter : {
+//            tag : '<script type="text/javascript" src="/assets/scripts/tableSorter/jquery-latest.js"></script>',
+//            dependencies : ["tableSorter_core"],
+//            loaded : false
+//        },
+
+        tableSorter : {
+            tag : '<script type="text/javascript" src="/assets/scripts/tableSorter/jquery.tablesorter.min.js"></script>',
+          dependencies : ["tableSorter_css"],
+            loaded : false
+        },
+
+        tableSorter_css : {
+			tag : '<link href="/assets/scripts/tableSorter/css/style.css" rel="stylesheet" type="text/css" />',
+			loaded : false
+		},
+
         timeOptions : {
             tag : '<script type="text/javascript" src="/assets/scripts/timeOptions/timeOptions.js"></script>',
             loaded : false

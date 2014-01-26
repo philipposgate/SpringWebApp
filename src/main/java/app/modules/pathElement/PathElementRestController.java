@@ -1,6 +1,7 @@
 package app.modules.pathElement;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import app.core.Domain;
 import app.common.menu.MenuItem;
@@ -34,11 +38,18 @@ public class PathElementRestController extends AbstractRestController
     private PathElementDAO pathElementDAO;
 
     @Autowired
+    private RequestMappingHandlerMapping handlerMapping;
+
+    @Autowired
     private PathElementService pathElementService;
 
     @RequestMapping()
-    public String displayHome()
+    public String displayHome(Model model)
     {
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping.getHandlerMethods();
+        model.addAttribute("handlerMethods", handlerMethods);
+        model.addAttribute("adminNav", "endPoints");
+
         return "/pe/pe_restHome";
     }
 

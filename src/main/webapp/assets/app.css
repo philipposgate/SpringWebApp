@@ -38,3 +38,16 @@ form label.error,label.error {
 	display: none !important;
 	visibility: hidden !important;
 }
+
+.box { border:1px solid #BBB; padding:5px; margin:5px; }
+
+.shadowBox {
+	border:1px solid #BBB; 
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:5px; 
+	margin:5px 10px 10px 5px;	
+	-moz-box-shadow: 4px 4px 4px 0px #999;
+	-webkit-box-shadow: 4px 4px 4px 0px #999;
+}
