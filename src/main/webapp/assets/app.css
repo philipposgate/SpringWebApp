@@ -51,3 +51,14 @@ form label.error,label.error {
 	-moz-box-shadow: 4px 4px 4px 0px #999;
 	-webkit-box-shadow: 4px 4px 4px 0px #999;
 }
+
+.calLabel {
+	border:1px solid #BBB; 
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:3px; 
+	margin:5px 10px 5px 5px;	
+	-moz-box-shadow: 1px 1px 1px 0px #999;
+	-webkit-box-shadow: 1px 1px 1px 0px #999;
+}
