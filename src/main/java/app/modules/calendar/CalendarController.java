@@ -11,8 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.common.calendar.Calendar;
+import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarList;
 import app.common.calendar.CalendarService;
+import app.common.calendar.Event;
 import app.core.pathElement.PathElementController;
 import app.core.user.User;
 
@@ -27,20 +29,23 @@ public class CalendarController extends PathElementController<CalendarDomain>
 	{
 		ModelAndView mv = new ModelAndView("cal/cal_adminHome");
 
-		CalendarDomain d = getDomain(request);
+		CalendarDomain calendarDomain = getDomain(request);
 		User userLoggedIn = userService.getUserLoggedIn();
 
-		if (null != userLoggedIn)
+		if (null != calendarDomain && null != userLoggedIn)
 		{
-			List<CalendarList> calLists = calendarService.getCalendarLists(userLoggedIn);
+			List<CalendarList> calLists = calendarService.getCalendarLists(calendarDomain, userLoggedIn);
 
 			if (calLists.isEmpty())
 			{
-				CalendarList calList = calendarService.createCalendarList(userLoggedIn, "My Calendars");
+				CalendarList calList = calendarService.createCalendarList(calendarDomain, userLoggedIn, "My Calendars");
 				Calendar calendar = calendarService.createCalendar(userLoggedIn, "My Calendar");
 				calendarService.bind(calList, calendar);
 				calendarService.populate(calList);
 				calLists.add(calList);
+				
+				Event event = calendarService.createQuickEvent(userLoggedIn, calendar, "My Event");
+				calendarService.bind(calendar, event);
 			}
 			mv.addObject("calLists", calLists);
 		}

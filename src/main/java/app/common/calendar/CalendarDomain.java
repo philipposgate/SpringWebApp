@@ -1,4 +1,4 @@
-package app.modules.calendar;
+package app.common.calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

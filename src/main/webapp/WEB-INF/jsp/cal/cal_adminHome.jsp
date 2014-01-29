@@ -22,9 +22,13 @@
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-			events: "/rest/calendar/${domain.id}/calEvents",
-			allDaySlot: false,
-			editable: true
+			events: "/rest/calendar/${domain.id}/userEvents",
+			allDaySlot: true,
+			selectable: true,
+			editable: true,
+			dayClick: function(date, allDay, jsEvent, view) {alert("dayClick:" + date);},
+			eventClick: function(calEvent, jsEvent, view) {alert('eventClick: ' + calEvent.title);},
+			select: function( startDate, endDate, allDay, jsEvent, view ) {alert('select from ' + startDate + ' to ' + endDate);}
 		});
 		
 		$("#refreshGCalBtn").on("click", function(){$.ajax("/appts/admin/adminAjaxRefreshGoogleCalendar/");});
@@ -37,7 +41,7 @@
 	</div>
 	<div class="span4">
 		<div class="topBottomMargin">
-			<a class="btn btn-small pull-right" href="/appts/admin/adminConfig/"><i class="icon-cog"></i> Configurations</a>
+			<a class="btn btn-small pull-right" href=""><i class="icon-cog"></i> Configurations</a>
 		</div>
 	</div>
 </div>

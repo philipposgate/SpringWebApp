@@ -18,7 +18,9 @@ import app.core.user.User;
 @Table(name = "calendar_list")
 public class CalendarList extends AbstractEntity
 {
-
+    @ManyToOne(fetch=FetchType.EAGER, optional=false)
+	private CalendarDomain calendarDomain;
+	
     @ManyToOne(fetch=FetchType.EAGER)
 	private User owner;
 	
@@ -82,6 +84,16 @@ public class CalendarList extends AbstractEntity
 	public void setCalendars(List<Calendar> calendars)
 	{
 		this.calendars = calendars;
+	}
+
+	public CalendarDomain getCalendarDomain()
+	{
+		return calendarDomain;
+	}
+
+	public void setCalendarDomain(CalendarDomain calendarDomain)
+	{
+		this.calendarDomain = calendarDomain;
 	}
 
 }
