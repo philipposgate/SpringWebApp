@@ -2,20 +2,36 @@
 
 <script type="text/javascript">
 	app.addComponent("fullCalendar");
+	app.addComponent("qtip");
 	app.addComponent("agilityjs");
 	app.addComponent("dateFormat");
-
-	var apptItem = $$({
-		view: {
-			format: '<div class="well"> \
-						<div data-bind="datetime"></div> \
-						<div data-bind="title"></div> \
-					 </div>',
-			style: '&:hover { background-color:#EEE; cursor:pointer;}'
-		}
-	});
 	
 	$(document).ready(function() {
+		
+		var tooltip = $('<div/>').qtip({
+			id: 'fullcalendar',
+			prerender: true,
+			content: {
+				text: ' ',
+				title: {
+					button: true
+				}
+			},
+			position: {
+				my: 'bottom center',
+				at: 'top center',
+				target: 'mouse',
+				viewport: $('#calendar'),
+				adjust: {
+					mouse: false,
+					scroll: false
+				}
+			},
+			show: false,
+			hide: false,
+			style: 'qtip-bootstrap'
+		}).qtip('api');
+		
 		$("#calendar").fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -26,10 +42,25 @@
 			allDaySlot: true,
 			selectable: true,
 			editable: true,
-			dayClick: function(date, allDay, jsEvent, view) {alert("dayClick:" + date);},
-			eventClick: function(calEvent, jsEvent, view) {alert('eventClick: ' + calEvent.title);},
-			select: function( startDate, endDate, allDay, jsEvent, view ) {alert('select from ' + startDate + ' to ' + endDate);}
+			eventClick: function(data, event, view) {
+				var content = '<h3>'+data.title+'</h3>' + 
+				'<p><b>Start:</b> '+data.start+'<br />' + 
+				(data.end && '<p><b>End:</b> '+data.end+'</p>' || '') + 
+				'<br /><a href="javascript:void(0)" class="btn btn-mini eventEditBtn" data-event-id="' + data.id + '">Edit</a>';
+	
+				tooltip.set({
+					'content.text': content
+				})
+				.reposition(event).show(event);
+			},
+			dayClick: function() { tooltip.hide(); },
+			eventResizeStart: function() { tooltip.hide(); },
+			eventDragStart: function() { tooltip.hide(); },
+			viewDisplay: function() { tooltip.hide(); },
+			select: function( startDate, endDate, allDay, jsEvent, view ) {}
 		});
+		
+		$("body").on("click", ".eventEditBtn", function(){ app.buildForm({action:"displayEventEdit",eventId:$(this).data("eventId")}).submit(); });
 		
 		$("#refreshGCalBtn").on("click", function(){$.ajax("/appts/admin/adminAjaxRefreshGoogleCalendar/");});
 	});
@@ -52,12 +83,12 @@
 			<div>
 				<div><B>${calList.title}</B></div>
 				<c:forEach var="c" items="${calList.calendars}">
-					<div class="calLabel" style="margin-left:10px;"><span>${c.title}</div>
+					<div class="calLabel" style="margin-left:10px;">${c.title}</div>
 				</c:forEach>
 			</div>
 		</c:forEach>
 	</div>
-	<div class="span10">
+	<div class="span8">
 		<div id="calendar"></div>
 	</div>
 </div>

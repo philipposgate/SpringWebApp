@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import app.common.calendar.Calendar;
 import app.common.calendar.CalendarDomain;
@@ -65,4 +66,29 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		return CalendarDomain.class;
 	}
 
+	public ModelAndView displayEventEdit(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView mv = new ModelAndView("cal/cal_eventEdit");
+		Event event = calendarService.getEvent(request);
+		mv.addObject("event", event);
+		return mv;
+	}
+	
+	public ModelAndView saveEvent(HttpServletRequest request, HttpServletResponse response)
+	{
+		Event event = calendarService.getEvent(request);
+		
+		if (null == event)
+		{
+			event = new Event();
+		}
+		event.setTitle(request.getParameter("title"));
+		getHt().saveOrUpdate(event);
+		
+		RedirectView rv = new RedirectView(getPathElement(request).getFullPath());
+		rv.addStaticAttribute("action", "displayEventEdit");
+		rv.addStaticAttribute("eventId", event.getId());
+		ModelAndView mv = new ModelAndView(rv);
+		return mv;
+	}
 }

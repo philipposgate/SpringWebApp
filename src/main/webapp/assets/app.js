@@ -99,13 +99,18 @@ var app = {
             loaded : false
         },
 
-//        tableSorter : {
-//            tag : '<script type="text/javascript" src="/assets/scripts/tableSorter/jquery-latest.js"></script>',
-//            dependencies : ["tableSorter_core"],
-//            loaded : false
-//        },
+        qtip : {
+            tag : '<script type="text/javascript" src="/assets/scripts/qtip/jquery.qtip.min.js"></script>',
+          dependencies : ["qtip_css"],
+            loaded : false
+        },
 
-        tableSorter : {
+        qtip_css : {
+			tag : '<link href="/assets/scripts/qtip/jquery.qtip.min.css" rel="stylesheet" type="text/css" />',
+			loaded : false
+		},
+
+		tableSorter : {
             tag : '<script type="text/javascript" src="/assets/scripts/tableSorter/jquery.tablesorter.min.js"></script>',
           dependencies : ["tableSorter_css"],
             loaded : false

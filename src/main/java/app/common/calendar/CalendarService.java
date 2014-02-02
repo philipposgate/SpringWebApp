@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
 import app.common.utils.DateUtils;
+import app.common.utils.StringUtils;
 import app.core.user.User;
 
 @Service
@@ -158,4 +161,20 @@ public class CalendarService
 
 		return getHt().find(hql.toString());
 	}
+
+	public Event getEvent(HttpServletRequest request)
+    {
+	    Event event = null;
+	    
+	    if (null != request.getAttribute("eventId"))
+	    {
+	    	event = (Event) getHt().load(Event.class, (Integer)request.getAttribute("eventId"));
+	    }
+	    else if (StringUtils.isInteger(request.getParameter("eventId")))
+	    {
+	    	event = (Event) getHt().load(Event.class, new Integer(request.getParameter("eventId")));
+	    }
+	    
+	    return event;
+    }
 }
