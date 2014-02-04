@@ -22,6 +22,10 @@
 			<table class="table table-striped">
 				<tbody>
 					<tr>
+						<td>Event ID</td>
+						<td>${event.id}</td>
+					</tr>
+					<tr>
 						<td>Event Title</td>
 						<td><input type="text" name="title" value="${event.title}" autocomplete="off"></td>
 					</tr>

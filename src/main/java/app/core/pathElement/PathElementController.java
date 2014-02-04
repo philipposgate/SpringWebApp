@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -62,15 +59,36 @@ public abstract class PathElementController<D extends Domain> extends MultiActio
 		return pathElementService.getPathElement(request);
 	}
 
+	/**
+	 * All requests that get handled by this controller will pass through this
+	 * method before and after the "action method" gets called. This allows us
+	 * to apply certain global behavior to all HTTP requests.
+	 */
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
 	        throws Exception
 	{
-		ModelAndView mv = super.handleRequestInternal(request, response);
+		ModelAndView mv = null;
 
+		if ("GET".equalsIgnoreCase(request.getMethod()) && !request.getParameterMap().isEmpty())
+		{
+			// We don't like seeing GET parameters in the browser's address-bar,
+			// so when we see a GET that includes parameters, we force the
+			// client to resend the request as a POST...
+			mv = new ModelAndView("pe/pe_repost");
+			mv.addObject("reqParams", request.getParameterMap());
+		}
+		else
+		{
+			// Here's where we run the target ACTION...
+			mv = super.handleRequestInternal(request, response);
+		}
+
+		// Include the PathElement object for the JSP...
 		PathElement pathElement = getPathElement(request);
 		mv.addObject("pathElement", pathElement);
 
+		// Include the Controller's "Domain" object (if any) for the JSP...
 		if (null != getDomainClass())
 		{
 			D domain = getDomain(pathElement.getDomainId());
@@ -80,21 +98,17 @@ public abstract class PathElementController<D extends Domain> extends MultiActio
 			}
 			else
 			{
-				mv = displayDomainError(request);
+				// The PathElement defines a "Domain class" and "Domain ID", but
+				// he Domain was not found in the DB. Therefore handle this as
+				// an
+				// error.
+				mv = new ModelAndView("pe/pe_domainError");
+				mv.addObject("domainClass", getDomainClass());
 			}
 		}
 
 		return mv;
 	}
-
-	private ModelAndView displayDomainError(HttpServletRequest request)
-    {
-	    ModelAndView mv = new ModelAndView("pe/pe_domainError");
-		PathElement pathElement = getPathElement(request);
-		mv.addObject("pathElement", pathElement);
-		mv.addObject("domainClass", getDomainClass());
-	    return mv;
-    }
 
 	public List<D> getAllDomains()
 	{
@@ -107,18 +121,18 @@ public abstract class PathElementController<D extends Domain> extends MultiActio
 		if (null != getDomainClass())
 		{
 			try
-            {
-	            domain = getHt().load(getDomainClass(), domainId);
-	            if (null != domain && null == domain.getId())
-	            {
-	            	domain = null;
-	            }
-            } 
+			{
+				domain = getHt().load(getDomainClass(), domainId);
+				if (null != domain && null == domain.getId())
+				{
+					domain = null;
+				}
+			}
 			catch (Exception e)
-            {
-            	domain = null;
-	            e.printStackTrace();
-            }
+			{
+				domain = null;
+				e.printStackTrace();
+			}
 		}
 		return domain;
 	}
@@ -149,7 +163,8 @@ public abstract class PathElementController<D extends Domain> extends MultiActio
 
 				domain.setDomainName(getDomainClass().getSimpleName() + " " + domain.getId());
 				getHt().update(domain);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}

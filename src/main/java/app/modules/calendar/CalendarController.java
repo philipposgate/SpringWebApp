@@ -88,7 +88,8 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		RedirectView rv = new RedirectView(getPathElement(request).getFullPath());
 		rv.addStaticAttribute("action", "displayEventEdit");
 		rv.addStaticAttribute("eventId", event.getId());
-		ModelAndView mv = new ModelAndView(rv);
-		return mv;
+		rv.addStaticAttribute("successMessage", "Event Saved");
+
+		return new ModelAndView(rv);
 	}
 }

@@ -34,6 +34,10 @@
 
 	<tiles:insertAttribute name="header" />
 
+	<%-- Global "success" and "error" message handlers --%>
+	<c:if test="${not empty successMessage || not empty param.successMessage}"><div class="container-fluid"><div class="successFadeout"><B>${not empty successMessage ? successMessage : param.successMessage}</B></div></div></c:if>
+	<c:if test="${not empty errorMessage || not empty param.errorMessage}"><div class="container-fluid"><div class="errorFadeout"><B>${not empty errorMessage ? errorMessage : param.errorMessage}</B></div></div></c:if>
+
 	<div class="container-fluid">
 
 		<tiles:insertAttribute name="body" />
