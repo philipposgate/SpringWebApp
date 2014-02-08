@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -77,13 +78,8 @@ public class CalendarController extends PathElementController<CalendarDomain>
 	public ModelAndView saveEvent(HttpServletRequest request, HttpServletResponse response)
 	{
 		Event event = calendarService.getEvent(request);
-		
-		if (null == event)
-		{
-			event = new Event();
-		}
-		event.setTitle(request.getParameter("title"));
-		getHt().saveOrUpdate(event);
+		calendarService.bind(event, request);
+		calendarService.save(event);
 		
 		RedirectView rv = new RedirectView(getPathElement(request).getFullPath());
 		rv.addStaticAttribute("action", "displayEventEdit");

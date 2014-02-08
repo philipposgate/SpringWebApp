@@ -17,6 +17,7 @@ import app.common.utils.StringUtils;
 import app.core.user.User;
 
 @Service
+@Transactional
 public class CalendarService
 {
 	@Autowired
@@ -177,5 +178,19 @@ public class CalendarService
 	    }
 	    
 	    return event;
+    }
+
+	public void bind(Event event, HttpServletRequest request)
+    {
+		if (null == event)
+		{
+			event = new Event();
+		}
+		event.setTitle(request.getParameter("title"));
+    }
+
+	public void save(Event event)
+    {
+		getHt().saveOrUpdate(event);
     }
 }
