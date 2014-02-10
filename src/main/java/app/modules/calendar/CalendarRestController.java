@@ -1,5 +1,6 @@
 package app.modules.calendar;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import app.common.calendar.Calendar;
 import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarService;
 import app.common.calendar.Event;
@@ -82,8 +85,47 @@ public class CalendarRestController extends AbstractRestController
 		event.put("allDay", e.isAllDay());
 		event.put("start", DateUtils.formatDate(e.getStartDate(), JSON_DATE_FORMAT));
 		event.put("end", DateUtils.formatDate(e.getEndDate(), JSON_DATE_FORMAT));
+		
+		if (null != e.getCalendar())
+		{
+			event.put("calendar", getCalendarJSON(e.getCalendar()));
+		}
 
 		return event;
 	}
 
+	private JSONObject getCalendarJSON(Calendar c) throws Exception
+    {
+		JSONObject calendar = new JSONObject();
+		calendar.put("id", c.getId());
+		calendar.put("title", c.getTitle());
+	    return calendar;
+    }
+
+	
+	@RequestMapping(value = "createEvent", method = RequestMethod.POST)
+	@ResponseBody
+	public String createEvent(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
+	{		
+		User userLoggedIn = userService.getUserLoggedIn();
+		String title = request.getParameter("title");
+		Calendar calendar = calendarService.getCalendar(request);
+		Date date = DateUtils.parseDate(request.getParameter("eventDate"), "yyyy-MM-dd");
+		
+		// CREATE EVENT...
+		Event event = calendarService.createAllDayEvent(userLoggedIn, calendar, title, date);
+		
+		return getEventJSON(event).toString();
+	}
+	
+	@RequestMapping(value = "deleteEvent", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteEvent(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
+	{		
+		User userLoggedIn = userService.getUserLoggedIn();
+		Event event = calendarService.getEvent(request);
+		calendarService.delete(event);
+		
+		return getEventJSON(event).toString();
+	}
 }

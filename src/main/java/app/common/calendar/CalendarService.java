@@ -91,18 +91,23 @@ public class CalendarService
 		getHt().save(cli);
 	}
 
-	public Event createQuickEvent(User owner, Calendar calendar, String title)
+	public Event createAllDayEvent(User owner, Calendar calendar, String title, Date date)
 	{
-		Date now = new Date();
+		Event e = null;
 
-		Event e = new Event();
-		e.setOwner(owner);
-		e.setCreated(now);
-		e.setTitle(title);
-		e.setAllDay(true);
-		e.setStartDate(now);
-		e.setEndDate(now);
-		getHt().save(e);
+		if (null != owner && null != calendar && !StringUtils.isEmpty(title) && null != date)
+		{
+			e = new Event();
+			e.setOwner(owner);
+			e.setCreated(new Date());
+			e.setTitle(title);
+			e.setAllDay(true);
+			e.setStartDate(DateUtils.getStartDate(date));
+			e.setEndDate(DateUtils.getEndDate(date));
+			getHt().save(e);
+
+			bind(calendar, e);
+		}
 
 		return e;
 	}
@@ -147,50 +152,96 @@ public class CalendarService
 
 		if (null != start && null != end)
 		{
-			hql.append(" and ce.event.startDate between '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
-			        .append("' and '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
+			hql.append(" and ce.event.startDate between '")
+			        .append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT)).append("' and '")
+			        .append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
 		}
 		else if (null != start && null == end)
 		{
 			hql.append(" and ce.event.startDate >= '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
-	        .append("'");
+			        .append("'");
 		}
 		else if (null == start && null != end)
 		{
 			hql.append(" and ce.event.startDate <= '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT))
-	        .append("'");
+			        .append("'");
 		}
 
-		return getHt().find(hql.toString());
+		List<Event> events = getHt().find(hql.toString());
+
+		for (Event event : events)
+		{
+			event.setCalendar(c);
+		}
+
+		return events;
 	}
 
 	public Event getEvent(HttpServletRequest request)
-    {
-	    Event event = null;
-	    
-	    if (null != request.getAttribute("eventId"))
-	    {
-	    	event = (Event) getHt().load(Event.class, (Integer)request.getAttribute("eventId"));
-	    }
-	    else if (StringUtils.isInteger(request.getParameter("eventId")))
-	    {
-	    	event = (Event) getHt().load(Event.class, new Integer(request.getParameter("eventId")));
-	    }
-	    
-	    return event;
-    }
+	{
+		Event event = null;
+
+		if (null != request.getAttribute("eventId"))
+		{
+			event = getHt().load(Event.class, (Integer) request.getAttribute("eventId"));
+		}
+		else if (StringUtils.isInteger(request.getParameter("eventId")))
+		{
+			event = getHt().load(Event.class, new Integer(request.getParameter("eventId")));
+		}
+
+		return event;
+	}
 
 	public void bind(Event event, HttpServletRequest request)
-    {
+	{
 		if (null == event)
 		{
 			event = new Event();
 		}
 		event.setTitle(request.getParameter("title"));
-    }
+	}
 
 	public void save(Event event)
-    {
+	{
 		getHt().saveOrUpdate(event);
+	}
+
+	public void populate(Event event)
+	{
+		List<Calendar> ces = getHt().find("select ce.calendar from CalendarEvent ce where ce.event=?", event);
+
+		if (!ces.isEmpty())
+		{
+			Calendar c = ces.get(0);
+			event.setCalendar(c);
+		}
+	}
+
+	public Calendar getCalendar(HttpServletRequest request)
+	{
+		Calendar calendar = null;
+
+		if (null != request.getAttribute("calendarId"))
+		{
+			calendar = getHt().load(Calendar.class, (Integer) request.getAttribute("calendarId"));
+		}
+		else if (StringUtils.isInteger(request.getParameter("calendarId")))
+		{
+			calendar = getHt().load(Calendar.class, new Integer(request.getParameter("calendarId")));
+		}
+
+		return calendar;
+	}
+
+	public void delete(Event event)
+    {
+	    List<CalendarEvent> ces = getHt().find("from CalendarEvent ce where ce.event=?", event);
+	    for (CalendarEvent ce : ces)
+        {
+	        getHt().delete(ce);
+        }
+	    
+	    getHt().delete(event);
     }
 }

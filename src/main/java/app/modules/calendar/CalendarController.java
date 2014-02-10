@@ -1,5 +1,6 @@
 package app.modules.calendar;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,8 +47,7 @@ public class CalendarController extends PathElementController<CalendarDomain>
 				calendarService.populate(calList);
 				calLists.add(calList);
 				
-				Event event = calendarService.createQuickEvent(userLoggedIn, calendar, "My Event");
-				calendarService.bind(calendar, event);
+				calendarService.createAllDayEvent(userLoggedIn, calendar, "My Event", new Date());
 			}
 			mv.addObject("calLists", calLists);
 		}
@@ -71,6 +71,7 @@ public class CalendarController extends PathElementController<CalendarDomain>
 	{
 		ModelAndView mv = new ModelAndView("cal/cal_eventEdit");
 		Event event = calendarService.getEvent(request);
+		calendarService.populate(event);
 		mv.addObject("event", event);
 		return mv;
 	}

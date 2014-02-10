@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import app.core.AbstractEntity;
 import app.core.user.User;
@@ -42,6 +43,8 @@ public class Event extends AbstractEntity
 	@Column
 	private String location;
 
+	@Transient
+	private Calendar calendar;
 
 	public Date getCreated()
 	{
@@ -131,6 +134,16 @@ public class Event extends AbstractEntity
 	public void setEndDate(Date endDate)
 	{
 		this.endDate = endDate;
+	}
+
+	public Calendar getCalendar()
+	{
+		return calendar;
+	}
+
+	public void setCalendar(Calendar calendar)
+	{
+		this.calendar = calendar;
 	}
 
 }

@@ -22,6 +22,10 @@
 			<table class="table table-striped">
 				<tbody>
 					<tr>
+						<td>Calendar</td>
+						<td>${event.calendar.title}</td>
+					</tr>
+					<tr>
 						<td>Event ID</td>
 						<td>${event.id}</td>
 					</tr>
