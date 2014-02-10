@@ -132,7 +132,7 @@
 		'<p><b>Start:</b> ' + $.fullCalendar.formatDate(data.start, 'ddd, MMMM d') + '<br />' + 
 		(data.end && '<p><b>End:</b> ' + $.fullCalendar.formatDate(data.end, 'ddd, MMMM d') + '</p>' || '') + 
 		'<br /><a href="javascript:void(0)" class="btn btn-small btn-inverse editEventBtn" data-event-id="' + data.id + '">Edit Event</a>' +
-		'<a href="javascript:void(0)" class="btn btn-small btn-important deleteEventBtn">Delete Event</a>';
+		' <a href="javascript:void(0)" class="btn btn-small btn-danger deleteEventBtn">Delete Event</a>';
 
 		viewTip.set('content.title', data.calendar.title);
 		viewTip.set('content.text', content);
