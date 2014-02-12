@@ -145,8 +145,11 @@ public class CalendarRestController extends AbstractRestController
 		{
 			Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
 			Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");
+			boolean allDay = "true".equalsIgnoreCase(request.getParameter("allDay"));
+
 			event.setStartDate(startDate);
 			event.setEndDate(endDate);
+			event.setAllDay(allDay);
 			calendarService.save(event);
 		}
 		

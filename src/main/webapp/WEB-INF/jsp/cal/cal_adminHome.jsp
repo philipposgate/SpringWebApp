@@ -110,12 +110,12 @@
 	
 	function eventResize(event) 
 	{ 
-		updateEventDateTime(event.id, event.start, event.end);
+		updateEventDateTime(event.id, event.start, event.end, event.allDay);
 	}
 	
 	function eventDrop(event) 
 	{ 
-		updateEventDateTime(event.id, event.start, event.end);
+		updateEventDateTime(event.id, event.start, event.end, event.allDay);
 	}
 	
 	function select( startDate, endDate, allDay, jsEvent, view ) 
@@ -225,12 +225,13 @@
 		}, "json");
 	}
 	
-	function updateEventDateTime(eventId, startDate, endDate)
+	function updateEventDateTime(eventId, startDate, endDate, allDay)
 	{
 		var request = new Object();
 		request.eventId = eventId;
 		request.startDate = $.fullCalendar.formatDate(startDate, 'yyyy-MM-dd HH:mm');
 		request.endDate = $.fullCalendar.formatDate(endDate, 'yyyy-MM-dd HH:mm');
+		request.allDay = allDay;
 		request.rnd = Math.floor(Math.random()*10000000);
 
 		$.post("/rest/calendar/${domain.id}/updateEventDateTime", request, function(data, status, xhr) {
