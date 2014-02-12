@@ -20,6 +20,10 @@ import app.core.user.User;
 @Transactional
 public class CalendarService
 {
+	public static final String DATE_FORMAT = "yyyy/MM/dd";
+	public static final String TIME_FORMAT = "h:mm a";
+	public static final String DATETIME_FORMAT = DATE_FORMAT + " " + TIME_FORMAT;
+
 	@Autowired
 	protected SessionFactory sessionFactory;
 
@@ -91,19 +95,29 @@ public class CalendarService
 		getHt().save(cli);
 	}
 
-	public Event createAllDayEvent(User owner, Calendar calendar, String title, Date date)
+	public Event createEvent(User owner, Calendar calendar, String title, Date startDate, Date endDate, boolean allDay)
 	{
 		Event e = null;
 
-		if (null != owner && null != calendar && !StringUtils.isEmpty(title) && null != date)
+		if (null != owner && null != calendar && !StringUtils.isEmpty(title) && null != startDate && null != endDate)
 		{
 			e = new Event();
 			e.setOwner(owner);
 			e.setCreated(new Date());
 			e.setTitle(title);
-			e.setAllDay(true);
-			e.setStartDate(DateUtils.getStartDate(date));
-			e.setEndDate(DateUtils.getEndDate(date));
+			e.setAllDay(allDay);
+			
+			if (allDay)
+			{
+				e.setStartDate(DateUtils.getStartDate(startDate));
+				e.setEndDate(DateUtils.getEndDate(endDate));
+			}
+			else
+			{
+				e.setStartDate(startDate);
+				e.setEndDate(endDate);
+			}
+			
 			getHt().save(e);
 
 			bind(calendar, e);
@@ -200,10 +214,39 @@ public class CalendarService
 			event = new Event();
 		}
 		event.setTitle(request.getParameter("title"));
+		event.setAllDay(null != request.getParameter("allDay"));
+		
+		Date startDate = null;
+		String startDay = request.getParameter("startDay");
+		String startTime = request.getParameter("startTime");
+		
+		Date endDate = null;
+		String endDay = request.getParameter("endDay");
+		String endTime = request.getParameter("endTime");
+		
+		if (event.isAllDay())
+		{
+			startDate = DateUtils.getStartDate(DateUtils.parseDate(startDay, DATE_FORMAT));
+			endDate = DateUtils.getEndDate(DateUtils.parseDate(endDay, DATE_FORMAT));
+		}
+		else
+		{
+			startDate = DateUtils.parseDate(startDay + " " + startTime, DATETIME_FORMAT);
+			endDate = DateUtils.parseDate(endDay + " " + endTime, DATETIME_FORMAT);
+		}
+		
+		if (DateUtils.isBefore(endDate, startDate))
+		{
+			endDate = startDate;
+		}
+		
+		event.setStartDate(startDate);
+		event.setEndDate(endDate);
 	}
 
 	public void save(Event event)
 	{
+		event.setUpdated(new Date());
 		getHt().saveOrUpdate(event);
 	}
 

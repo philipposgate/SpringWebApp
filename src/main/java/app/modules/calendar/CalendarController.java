@@ -47,7 +47,8 @@ public class CalendarController extends PathElementController<CalendarDomain>
 				calendarService.populate(calList);
 				calLists.add(calList);
 				
-				calendarService.createAllDayEvent(userLoggedIn, calendar, "My Event", new Date());
+				Date now = new Date();
+				calendarService.createEvent(userLoggedIn, calendar, "My Event", now, now, true);
 			}
 			mv.addObject("calLists", calLists);
 		}

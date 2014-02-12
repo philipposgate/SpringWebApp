@@ -28,7 +28,7 @@ import app.core.user.User;
 @RequestMapping(value = "calendar/{domainId}")
 public class CalendarRestController extends AbstractRestController
 {
-	private static final String JSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.sZ";
+	private static final String FULLCALENDAR_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.sZ";
 
 	@Autowired
 	protected CalendarService calendarService;
@@ -83,9 +83,9 @@ public class CalendarRestController extends AbstractRestController
 		event.put("id", e.getId());
 		event.put("title", e.getTitle());
 		event.put("allDay", e.isAllDay());
-		event.put("start", DateUtils.formatDate(e.getStartDate(), JSON_DATE_FORMAT));
-		event.put("end", DateUtils.formatDate(e.getEndDate(), JSON_DATE_FORMAT));
-		
+		event.put("start", DateUtils.formatDate(e.getStartDate(), FULLCALENDAR_DATE_FORMAT));
+		event.put("end", DateUtils.formatDate(e.getEndDate(), FULLCALENDAR_DATE_FORMAT));
+
 		if (null != e.getCalendar())
 		{
 			event.put("calendar", getCalendarJSON(e.getCalendar()));
@@ -95,36 +95,60 @@ public class CalendarRestController extends AbstractRestController
 	}
 
 	private JSONObject getCalendarJSON(Calendar c) throws Exception
-    {
+	{
 		JSONObject calendar = new JSONObject();
 		calendar.put("id", c.getId());
 		calendar.put("title", c.getTitle());
-	    return calendar;
-    }
+		return calendar;
+	}
 
-	
 	@RequestMapping(value = "createEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public String createEvent(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
-	{		
+	{
 		User userLoggedIn = userService.getUserLoggedIn();
 		String title = request.getParameter("title");
 		Calendar calendar = calendarService.getCalendar(request);
-		Date date = DateUtils.parseDate(request.getParameter("eventDate"), "yyyy-MM-dd");
-		
+		Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
+		Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");
+		boolean allDay = "true".equalsIgnoreCase(request.getParameter("allDay"));
+
 		// CREATE EVENT...
-		Event event = calendarService.createAllDayEvent(userLoggedIn, calendar, title, date);
-		
+		Event event = calendarService.createEvent(userLoggedIn, calendar, title, startDate, endDate, allDay);
+
 		return getEventJSON(event).toString();
 	}
-	
+
 	@RequestMapping(value = "deleteEvent", method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteEvent(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
-	{		
+	{
 		User userLoggedIn = userService.getUserLoggedIn();
 		Event event = calendarService.getEvent(request);
-		calendarService.delete(event);
+
+		if (userLoggedIn.getId().equals(event.getOwner().getId()))
+		{
+			calendarService.delete(event);
+		}
+
+		return getEventJSON(event).toString();
+	}
+	
+	@RequestMapping(value = "updateEventDateTime", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateEventDateTime(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
+	{
+		User userLoggedIn = userService.getUserLoggedIn();
+		Event event = calendarService.getEvent(request);
+		
+		if (userLoggedIn.getId().equals(event.getOwner().getId()))
+		{
+			Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
+			Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");
+			event.setStartDate(startDate);
+			event.setEndDate(endDate);
+			calendarService.save(event);
+		}
 		
 		return getEventJSON(event).toString();
 	}

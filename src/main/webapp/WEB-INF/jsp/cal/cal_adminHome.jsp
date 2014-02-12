@@ -2,6 +2,7 @@
 
 <style>
 	.qtip {max-width:none;}
+	.editTipWhen, .viewTipWhen {white-space:nowrap;}
 	.editTipWhatExample {font-size:85%;}
 </style>
 
@@ -12,7 +13,7 @@
 	<%-- GLOBAL VARS --%>
 	var viewTip; // qtip api
 	var editTip; // qtip api
-	var eventDate; // set on day click
+	var selection = new Object(); // populated when user selects on day(s)
 	
 	$(document).ready(function() {
 		
@@ -87,10 +88,12 @@
 			editable: true,
 			eventClick: eventClick,
 			dayClick: dayClick,
-			eventResizeStart: function() { viewTip.hide(); },
-			eventDragStart: function() { viewTip.hide(); },
-			viewDisplay: function() { viewTip.hide(); },
-			select: function( startDate, endDate, allDay, jsEvent, view ) {}
+			eventResize: eventResize,
+			eventDrop: eventDrop,
+			select: select,
+			viewDisplay: function() { $(".qtip").hide(); },
+			eventResizeStart: function() { $(".qtip").hide(); },
+			eventDragStart: function() { $(".qtip").hide(); }
 		});
 		
 		$("body").on("click", ".editEventBtn", function(){ app.buildForm({action:"displayEventEdit",eventId:$(this).data("eventId")}).submit(); });
@@ -105,11 +108,64 @@
 // 		});		
 	});
 	
+	function eventResize(event) 
+	{ 
+		updateEventDateTime(event.id, event.start, event.end);
+	}
+	
+	function eventDrop(event) 
+	{ 
+		updateEventDateTime(event.id, event.start, event.end);
+	}
+	
+	function select( startDate, endDate, allDay, jsEvent, view ) 
+	{
+		viewTip.hide();
+		
+		selection.startDate = startDate;
+		selection.endDate = endDate;
+		selection.allDay = allDay;
+
+		var content = $(".editTipContent");
+		$(content).find(".editTipWhen").html(getWhenText(startDate, endDate, allDay));
+		$(content).find("input.editTipWhat").val("");
+		
+		editTip.set('content.text', content);
+		editTip.reposition(jsEvent).show(jsEvent);
+	}
+	
+	function getWhenText(startDate, endDate, allDay)
+	{
+		if (allDay)
+		{
+			if ($.fullCalendar.formatDate(startDate, 'yyyyMMdd') == $.fullCalendar.formatDate(endDate, 'yyyyMMdd'))
+			{
+				return $.fullCalendar.formatDate(startDate, 'ddd, MMMM d');
+			}
+			else
+			{
+				return $.fullCalendar.formatDate(startDate, 'ddd, MMMM d') + " to " + $.fullCalendar.formatDate(endDate, 'ddd, MMMM d');
+			}
+		}
+		else
+		{
+			if ($.fullCalendar.formatDate(startDate, 'yyyyMMdd') == $.fullCalendar.formatDate(endDate, 'yyyyMMdd'))
+			{
+				return $.fullCalendar.formatDate(startDate, 'ddd, MMMM d, h:mm tt') + " to " + $.fullCalendar.formatDate(endDate, 'h:mm tt');
+			}
+			else
+			{
+				return $.fullCalendar.formatDate(startDate, 'ddd, MMMM d, h:mm tt') + " to " + $.fullCalendar.formatDate(endDate, 'ddd, MMMM d, h:mm tt');
+			}
+		}
+	}
+	
 	function dayClick( date, allDay, jsEvent, view ) 
 	{ 
 		viewTip.hide();
 		
-		eventDate = date;
+		selection.startDate = date;
+		selection.allDay = allDay;
 
 		var content = $(".editTipContent");
 		$(content).find(".editTipWhen").html($.fullCalendar.formatDate(date, 'ddd, MMMM d'));
@@ -128,11 +184,12 @@
 	{
 		editTip.hide();
 
-		var content = '<h3>'+data.title+'</h3>' + 
-		'<p><b>Start:</b> ' + $.fullCalendar.formatDate(data.start, 'ddd, MMMM d') + '<br />' + 
-		(data.end && '<p><b>End:</b> ' + $.fullCalendar.formatDate(data.end, 'ddd, MMMM d') + '</p>' || '') + 
+		var content = '<div class="viewTipWhen">' +
+		'<h4>'+data.title+'</h4>' + 
+		'<p>' + getWhenText(data.start, data.end, data.allDay) + '</p>' + 
 		'<br /><a href="javascript:void(0)" class="btn btn-small btn-inverse editEventBtn" data-event-id="' + data.id + '">Edit Event</a>' +
-		' <a href="javascript:void(0)" class="btn btn-small btn-danger deleteEventBtn">Delete Event</a>';
+		' <a href="javascript:void(0)" class="btn btn-small btn-danger deleteEventBtn">Delete Event</a>' +
+		'</div>';
 
 		viewTip.set('content.title', data.calendar.title);
 		viewTip.set('content.text', content);
@@ -143,7 +200,9 @@
 	function createEvent()
 	{
 		var request = $("form", "#qtip-editTip").serializeFormToObject();
-		request.eventDate = $.fullCalendar.formatDate(eventDate, 'yyyy-MM-dd');
+		request.startDate = $.fullCalendar.formatDate(selection.startDate, 'yyyy-MM-dd HH:mm');
+		request.endDate = $.fullCalendar.formatDate(selection.endDate, 'yyyy-MM-dd HH:mm');
+		request.allDay = selection.allDay;
 		request.rnd = Math.floor(Math.random()*10000000);
 
 		$.post("/rest/calendar/${domain.id}/createEvent", request, function(data, status, xhr) {
@@ -165,19 +224,22 @@
 			$("#calendar").fullCalendar("refetchEvents");
 		}, "json");
 	}
+	
+	function updateEventDateTime(eventId, startDate, endDate)
+	{
+		var request = new Object();
+		request.eventId = eventId;
+		request.startDate = $.fullCalendar.formatDate(startDate, 'yyyy-MM-dd HH:mm');
+		request.endDate = $.fullCalendar.formatDate(endDate, 'yyyy-MM-dd HH:mm');
+		request.rnd = Math.floor(Math.random()*10000000);
+
+		$.post("/rest/calendar/${domain.id}/updateEventDateTime", request, function(data, status, xhr) {
+			$("#calendar").fullCalendar("refetchEvents");
+		}, "json");
+	}
+
 </script>
 
-<div class="row-fluid">
-	<div class="span8">
-		<H1>${domain.domainName}</H1>
-	</div>
-	<div class="span4">
-		<div class="topBottomMargin">
-			<a class="btn btn-small pull-right" href=""><i class="icon-cog"></i> Configurations</a>
-		</div>
-	</div>
-</div>
-<HR>
 <div class="row-fluid">
 	<div class="span2">
 		<c:forEach var="calList" items="${calLists}">

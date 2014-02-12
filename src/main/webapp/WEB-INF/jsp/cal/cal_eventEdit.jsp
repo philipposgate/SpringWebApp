@@ -1,8 +1,16 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
+<style>
+	input.date, input.time {
+		width: 8em;
+	}
+</style>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#editorTabs a:first').tab('show');
+		$("input[name=allDay]", "#eventForm").on("click", allDayClick);
+		allDayClick();
 	});
 	
 	function saveEvent()
@@ -21,6 +29,11 @@
 			app.buildForm({action:'displayHome', successMessage: 'Event deleted.'}, '${pathElement.fullPath}').submit();
 		}, "json");
 	}
+	
+	function allDayClick()
+	{
+		$("input[name=allDay]").is(":checked") ? $(".time").hide() : $(".time").show(); 
+	}
 </script>
 
 <div class="row-fluid">
@@ -38,19 +51,21 @@
 		<input type="hidden" name="eventId" value="${event.id}">
 
 		<div>
-			<input type="text" name="title" value="${event.title}" autocomplete="off" style="width: 450px;">
+			<input type="text" name="title" value="${event.title}" style="width: 45em;">
 		</div>
 
 		<div>
-			<input type="text" name="startDate"	value="<fmt:formatDate value='${event.startDate}' pattern='yyyy/MM/dd'/>" autocomplete="off"> 
+			<input class="date" type="text" name="startDay" value="<fmt:formatDate value='${event.startDate}' pattern='yyyy/MM/dd'/>"> 
+			<input class="time" type="text" name="startTime" value="<fmt:formatDate value='${event.startDate}' pattern='h:mm a'/>"> 
 			to 
-			<input type="text" name="endDate" value="<fmt:formatDate value='${event.endDate}' pattern='yyyy/MM/dd'/>" autocomplete="off">
+			<input class="time" type="text" name="endTime" value="<fmt:formatDate value='${event.endDate}' pattern='h:mm a'/>"> 
+			<input class="date" type="text" name="endDay" value="<fmt:formatDate value='${event.endDate}' pattern='yyyy/MM/dd'/>">
 		</div>
 
 		<div>
-			<input type="checkbox" name="allDay" autocomplete="off"	${event.allDay ? "checked" : ""}> All Day 
-			&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 
-			<input type="checkbox" name="repeat" autocomplete="off"> Repeat...
+			<input type="checkbox" name="allDay" ${event.allDay ? "checked" : ""}> All Day 
+			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+			<input type="checkbox" name="repeat"> Repeat...
 		</div>
 
 		<BR>
