@@ -12,6 +12,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.ui.Model;
@@ -22,9 +24,12 @@ import app.core.ByteArrayDownloadView;
 import app.core.PageContent;
 import app.core.user.User;
 import app.core.user.UserService;
+import app.modules.home.HomeController;
 
 public abstract class AbstractRestController
 {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	protected static final String SUCCESS_KEY = "successful";
 
 	@Autowired

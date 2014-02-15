@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,8 @@ import app.core.user.User;
 @Transactional
 public class CalendarService
 {
-	public static final String DATE_FORMAT = "yyyy/MM/dd";
-	public static final String TIME_FORMAT = "h:mm a";
-	public static final String DATETIME_FORMAT = DATE_FORMAT + " " + TIME_FORMAT;
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
 
 	@Autowired
 	protected SessionFactory sessionFactory;
@@ -106,20 +107,13 @@ public class CalendarService
 			e.setCreated(new Date());
 			e.setTitle(title);
 			e.setAllDay(allDay);
-			
-			if (allDay)
-			{
-				e.setStartDate(DateUtils.getStartDate(startDate));
-				e.setEndDate(DateUtils.getEndDate(endDate));
-			}
-			else
-			{
-				e.setStartDate(startDate);
-				e.setEndDate(endDate);
-			}
+			e.setStartDate(startDate);
+			e.setEndDate(endDate);
 			
 			getHt().save(e);
-
+			
+			logger.info(e.toString());
+			
 			bind(calendar, e);
 		}
 
@@ -207,42 +201,6 @@ public class CalendarService
 		return event;
 	}
 
-	public void bind(Event event, HttpServletRequest request)
-	{
-		if (null == event)
-		{
-			event = new Event();
-		}
-		event.setTitle(request.getParameter("title"));
-		event.setAllDay(null != request.getParameter("allDay"));
-		
-		Date startDate = null;
-		String startDay = request.getParameter("startDay");
-		String startTime = request.getParameter("startTime");
-		
-		Date endDate = null;
-		String endDay = request.getParameter("endDay");
-		String endTime = request.getParameter("endTime");
-		
-		if (event.isAllDay())
-		{
-			startDate = DateUtils.getStartDate(DateUtils.parseDate(startDay, DATE_FORMAT));
-			endDate = DateUtils.getEndDate(DateUtils.parseDate(endDay, DATE_FORMAT));
-		}
-		else
-		{
-			startDate = DateUtils.parseDate(startDay + " " + startTime, DATETIME_FORMAT);
-			endDate = DateUtils.parseDate(endDay + " " + endTime, DATETIME_FORMAT);
-		}
-		
-		if (DateUtils.isBefore(endDate, startDate))
-		{
-			endDate = startDate;
-		}
-		
-		event.setStartDate(startDate);
-		event.setEndDate(endDate);
-	}
 
 	public void save(Event event)
 	{

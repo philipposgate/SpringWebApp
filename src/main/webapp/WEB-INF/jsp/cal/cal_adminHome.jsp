@@ -138,7 +138,7 @@
 	{
 		if (allDay)
 		{
-			if ($.fullCalendar.formatDate(startDate, 'yyyyMMdd') == $.fullCalendar.formatDate(endDate, 'yyyyMMdd'))
+			if (!endDate || $.fullCalendar.formatDate(startDate, 'yyyyMMdd') == $.fullCalendar.formatDate(endDate, 'yyyyMMdd'))
 			{
 				return $.fullCalendar.formatDate(startDate, 'ddd, MMMM d');
 			}
@@ -165,6 +165,7 @@
 		viewTip.hide();
 		
 		selection.startDate = date;
+		selection.endDate = date;
 		selection.allDay = allDay;
 
 		var content = $(".editTipContent");
@@ -186,8 +187,14 @@
 
 		var content = '<div class="viewTipWhen">' +
 		'<h4>'+data.title+'</h4>' + 
-		'<p>' + getWhenText(data.start, data.end, data.allDay) + '</p>' + 
-		'<br /><a href="javascript:void(0)" class="btn btn-small btn-inverse editEventBtn" data-event-id="' + data.id + '">Edit Event</a>' +
+		'<p>' + getWhenText(data.start, data.end, data.allDay) + '</p>';
+		
+		if (data.location)
+		{
+			content += '<p>Location: ' + data.location + '</p>';
+		}
+		
+		content += '<br /><a href="javascript:void(0)" class="btn btn-small btn-inverse editEventBtn" data-event-id="' + data.id + '">Edit Event</a>' +
 		' <a href="javascript:void(0)" class="btn btn-small btn-danger deleteEventBtn">Delete Event</a>' +
 		'</div>';
 

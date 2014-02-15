@@ -10,7 +10,6 @@
 	$(document).ready(function() {
 		$('#editorTabs a:first').tab('show');
 		$("input[name=allDay]", "#eventForm").on("click", allDayClick);
-		allDayClick();
 	});
 	
 	function saveEvent()
@@ -32,7 +31,16 @@
 	
 	function allDayClick()
 	{
-		$("input[name=allDay]").is(":checked") ? $(".time").hide() : $(".time").show(); 
+		if ($("input[name=allDay]", "#eventForm").is(":checked"))
+		{
+			$(".time").hide();
+		}
+		else
+		{
+			$("input[name=startTime]", "#eventForm").val("10:00 am");
+			$("input[name=endTime]", "#eventForm").val("11:00 am");
+			$(".time").show();	
+		} 
 	}
 </script>
 
@@ -56,9 +64,9 @@
 
 		<div>
 			<input class="date" type="text" name="startDay" value="<fmt:formatDate value='${event.startDate}' pattern='yyyy/MM/dd'/>"> 
-			<input class="time" type="text" name="startTime" value="<fmt:formatDate value='${event.startDate}' pattern='h:mm a'/>"> 
+			<input class="time" type="text" name="startTime" value="<fmt:formatDate value='${event.startDate}' pattern='h:mm a'/>" style="${event.allDay ? 'display:none;' : ''}"> 
 			to 
-			<input class="time" type="text" name="endTime" value="<fmt:formatDate value='${event.endDate}' pattern='h:mm a'/>"> 
+			<input class="time" type="text" name="endTime" value="<fmt:formatDate value='${event.endDate}' pattern='h:mm a'/>" style="${event.allDay ? 'display:none;' : ''}"> 
 			<input class="date" type="text" name="endDay" value="<fmt:formatDate value='${event.endDate}' pattern='yyyy/MM/dd'/>">
 		</div>
 
@@ -78,6 +86,12 @@
 			<div class="tab-pane" id="home">
 				<table>
 					<tbody>
+						<tr>
+							<td>Location</td>
+							<td>
+								<input type="text" name="location" value="${event.location}">
+							</td>
+						</tr>
 						<tr>
 							<td>Calendar</td>
 							<td>

@@ -21,6 +21,7 @@ import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarService;
 import app.common.calendar.Event;
 import app.common.utils.DateUtils;
+import app.common.utils.StringUtils;
 import app.core.rest.AbstractRestController;
 import app.core.user.User;
 
@@ -85,6 +86,11 @@ public class CalendarRestController extends AbstractRestController
 		event.put("allDay", e.isAllDay());
 		event.put("start", DateUtils.formatDate(e.getStartDate(), FULLCALENDAR_DATE_FORMAT));
 		event.put("end", DateUtils.formatDate(e.getEndDate(), FULLCALENDAR_DATE_FORMAT));
+		
+		if (!StringUtils.isEmpty(e.getLocation()))
+		{
+			event.put("location", e.getLocation());
+		}
 
 		if (null != e.getCalendar())
 		{
@@ -147,10 +153,20 @@ public class CalendarRestController extends AbstractRestController
 			Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");
 			boolean allDay = "true".equalsIgnoreCase(request.getParameter("allDay"));
 
-			event.setStartDate(startDate);
-			event.setEndDate(endDate);
-			event.setAllDay(allDay);
+			if (allDay == event.isAllDay())
+			{
+				event.setStartDate(startDate);
+				event.setEndDate(endDate);
+			}
+			else
+			{
+				event.setAllDay(allDay);
+				event.setStartDate(startDate);
+				event.setEndDate(endDate);
+			}
 			calendarService.save(event);
+			
+			logger.info(event.toString());
 		}
 		
 		return getEventJSON(event).toString();

@@ -18,12 +18,17 @@ import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarList;
 import app.common.calendar.CalendarService;
 import app.common.calendar.Event;
+import app.common.utils.DateUtils;
 import app.core.pathElement.PathElementController;
 import app.core.user.User;
 
 @Controller
 public class CalendarController extends PathElementController<CalendarDomain>
 {
+	public static final String DATE_FORMAT = "yyyy/MM/dd";
+	public static final String TIME_FORMAT = "h:mm a";
+	public static final String DATETIME_FORMAT = DATE_FORMAT + " " + TIME_FORMAT;
+
 	@Autowired
 	protected CalendarService calendarService;
 
@@ -80,8 +85,44 @@ public class CalendarController extends PathElementController<CalendarDomain>
 	public ModelAndView saveEvent(HttpServletRequest request, HttpServletResponse response)
 	{
 		Event event = calendarService.getEvent(request);
-		calendarService.bind(event, request);
+		if (null == event)
+		{
+			event = new Event();
+		}
+		
+		event.setTitle(request.getParameter("title"));
+		event.setLocation(request.getParameter("location"));
+		event.setAllDay(null != request.getParameter("allDay"));
+		
+		Date startDate = null;
+		String startDay = request.getParameter("startDay");
+		String startTime = request.getParameter("startTime");
+		
+		Date endDate = null;
+		String endDay = request.getParameter("endDay");
+		String endTime = request.getParameter("endTime");
+
+		if (event.isAllDay())
+		{
+			startDate = DateUtils.parseDate(startDay, DATE_FORMAT);
+			endDate = DateUtils.parseDate(endDay, DATE_FORMAT);
+		}
+		else
+		{
+			startDate = DateUtils.parseDate(startDay + " " + startTime, DATETIME_FORMAT);
+			endDate = DateUtils.parseDate(endDay + " " + endTime, DATETIME_FORMAT);
+		}
+
+		if (DateUtils.isBefore(endDate, startDate))
+		{
+			endDate = startDate;
+		}
+		
+		event.setStartDate(startDate);
+		event.setEndDate(endDate);
+
 		calendarService.save(event);
+		logger.info(event.toString());
 		
 		RedirectView rv = new RedirectView(getPathElement(request).getFullPath());
 		rv.addStaticAttribute("action", "displayEventEdit");

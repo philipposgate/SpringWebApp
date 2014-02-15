@@ -146,4 +146,9 @@ public class Event extends AbstractEntity
 		this.calendar = calendar;
 	}
 
+	@Override
+	public String toString()
+	{
+	    return super.toString() + " [start: " + startDate + "] [end" + endDate + "]";
+	}
 }
