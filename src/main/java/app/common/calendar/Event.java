@@ -149,6 +149,6 @@ public class Event extends AbstractEntity
 	@Override
 	public String toString()
 	{
-	    return super.toString() + " [start: " + startDate + "] [end" + endDate + "]";
+	    return super.toString() + " [start: " + startDate + "] [end: " + endDate + "]";
 	}
 }

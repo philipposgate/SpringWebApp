@@ -151,19 +151,15 @@ public class CalendarRestController extends AbstractRestController
 		{
 			Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
 			Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");
-			boolean allDay = "true".equalsIgnoreCase(request.getParameter("allDay"));
+			if (null == endDate || DateUtils.isBefore(endDate, startDate))
+			{
+				endDate = startDate;
+			}
+			event.setStartDate(startDate);
+			event.setEndDate(endDate);
 
-			if (allDay == event.isAllDay())
-			{
-				event.setStartDate(startDate);
-				event.setEndDate(endDate);
-			}
-			else
-			{
-				event.setAllDay(allDay);
-				event.setStartDate(startDate);
-				event.setEndDate(endDate);
-			}
+			event.setAllDay("true".equalsIgnoreCase(request.getParameter("allDay")));
+
 			calendarService.save(event);
 			
 			logger.info(event.toString());
