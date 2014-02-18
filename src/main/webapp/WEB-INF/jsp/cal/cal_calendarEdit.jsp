@@ -6,11 +6,15 @@
 	}
 	.colorPik {float:left;margin:3px;width:15px;height:15px;}
 	.colorPik:hover {cursor:pointer;}
+	.colorPikSelect {border:3px solid black;}
 </style>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(document).on("click", ".colorPik", function() {
+			$(".colorPik").removeClass("colorPikSelect");
+			$(this).addClass("colorPikSelect");
+			
 			$("input[name=colorTheme]", "#calendarForm").val($(this).data("theme"));
 		});
 	});
@@ -51,7 +55,7 @@
 				<td>
 					<div>
 						<c:forEach var="color" items="${colorThemes}">
-							<div class="colorPik" style="background-color:${color.background};" data-theme="${color}"></div>
+							<div class="colorPik ${calendar.colorBackground == color.background ? 'colorPikSelect' : ''}" style="background-color:${color.background};" data-theme="${color}"></div>
 						</c:forEach>
 						<div style="clear:both;"></div>
 					</div>

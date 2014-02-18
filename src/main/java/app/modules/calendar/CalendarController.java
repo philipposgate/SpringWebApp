@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -191,6 +192,7 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		CalendarList calList = calendarService.getCalendarList(request);
 		Calendar cal = calendarService.getCalendar(request);
 		String title = request.getParameter("title");
+		String colorTheme = request.getParameter("colorTheme");
 		User userLoggedIn = userService.getUserLoggedIn();
 
 		if (null == cal)
@@ -201,12 +203,15 @@ public class CalendarController extends PathElementController<CalendarDomain>
 
 		cal.setTitle(title);
 
-		COLOR_THEME theme = COLOR_THEME.valueOf(request.getParameter("colorTheme"));
-
-		if (null != theme)
+		if (!StringUtils.isEmpty(colorTheme))
 		{
-			cal.setColorBackground(theme.getBackground());
-			cal.setColorForeground(theme.getForeground());
+			COLOR_THEME theme = COLOR_THEME.valueOf(colorTheme);
+
+			if (null != theme)
+			{
+				cal.setColorBackground(theme.getBackground());
+				cal.setColorForeground(theme.getForeground());
+			}
 		}
 
 		calendarService.save(cal);

@@ -29,9 +29,17 @@ public class CalendarService
 	public static final String BLACK = "#000000";
     
     public static enum COLOR_THEME {
-    	GREEN("#008000", WHITE),
+    	GREEN("#228B22", WHITE),
+    	PINK("#FFA6C9", BLACK),
     	AF_BLUE("#5D8AA8", WHITE),
-    	AMETHYST("#008000", WHITE),
+    	AMETHYST("#9966CC", WHITE),
+    	CAPRI("#00BFFF", BLACK),
+    	RED("#FF0038", WHITE),
+    	CHROME_YELLOW("#FFA700", WHITE),
+    	CYBER_YELLOW("#FFD300", BLACK),
+    	DARK_KHAKI("#BDB76B", BLACK),
+    	KEPPEL("#3AB09E", BLACK),
+    	TAUPE("#B38B6D", WHITE),
     	SAE("#FF7E00", BLACK);
     	
     	private String background;
