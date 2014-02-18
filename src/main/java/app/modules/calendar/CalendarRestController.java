@@ -67,7 +67,7 @@ public class CalendarRestController extends AbstractRestController
 		{
 			try
 			{
-				events.put(getEventJSON(e));
+				events.put(getFullCalendarEvent(e));
 			}
 			catch (Exception e1)
 			{
@@ -78,7 +78,7 @@ public class CalendarRestController extends AbstractRestController
 		return events.toString();
 	}
 
-	private JSONObject getEventJSON(Event e) throws Exception
+	private JSONObject getFullCalendarEvent(Event e) throws Exception
 	{
 		JSONObject event = new JSONObject();
 		event.put("id", e.getId());
@@ -94,18 +94,21 @@ public class CalendarRestController extends AbstractRestController
 
 		if (null != e.getCalendar())
 		{
-			event.put("calendar", getCalendarJSON(e.getCalendar()));
+			Calendar calendar = e.getCalendar();
+			
+			if (!StringUtils.isEmpty(calendar.getColorBackground()) && !StringUtils.isEmpty(calendar.getColorForeground()))
+			{
+				event.put("color", calendar.getColorBackground());
+				event.put("textColor", calendar.getColorForeground());
+			}
+			
+			JSONObject c = new JSONObject();
+			c.put("id", calendar.getId());
+			c.put("title", calendar.getTitle());
+			event.put("calendar", c);
 		}
 
 		return event;
-	}
-
-	private JSONObject getCalendarJSON(Calendar c) throws Exception
-	{
-		JSONObject calendar = new JSONObject();
-		calendar.put("id", c.getId());
-		calendar.put("title", c.getTitle());
-		return calendar;
 	}
 
 	@RequestMapping(value = "createEvent", method = RequestMethod.POST)
@@ -122,7 +125,7 @@ public class CalendarRestController extends AbstractRestController
 		// CREATE EVENT...
 		Event event = calendarService.createEvent(userLoggedIn, calendar, title, startDate, endDate, allDay);
 
-		return getEventJSON(event).toString();
+		return getFullCalendarEvent(event).toString();
 	}
 
 	@RequestMapping(value = "deleteEvent", method = RequestMethod.POST)
@@ -137,7 +140,7 @@ public class CalendarRestController extends AbstractRestController
 			calendarService.delete(event);
 		}
 
-		return getEventJSON(event).toString();
+		return getFullCalendarEvent(event).toString();
 	}
 	
 	@RequestMapping(value = "updateEventDateTime", method = RequestMethod.POST)
@@ -165,6 +168,16 @@ public class CalendarRestController extends AbstractRestController
 			logger.info(event.toString());
 		}
 		
-		return getEventJSON(event).toString();
+		return getFullCalendarEvent(event).toString();
+	}
+	
+	@RequestMapping(value = "updateCalendarViz/{calendarId}", method = RequestMethod.PUT)
+	@ResponseBody
+	public String updateCalendarViz(@PathVariable("domainId") Integer domainId, @PathVariable String calendarId, HttpServletRequest request)
+	{
+		Calendar cal = getHt().load(Calendar.class, new Integer(calendarId));
+		cal.setVisible("true".equals(request.getParameter("visible")));
+		calendarService.save(cal);
+		return "{}";
 	}
 }

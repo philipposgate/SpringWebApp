@@ -39,6 +39,9 @@ public class Calendar extends AbstractEntity
 
 	@Column
 	private String colorBackground;
+	
+	@Column
+	private boolean visible;
 
 	public User getOwner()
 	{
@@ -118,5 +121,15 @@ public class Calendar extends AbstractEntity
 	public void setColorBackground(String colorBackground)
 	{
 		this.colorBackground = colorBackground;
+	}
+
+	public boolean isVisible()
+	{
+		return visible;
+	}
+
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
 	}
 }

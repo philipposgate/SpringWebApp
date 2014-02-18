@@ -2,7 +2,9 @@ package app.common.calendar;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,8 +25,34 @@ import app.core.user.User;
 public class CalendarService
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	public static final String WHITE = "#FFFFFF";
+	public static final String BLACK = "#000000";
     
-
+    public static enum COLOR_THEME {
+    	GREEN("#008000", WHITE),
+    	AF_BLUE("#5D8AA8", WHITE),
+    	AMETHYST("#008000", WHITE),
+    	SAE("#FF7E00", BLACK);
+    	
+    	private String background;
+    	private String foreground;
+    	private COLOR_THEME(String background, String foreground)
+    	{
+    		this.background = background;
+    		this.foreground = foreground;
+    	}
+    	
+    	public String getBackground()
+    	{
+    		return this.background;
+    	}
+    	
+    	public String getForeground()
+    	{
+    		return this.foreground;
+    	}
+    }
+    
 	@Autowired
 	protected SessionFactory sessionFactory;
 
@@ -82,7 +110,10 @@ public class CalendarService
 		Calendar c = new Calendar();
 		c.setCreated(new Date());
 		c.setOwner(owner);
-		c.setTitle(title);
+		c.setTitle(StringUtils.isEmpty(title) ? "(no title)" : title);
+		c.setColorBackground("#3a87ad");
+		c.setColorForeground("#fff");
+		c.setVisible(true);
 		getHt().save(c);
 
 		return c;
@@ -100,12 +131,12 @@ public class CalendarService
 	{
 		Event e = null;
 
-		if (null != owner && null != calendar && !StringUtils.isEmpty(title) && null != startDate && null != endDate)
+		if (null != owner && null != calendar && null != startDate && null != endDate)
 		{
 			e = new Event();
 			e.setOwner(owner);
 			e.setCreated(new Date());
-			e.setTitle(title);
+			e.setTitle(StringUtils.isEmpty(title) ? "(no title)" : title);
 			e.setAllDay(allDay);
 			e.setStartDate(startDate);
 			e.setEndDate(endDate);
@@ -126,6 +157,8 @@ public class CalendarService
 		ce.setCalendar(calendar);
 		ce.setEvent(event);
 		getHt().save(ce);
+		
+		event.setCalendar(calendar);
 	}
 
 	public List<Event> getEvents(CalendarDomain calendarDomain, User owner, Date start, Date end)
@@ -140,7 +173,10 @@ public class CalendarService
 				List<Calendar> cals = getCalendars(cl);
 				for (Calendar c : cals)
 				{
-					el.addAll(getEvents(c, start, end));
+					if (c.isVisible())
+					{
+						el.addAll(getEvents(c, start, end));
+					}
 				}
 			}
 		}
@@ -244,5 +280,27 @@ public class CalendarService
         }
 	    
 	    getHt().delete(event);
+    }
+
+	public void save(Calendar cal)
+    {
+		cal.setUpdated(new Date());
+		getHt().saveOrUpdate(cal);
+    }
+
+	public CalendarList getCalendarList(HttpServletRequest request)
+    {
+		CalendarList calendarList = null;
+
+		if (null != request.getAttribute("calendarListId"))
+		{
+			calendarList = getHt().load(CalendarList.class, (Integer) request.getAttribute("calendarListId"));
+		}
+		else if (StringUtils.isInteger(request.getParameter("calendarListId")))
+		{
+			calendarList = getHt().load(CalendarList.class, new Integer(request.getParameter("calendarListId")));
+		}
+
+		return calendarList;
     }
 }

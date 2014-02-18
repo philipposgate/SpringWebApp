@@ -59,6 +59,7 @@
 		<input type="hidden" name="eventId" value="${event.id}">
 
 		<div>
+			<div>Event Title</div>
 			<input type="text" name="title" value="${event.title}" style="width: 45em;">
 		</div>
 
