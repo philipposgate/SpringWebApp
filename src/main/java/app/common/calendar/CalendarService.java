@@ -38,7 +38,7 @@ public class CalendarService
     	CHROME_YELLOW("#FFA700", WHITE),
     	CYBER_YELLOW("#FFD300", BLACK),
     	DARK_KHAKI("#BDB76B", BLACK),
-    	KEPPEL("#3AB09E", BLACK),
+    	KEPPEL("#3AB09E", WHITE),
     	TAUPE("#B38B6D", WHITE),
     	SAE("#FF7E00", BLACK);
     	

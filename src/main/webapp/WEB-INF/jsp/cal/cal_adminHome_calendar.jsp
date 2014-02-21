@@ -183,6 +183,9 @@
 		viewTip.set('content.text', content);
 		viewTip.set('event_data', data);
 		viewTip.reposition(jsEvent).show(jsEvent);
+
+		$(".qtip-titlebar", "#qtip-viewTip").css("color", data.textColor);
+		$(".qtip-titlebar", "#qtip-viewTip").css("background-color", data.color);
 	}
 	
 	function getWhenText(startDate, endDate, allDay)
