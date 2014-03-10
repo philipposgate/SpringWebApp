@@ -66,7 +66,7 @@
 		    	   '&:hover {background-color:#EEE;}' +
 	    	   	   '& .calToggle {float:left;margin-right:5px;} ' + 
 	    	   	   '& .calTitle {float:left;} ' + 
-	    	   	   '& .calCtl {float:right;} ' + 
+	    	   	   '& .calCtl {float:right;display:none;} ' + 
 		    	   '& .clrFloat {clear:both;}' 
 		  },
 		  controller: {
@@ -87,7 +87,15 @@
 					  };
 					  this.append($$(calendarMenuProto, menuModel), ".calCtl");
 				  }
-			  }
+			  },
+			  
+			  'mouseover &': function() { 
+				  this.view.$(".calCtl").show();
+			  },
+
+			  'mouseout &': function() { 
+				  this.view.$(".calCtl").hide();
+			   }
 		  }
 	});
 

@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-
+    
 <style>
 	input.date, input.time {
 		width: 8em;
@@ -44,6 +44,8 @@
 	}
 </script>
 
+<%@ include file="cal_eventEdit_recurrence.jsp"%>
+
 <div class="row-fluid">
 	<button class="btn" onclick="app.buildForm({action:'displayHome'}, '${pathElement.fullPath}').submit()"><i class="icon-hand-left"></i></button>
 	<button class="btn btn-danger" onclick="saveEvent()">Save</button>
@@ -72,9 +74,8 @@
 		</div>
 
 		<div>
-			<input type="checkbox" name="allDay" ${event.allDay ? "checked" : ""}> All Day 
-			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-			<input type="checkbox" name="repeat"> Repeat...
+			<label><input type="checkbox" name="allDay" ${event.allDay ? "checked" : ""}> All Day</label> 
+			<label><input type="checkbox" name="repeat"> Repeat...</label>
 		</div>
 
 		<BR>
