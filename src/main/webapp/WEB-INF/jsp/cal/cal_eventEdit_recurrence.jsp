@@ -8,19 +8,9 @@
 <script type="text/javascript" src="/assets/scripts/rrule/nlp.js"></script>
 
 <script type="text/javascript">
-// 	var occurranceRule = "FREQ=MONTHLY;DTSTART=20120201T093000Z";
-	var occurranceRule = "FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,TU";
-	
 	$(document).ready(function() {
 		$(":input", "#repeatModal form#repeatForm").change(refreshSummary);
 		$(":input", "#repeatModal form#repeatForm").keyup(refreshSummary);
-		
-		$("input[name=repeat]", "#eventForm").on("click", function() {
-			if ($(this).is(":checked"))
-			{
-				showRepeatModal();
-			}
-		});
 	});
 	
 	function refreshSummary() {
@@ -28,42 +18,47 @@
 	    $("#rruleSummary", "#repeatForm").html(rule.toText());
 	}
 	
-	function showRepeatModal()
+	function showRepeatModal(rrule)
 	{
-		var repeatForm = $("form#repeatForm", "#repeatModal");
-		var rrOptions = RRule.parseString(occurranceRule);
-		var rule = new RRule(rrOptions);
-		
-		// set freq input
-		$("select[name=freq]", repeatForm).val(rrOptions.freq);
-		
-		// set interval input
-		$("select[name=interval]", repeatForm).val(rrOptions.interval);
-		
-		// set byweekday checkboxes
-		if (rrOptions.byweekday)
+		if (rrule)
 		{
-			for (var i=0; i < rrOptions.byweekday.length; i++)
+			var repeatForm = $("form#repeatForm", "#repeatModal");
+			var rrOptions = RRule.parseString(rrule);
+			var rule = new RRule(rrOptions);
+			
+			// set freq input
+			$("select[name=freq]", repeatForm).val(rrOptions.freq);
+			
+			// set interval input
+			$("select[name=interval]", repeatForm).val(rrOptions.interval);
+			
+			// set byweekday checkboxes
+			if (rrOptions.byweekday)
 			{
-				$("input[name=byweekday][value=" + rrOptions.byweekday[i].weekday + "]", repeatForm).prop("checked", true);
+				for (var i=0; i < rrOptions.byweekday.length; i++)
+				{
+					$("input[name=byweekday][value=" + rrOptions.byweekday[i].weekday + "]", repeatForm).prop("checked", true);
+				}
 			}
+			
+			// set 'ends' radios & fields
+			$("input[name=ends]", repeatForm).prop("checked", false);
+			$("input[name=endsCount]", repeatForm).val("");
+			if (rrOptions.count)
+			{
+				// set 'ends after N occurrences' radios & fields
+				$("input[name=ends][value=count]", repeatForm).prop("checked", true);
+				$("input[name=endsCount]", repeatForm).val(rrOptions.count);
+			}
+			else
+			{
+				// set 'ends never' radio
+				$("input[name=ends][value=never]", repeatForm).prop("checked", true);
+			}
+			
+			// set 'rule summary' text
+			$("#rruleSummary", repeatForm).html(rule.toText());
 		}
-		
-		// set 'ends' checkboxes & fields
-		$("input[name=ends]", repeatForm).prop("checked", false);
-		$("input[name=endsCount]", repeatForm).val("");
-		if (rrOptions.count)
-		{
-			$("input[name=ends][value=count]", repeatForm).prop("checked", true);
-			$("input[name=endsCount]", repeatForm).val(rrOptions.count);
-		}
-		else
-		{
-			$("input[name=ends][value=never]", repeatForm).prop("checked", true);
-		}
-		
-		// set 'rule summary' text
-		$("#rruleSummary", repeatForm).html(rule.toText());
 		
 		// display 'repeat rule modal'
 		$("#repeatModal").modal("show");
@@ -72,8 +67,11 @@
 	function saveRepeat()
 	{
 		$("#repeatModal").modal("hide");
-		occurranceRule = getRRuleFromForm();
-		debugRule();
+	
+		var rule = new RRule(RRule.parseString(getRRuleFromForm()));
+	    $("input[name=rrule]", "#eventForm").val(rule.toString());
+	    $("#rruleText", "#eventForm").html(rule.toText());
+	    $("a#rruleEditBtn", "#eventForm").show();
 	}
 	
 	function getRRuleFromForm()
@@ -115,23 +113,8 @@
 	{
 		$("#repeatModal").modal("hide");
 	}
-	
-	function debugRule()
-	{
-		var rrOptions = RRule.parseString(occurranceRule);
-		console.log(rrOptions);
-
-		var rule = new RRule(rrOptions);
-		$("#rruleTest").html(rule.toString());
-		$("#nlpTest").html(rule.toText());
-	}
 
 </script>
-
-<div class="well">
-	<div id="rruleTest"></div>
-	<div id="nlpTest"></div>
-</div>
 
 <div id="repeatModal" class="modal hide fade">
 	<div class="modal-header">

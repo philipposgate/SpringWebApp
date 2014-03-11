@@ -135,6 +135,9 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		event.setLocation(request.getParameter("location"));
 		event.setAllDay(null != request.getParameter("allDay"));
 
+		event.setRepeats(null != request.getParameter("repeats"));
+		event.setRrule(request.getParameter("rrule"));
+
 		Date startDate = null;
 		String startDay = request.getParameter("startDay");
 		String startTime = request.getParameter("startTime");

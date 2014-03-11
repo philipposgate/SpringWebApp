@@ -39,6 +39,12 @@ public class Event extends AbstractEntity
 	
 	@Column
 	private boolean allDay;
+	
+	@Column
+	private boolean repeats;
+	
+	@Column
+	private String rrule;
 
 	@Column
 	private String location;
@@ -150,5 +156,25 @@ public class Event extends AbstractEntity
 	public String toString()
 	{
 	    return super.toString() + " [start: " + startDate + "] [end: " + endDate + "]";
+	}
+
+	public boolean isRepeats()
+	{
+		return repeats;
+	}
+
+	public void setRepeats(boolean repeats)
+	{
+		this.repeats = repeats;
+	}
+
+	public String getRrule()
+	{
+		return rrule;
+	}
+
+	public void setRrule(String rrule)
+	{
+		this.rrule = rrule;
 	}
 }

@@ -1,15 +1,29 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
     
 <style>
-	input.date, input.time {
-		width: 8em;
-	}
+	input.date, input.time { width: 8em; }
+	span#rruleText {font-weight:bold;}
 </style>
+
+<%@ include file="cal_eventEdit_recurrence.jsp"%>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#editorTabs a:first').tab('show');
 		$("input[name=allDay]", "#eventForm").on("click", allDayClick);
+		$("input[name=repeats]", "#eventForm").on("click", repeatClick);
+		$("a#rruleEditBtn", "#eventForm").on("click", function() { showRepeatModal($("input[name=rrule]", "#eventForm").val()); });
+		
+		if ($("input[name=repeats]").is(":checked"))
+		{
+			var rule = new RRule(RRule.parseString($("input[name=rrule]", "#eventForm").val()));
+		    $("#rruleText", "#eventForm").html(rule.toText());
+		    $("#rruleEditBtn").show();
+		}
+		else
+		{
+		    $("#rruleEditBtn").hide();
+		}
 	});
 	
 	function saveEvent()
@@ -42,9 +56,20 @@
 			$(".time").show();	
 		} 
 	}
+	
+	function repeatClick()
+	{
+		if ($(this).is(":checked"))
+		{
+			showRepeatModal($("input[name=rrule]", "#eventForm").val());
+		}
+		else
+		{
+		    $("#rruleText", "#eventForm").html("");
+		    $("a#rruleEditBtn", "#eventForm").hide();
+		}
+	}
 </script>
-
-<%@ include file="cal_eventEdit_recurrence.jsp"%>
 
 <div class="row-fluid">
 	<button class="btn" onclick="app.buildForm({action:'displayHome'}, '${pathElement.fullPath}').submit()"><i class="icon-hand-left"></i></button>
@@ -59,6 +84,7 @@
 	<form id="eventForm" action="${pathElement.fullPath}" method="POST">
 		<input type="hidden" name="action" value="saveEvent"> 
 		<input type="hidden" name="eventId" value="${event.id}">
+		<input type="hidden" name="rrule" value="${event.rrule}">
 
 		<div>
 			<div>Event Title</div>
@@ -74,8 +100,12 @@
 		</div>
 
 		<div>
-			<label><input type="checkbox" name="allDay" ${event.allDay ? "checked" : ""}> All Day</label> 
-			<label><input type="checkbox" name="repeat"> Repeat...</label>
+			<label style="display:inline;"><input type="checkbox" name="allDay" ${event.allDay ? "checked" : ""}> All Day Event</label> 
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<label style="display:inline;"><input type="checkbox" name="repeats" ${event.repeats ? "checked" : ""}> Repeats</label> 
+			&nbsp;
+			<span id="rruleText"></span>
+			<a id="rruleEditBtn" href="javascript:void(0)" class="btn btn-mini">edit</a>
 		</div>
 
 		<BR>
