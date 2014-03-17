@@ -6,6 +6,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.component.VEvent;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +25,7 @@ import app.common.calendar.Calendar;
 import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarService;
 import app.common.calendar.Event;
+import app.common.calendar.ical.ICalHelper;
 import app.common.utils.DateUtils;
 import app.common.utils.StringUtils;
 import app.core.rest.AbstractRestController;
@@ -62,7 +68,16 @@ public class CalendarRestController extends AbstractRestController
 
 		JSONArray events = new JSONArray();
 
-		List<Event> evts = calendarService.getEvents(d, userLoggedIn, start, end);
+		populateNonRepeatingFullCalendarEvents(events, d, userLoggedIn, start, end);
+		populateRepeatingFullCalendarEvents(events, d, userLoggedIn, start, end);
+
+		return events.toString();
+	}
+
+	private void populateNonRepeatingFullCalendarEvents(JSONArray events, CalendarDomain d, User user, Date start,
+	        Date end)
+	{
+		List<Event> evts = calendarService.getNonRepeatingEvents(d, user, start, end);
 		for (Event e : evts)
 		{
 			try
@@ -74,8 +89,60 @@ public class CalendarRestController extends AbstractRestController
 				e1.printStackTrace();
 			}
 		}
+	}
 
-		return events.toString();
+	private void populateRepeatingFullCalendarEvents(JSONArray events, CalendarDomain d, User user, Date start, Date end)
+	{
+		List<Event> revts = calendarService.getRepeatingEvents(d, user);
+		Period period = new Period(new DateTime(start), new DateTime(end));
+		for (Event e : revts)
+		{
+			try
+			{
+				VEvent ve = ICalHelper.getVEvent(e);
+				PeriodList list = ve.calculateRecurrenceSet(period);
+
+				for (Object po : list)
+				{
+					Period p = (Period) po;
+					
+					JSONObject event = new JSONObject();
+					event.put("id", e.getId());
+					event.put("title", e.getTitle());
+					event.put("allDay", e.isAllDay());
+					event.put("start", DateUtils.formatDate(p.getStart(), FULLCALENDAR_DATE_FORMAT));
+					event.put("end", DateUtils.formatDate(p.getEnd(), FULLCALENDAR_DATE_FORMAT));
+
+					if (!StringUtils.isEmpty(e.getLocation()))
+					{
+						event.put("location", e.getLocation());
+					}
+
+					if (null != e.getCalendar())
+					{
+						Calendar calendar = e.getCalendar();
+
+						if (!StringUtils.isEmpty(calendar.getColorBackground())
+						        && !StringUtils.isEmpty(calendar.getColorForeground()))
+						{
+							event.put("color", calendar.getColorBackground());
+							event.put("textColor", calendar.getColorForeground());
+						}
+
+						JSONObject c = new JSONObject();
+						c.put("id", calendar.getId());
+						c.put("title", calendar.getTitle());
+						event.put("calendar", c);
+					}
+					
+					events.put(event);
+				}
+			}
+			catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	private JSONObject getFullCalendarEvent(Event e) throws Exception
@@ -86,7 +153,7 @@ public class CalendarRestController extends AbstractRestController
 		event.put("allDay", e.isAllDay());
 		event.put("start", DateUtils.formatDate(e.getStartDate(), FULLCALENDAR_DATE_FORMAT));
 		event.put("end", DateUtils.formatDate(e.getEndDate(), FULLCALENDAR_DATE_FORMAT));
-		
+
 		if (!StringUtils.isEmpty(e.getLocation()))
 		{
 			event.put("location", e.getLocation());
@@ -95,13 +162,14 @@ public class CalendarRestController extends AbstractRestController
 		if (null != e.getCalendar())
 		{
 			Calendar calendar = e.getCalendar();
-			
-			if (!StringUtils.isEmpty(calendar.getColorBackground()) && !StringUtils.isEmpty(calendar.getColorForeground()))
+
+			if (!StringUtils.isEmpty(calendar.getColorBackground())
+			        && !StringUtils.isEmpty(calendar.getColorForeground()))
 			{
 				event.put("color", calendar.getColorBackground());
 				event.put("textColor", calendar.getColorForeground());
 			}
-			
+
 			JSONObject c = new JSONObject();
 			c.put("id", calendar.getId());
 			c.put("title", calendar.getTitle());
@@ -142,14 +210,15 @@ public class CalendarRestController extends AbstractRestController
 
 		return getFullCalendarEvent(event).toString();
 	}
-	
+
 	@RequestMapping(value = "updateEventDateTime", method = RequestMethod.POST)
 	@ResponseBody
-	public String updateEventDateTime(@PathVariable("domainId") Integer domainId, HttpServletRequest request) throws Exception
+	public String updateEventDateTime(@PathVariable("domainId") Integer domainId, HttpServletRequest request)
+	        throws Exception
 	{
 		User userLoggedIn = userService.getUserLoggedIn();
 		Event event = calendarService.getEvent(request);
-		
+
 		if (userLoggedIn.getId().equals(event.getOwner().getId()))
 		{
 			Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
@@ -164,16 +233,17 @@ public class CalendarRestController extends AbstractRestController
 			event.setAllDay("true".equalsIgnoreCase(request.getParameter("allDay")));
 
 			calendarService.save(event);
-			
+
 			logger.info(event.toString());
 		}
-		
+
 		return getFullCalendarEvent(event).toString();
 	}
-	
+
 	@RequestMapping(value = "updateCalendarViz/{calendarId}", method = RequestMethod.PUT)
 	@ResponseBody
-	public String updateCalendarViz(@PathVariable("domainId") Integer domainId, @PathVariable String calendarId, HttpServletRequest request)
+	public String updateCalendarViz(@PathVariable("domainId") Integer domainId, @PathVariable String calendarId,
+	        HttpServletRequest request)
 	{
 		Calendar cal = getHt().load(Calendar.class, new Integer(calendarId));
 		cal.setVisible("true".equals(request.getParameter("visible")));

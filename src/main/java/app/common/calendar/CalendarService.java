@@ -1,12 +1,19 @@
 package app.common.calendar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.component.VEvent;
 
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,6 +23,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import app.common.calendar.ical.ICalHelper;
 import app.common.utils.DateUtils;
 import app.common.utils.StringUtils;
 import app.core.user.User;
@@ -169,7 +177,7 @@ public class CalendarService
 		event.setCalendar(calendar);
 	}
 
-	public List<Event> getEvents(CalendarDomain calendarDomain, User owner, Date start, Date end)
+	public List<Event> getNonRepeatingEvents(CalendarDomain calendarDomain, User owner, Date start, Date end)
 	{
 		List<Event> el = new ArrayList<Event>();
 
@@ -183,7 +191,36 @@ public class CalendarService
 				{
 					if (c.isVisible())
 					{
-						el.addAll(getEvents(c, start, end));
+						StringBuilder hql = new StringBuilder();
+
+						hql.append("select ce.event from CalendarEvent ce where ce.calendar.id=").append(c.getId());
+
+						if (null != start && null != end)
+						{
+							hql.append(" and ce.event.startDate between '")
+							        .append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT)).append("' and '")
+							        .append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
+						}
+						else if (null != start && null == end)
+						{
+							hql.append(" and ce.event.startDate >= '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
+							        .append("'");
+						}
+						else if (null == start && null != end)
+						{
+							hql.append(" and ce.event.startDate <= '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT))
+							        .append("'");
+						}
+						
+						hql.append(" and ce.event.repeats=0");
+
+						List<Event> events = getHt().find(hql.toString());
+
+						for (Event event : events)
+						{
+							event.setCalendar(c);
+							el.add(event);
+						}
 					}
 				}
 			}
@@ -196,38 +233,85 @@ public class CalendarService
 		return el;
 	}
 
-	private List<Event> getEvents(Calendar c, Date start, Date end)
+	public List<Event> getRepeatingEvents(CalendarDomain calendarDomain, User owner)
 	{
+		List<Event> el = new ArrayList<Event>();
+
+		try
+		{
+			List<CalendarList> calLists = getCalendarLists(calendarDomain, owner);
+			for (CalendarList cl : calLists)
+			{
+				List<Calendar> cals = getCalendars(cl);
+				for (Calendar c : cals)
+				{
+					if (c.isVisible())
+					{
+						StringBuilder hql = new StringBuilder();
+						hql.append("select ce.event from CalendarEvent ce where ce.calendar.id=").append(c.getId());
+						hql.append(" and ce.event.repeats=1");
+
+						List<Event> events = getHt().find(hql.toString());
+
+						for (Event event : events)
+						{
+							event.setCalendar(c);
+							el.add(event);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return el;
+	}
+
+	public List<Event> getRepeatingEvents(Calendar c,
+            Date start, Date end)
+    {
+		List<Event> events = new ArrayList<Event>();
+		
 		StringBuilder hql = new StringBuilder();
-
 		hql.append("select ce.event from CalendarEvent ce where ce.calendar.id=").append(c.getId());
+		hql.append(" and ce.event.repeats=1");
 
-		if (null != start && null != end)
-		{
-			hql.append(" and ce.event.startDate between '")
-			        .append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT)).append("' and '")
-			        .append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
-		}
-		else if (null != start && null == end)
-		{
-			hql.append(" and ce.event.startDate >= '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
-			        .append("'");
-		}
-		else if (null == start && null != end)
-		{
-			hql.append(" and ce.event.startDate <= '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT))
-			        .append("'");
-		}
+		List<Event> repeatEvents = getHt().find(hql.toString());
+		
+		net.fortuna.ical4j.model.Calendar ical = ICalHelper.getICalendar();
 
-		List<Event> events = getHt().find(hql.toString());
-
-		for (Event event : events)
+		for (Event event : repeatEvents)
 		{
-			event.setCalendar(c);
+			try
+            {
+	            ical.getComponents().add(ICalHelper.getVEvent(event));
+            }
+            catch (Exception e)
+            {
+	            e.printStackTrace();
+            }
 		}
+		
+		// Create the date range which is desired.
+		Period period = new Period(new DateTime(start), new DateTime(end));
+		
+		// For each VEVENT in the ICS
+		for (Object o : ical.getComponents("VEVENT")) {
+			VEvent ve = (VEvent)o;
+			PeriodList list = ve.calculateRecurrenceSet(period);
+
+			for (Object po : list) {
+				System.out.println((Period)po);
+			}
+		}		
 
 		return events;
-	}
+    }
+
+
 
 	public Event getEvent(HttpServletRequest request)
 	{
