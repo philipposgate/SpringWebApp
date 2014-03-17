@@ -3,11 +3,9 @@
 	#rruleSummary {font-weight:bold;}
 </style>
 
-<script type="text/javascript" src="/assets/scripts/underscore/underscore-min.js"></script>
-<script type="text/javascript" src="/assets/scripts/rrule/rrule.js"></script>
-<script type="text/javascript" src="/assets/scripts/rrule/nlp.js"></script>
-
 <script type="text/javascript">
+	app.addComponent("rrule");
+	
 	$(document).ready(function() {
 		$(":input", "#repeatModal form#repeatForm").change(refreshSummary);
 		$(":input", "#repeatModal form#repeatForm").keyup(refreshSummary);
@@ -102,8 +100,6 @@
 				rrOptions.count = endsCount;
 			}
 		}
-
-		console.log(rrOptions);
 
 		var rrule = new RRule(rrOptions);
 		return rrule.toString();

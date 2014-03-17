@@ -94,6 +94,11 @@ var app = {
             loaded : false
         },
 
+        jsTree : {
+            tag : '<script type="text/javascript" src="/assets/scripts/jsTree/jquery.jstree.js"></script>',
+            loaded : false
+        },
+
         momentjs : {
             tag : '<script type="text/javascript" src="/assets/scripts/momentjs/moment.min.js"></script>',
             loaded : false
@@ -109,6 +114,17 @@ var app = {
 			tag : '<link href="/assets/scripts/qtip/jquery.qtip.min.css" rel="stylesheet" type="text/css" />',
 			loaded : false
 		},
+
+        rrule : {
+            tag : '<script type="text/javascript" src="/assets/scripts/rrule/nlp.js"></script>',
+          dependencies : ["underscore", "rrule_core"],
+            loaded : false
+        },
+
+        rrule_core : {
+            tag : '<script type="text/javascript" src="/assets/scripts/rrule/rrule.js"></script>',
+            loaded : false
+        },
 
 		tableSorter : {
             tag : '<script type="text/javascript" src="/assets/scripts/tableSorter/jquery.tablesorter.min.js"></script>',
@@ -126,10 +142,11 @@ var app = {
             loaded : false
         },
 
-        jsTree : {
-            tag : '<script type="text/javascript" src="/assets/scripts/jsTree/jquery.jstree.js"></script>',
+        underscore : {
+            tag : '<script type="text/javascript" src="/assets/scripts/underscore/underscore-min.js"></script>',
             loaded : false
         }
+
     },
     
     hideFadeouts: function() {

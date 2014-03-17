@@ -9,6 +9,7 @@
 <script type="text/javascript">
 	app.addComponent("fullCalendar");
 	app.addComponent("qtip");
+	app.addComponent("rrule");
 	
 	<%-- GLOBAL VARS --%>
 	var viewTip; // qtip api-object
@@ -169,6 +170,13 @@
 		var content = '<div class="viewTipWhen">' +
 		'<h4>'+data.title+'</h4>' + 
 		'<p>' + getWhenText(data.start, data.end, data.allDay) + '</p>';
+		
+		if (data.repeats && data.rrule)
+		{
+			var rule = new RRule(RRule.parseString(data.rrule));
+			content += '<p>Repeats: ' + rule.toText() + '</p>';
+
+		}
 		
 		if (data.location)
 		{

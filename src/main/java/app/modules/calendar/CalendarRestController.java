@@ -1,6 +1,5 @@
 package app.modules.calendar;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,8 +23,8 @@ import app.common.calendar.Calendar;
 import app.common.calendar.CalendarDomain;
 import app.common.calendar.CalendarService;
 import app.common.calendar.Event;
-import app.common.calendar.ical.ICalHelper;
 import app.common.utils.DateUtils;
+import app.common.utils.ICalUtils;
 import app.common.utils.StringUtils;
 import app.core.rest.AbstractRestController;
 import app.core.user.User;
@@ -68,14 +66,13 @@ public class CalendarRestController extends AbstractRestController
 
 		JSONArray events = new JSONArray();
 
-		populateNonRepeatingFullCalendarEvents(events, d, userLoggedIn, start, end);
-		populateRepeatingFullCalendarEvents(events, d, userLoggedIn, start, end);
+		populateNonRepeatingEvents(events, d, userLoggedIn, start, end);
+		populateRepeatingEvents(events, d, userLoggedIn, start, end);
 
 		return events.toString();
 	}
 
-	private void populateNonRepeatingFullCalendarEvents(JSONArray events, CalendarDomain d, User user, Date start,
-	        Date end)
+	private void populateNonRepeatingEvents(JSONArray events, CalendarDomain d, User user, Date start, Date end)
 	{
 		List<Event> evts = calendarService.getNonRepeatingEvents(d, user, start, end);
 		for (Event e : evts)
@@ -91,50 +88,25 @@ public class CalendarRestController extends AbstractRestController
 		}
 	}
 
-	private void populateRepeatingFullCalendarEvents(JSONArray events, CalendarDomain d, User user, Date start, Date end)
+	private void populateRepeatingEvents(JSONArray events, CalendarDomain d, User user, Date start, Date end)
 	{
-		List<Event> revts = calendarService.getRepeatingEvents(d, user);
 		Period period = new Period(new DateTime(start), new DateTime(end));
+
+		List<Event> revts = calendarService.getRepeatingEvents(d, user);
 		for (Event e : revts)
 		{
 			try
 			{
-				VEvent ve = ICalHelper.getVEvent(e);
+				VEvent ve = ICalUtils.getVEvent(e);
 				PeriodList list = ve.calculateRecurrenceSet(period);
 
 				for (Object po : list)
 				{
 					Period p = (Period) po;
-					
-					JSONObject event = new JSONObject();
-					event.put("id", e.getId());
-					event.put("title", e.getTitle());
-					event.put("allDay", e.isAllDay());
+
+					JSONObject event = getFullCalendarEvent(e);
 					event.put("start", DateUtils.formatDate(p.getStart(), FULLCALENDAR_DATE_FORMAT));
 					event.put("end", DateUtils.formatDate(p.getEnd(), FULLCALENDAR_DATE_FORMAT));
-
-					if (!StringUtils.isEmpty(e.getLocation()))
-					{
-						event.put("location", e.getLocation());
-					}
-
-					if (null != e.getCalendar())
-					{
-						Calendar calendar = e.getCalendar();
-
-						if (!StringUtils.isEmpty(calendar.getColorBackground())
-						        && !StringUtils.isEmpty(calendar.getColorForeground()))
-						{
-							event.put("color", calendar.getColorBackground());
-							event.put("textColor", calendar.getColorForeground());
-						}
-
-						JSONObject c = new JSONObject();
-						c.put("id", calendar.getId());
-						c.put("title", calendar.getTitle());
-						event.put("calendar", c);
-					}
-					
 					events.put(event);
 				}
 			}
@@ -153,6 +125,12 @@ public class CalendarRestController extends AbstractRestController
 		event.put("allDay", e.isAllDay());
 		event.put("start", DateUtils.formatDate(e.getStartDate(), FULLCALENDAR_DATE_FORMAT));
 		event.put("end", DateUtils.formatDate(e.getEndDate(), FULLCALENDAR_DATE_FORMAT));
+
+		event.put("repeats", e.isRepeats());
+		if (e.isRepeats())
+		{
+			event.put("rrule", e.getRrule());
+		}
 
 		if (!StringUtils.isEmpty(e.getLocation()))
 		{
