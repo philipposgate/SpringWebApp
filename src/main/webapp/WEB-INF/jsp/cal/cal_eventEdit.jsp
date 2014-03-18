@@ -127,8 +127,10 @@
 						<tr>
 							<td>Calendar</td>
 							<td>
-								<select>
-									<option>${event.calendar.title}</option>
+								<select name="calendarId">
+									<c:forEach var="calendar" items="${calendars}">
+										<option value="${calendar.id}" ${event.calendar.id == calendar.id ? "selected" : ""}>${calendar.title}</option>
+									</c:forEach>
 								</select>
 							</td>
 						</tr>

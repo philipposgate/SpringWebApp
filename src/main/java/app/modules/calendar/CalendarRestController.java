@@ -181,7 +181,7 @@ public class CalendarRestController extends AbstractRestController
 		User userLoggedIn = userService.getUserLoggedIn();
 		Event event = calendarService.getEvent(request);
 
-		if (userLoggedIn.getId().equals(event.getOwner().getId()))
+		if (userLoggedIn.getId().equals(event.getCalendar().getCalendarList().getOwner().getId()))
 		{
 			calendarService.delete(event);
 		}
@@ -197,7 +197,7 @@ public class CalendarRestController extends AbstractRestController
 		User userLoggedIn = userService.getUserLoggedIn();
 		Event event = calendarService.getEvent(request);
 
-		if (userLoggedIn.getId().equals(event.getOwner().getId()))
+		if (userLoggedIn.getId().equals(event.getCalendar().getCalendarList().getOwner().getId()))
 		{
 			Date startDate = DateUtils.parseDate(request.getParameter("startDate"), "yyyy-MM-dd HH:mm");
 			Date endDate = DateUtils.parseDate(request.getParameter("endDate"), "yyyy-MM-dd HH:mm");

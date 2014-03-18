@@ -9,16 +9,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import app.core.AbstractEntity;
-import app.core.user.User;
 
 @Entity
 @Table(name = "calendar")
 public class Calendar extends AbstractEntity
 {
 
-    @ManyToOne(fetch=FetchType.EAGER)
-	private User owner;
-	
+	@ManyToOne(fetch = FetchType.EAGER)
+	private CalendarList calendarList;
+
 	@Column(nullable = false)
 	private Date created;
 
@@ -27,7 +26,7 @@ public class Calendar extends AbstractEntity
 
 	@Column(nullable = false)
 	private String title;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
@@ -39,18 +38,18 @@ public class Calendar extends AbstractEntity
 
 	@Column
 	private String colorBackground;
-	
+
 	@Column
 	private boolean visible;
 
-	public User getOwner()
+	public CalendarList getCalendarList()
 	{
-		return owner;
+		return calendarList;
 	}
 
-	public void setOwner(User owner)
+	public void setCalendarList(CalendarList calendarList)
 	{
-		this.owner = owner;
+		this.calendarList = calendarList;
 	}
 
 	public Date getCreated()

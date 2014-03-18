@@ -6,13 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.SessionFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -23,6 +20,7 @@ import app.common.calendar.CalendarService;
 import app.common.calendar.CalendarService.COLOR_THEME;
 import app.common.calendar.Event;
 import app.common.utils.DateUtils;
+import app.common.utils.StringUtils;
 import app.core.pathElement.PathElementController;
 import app.core.user.User;
 
@@ -51,8 +49,7 @@ public class CalendarController extends PathElementController<CalendarDomain>
 			if (calLists.isEmpty())
 			{
 				CalendarList calList = calendarService.createCalendarList(calendarDomain, userLoggedIn, "My Calendars");
-				Calendar calendar = calendarService.createCalendar(userLoggedIn, "My Calendar");
-				calendarService.bind(calList, calendar);
+				Calendar calendar = calendarService.createCalendar(calList, "My Calendar");
 				calendarService.populate(calList);
 				calLists.add(calList);
 
@@ -117,9 +114,14 @@ public class CalendarController extends PathElementController<CalendarDomain>
 	public ModelAndView displayEventEdit(HttpServletRequest request, HttpServletResponse response)
 	{
 		ModelAndView mv = new ModelAndView("cal/cal_eventEdit");
-		Event event = calendarService.getEvent(request);
-		calendarService.populate(event);
-		mv.addObject("event", event);
+
+		mv.addObject("event", calendarService.getEvent(request));
+
+		CalendarDomain calendarDomain = getDomain(request);
+		User userLoggedIn = userService.getUserLoggedIn();
+		List<Calendar> calendars = calendarService.getAllUserCalendars(calendarDomain, userLoggedIn);
+		mv.addObject("calendars", calendars);
+
 		return mv;
 	}
 
@@ -165,12 +167,15 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		event.setStartDate(startDate);
 		event.setEndDate(endDate);
 
+		Calendar calendar = calendarService.getCalendar(request);
+		if (null != calendar && !calendar.getId().equals(event.getCalendar().getId()))
+		{
+			event.setCalendar(calendar);
+		}
+
 		calendarService.save(event);
-		logger.info(event.toString());
 
 		RedirectView rv = new RedirectView(getPathElement(request).getFullPath());
-		// rv.addStaticAttribute("action", "displayEventEdit");
-		// rv.addStaticAttribute("eventId", event.getId());
 		rv.addStaticAttribute("successMessage", "Event Saved");
 
 		return new ModelAndView(rv);
@@ -196,12 +201,10 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		Calendar cal = calendarService.getCalendar(request);
 		String title = request.getParameter("title");
 		String colorTheme = request.getParameter("colorTheme");
-		User userLoggedIn = userService.getUserLoggedIn();
 
 		if (null == cal)
 		{
-			cal = calendarService.createCalendar(userLoggedIn, title);
-			calendarService.bind(calList, cal);
+			cal = calendarService.createCalendar(calList, title);
 		}
 
 		cal.setTitle(title);

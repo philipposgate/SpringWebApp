@@ -1,19 +1,10 @@
 package app.common.calendar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Period;
-import net.fortuna.ical4j.model.PeriodList;
-import net.fortuna.ical4j.model.component.VEvent;
 
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -24,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.common.utils.DateUtils;
-import app.common.utils.ICalUtils;
 import app.common.utils.StringUtils;
 import app.core.user.User;
 
@@ -93,6 +83,18 @@ public class CalendarService
 		return ret;
 	}
 
+	public List<Calendar> getAllUserCalendars(CalendarDomain calendarDomain, User owner)
+	{
+		List<Calendar> ret = null;
+
+		if (null != calendarDomain && null != owner)
+		{
+			ret = getHt().find("from Calendar c where c.calendarList.calendarDomain=? and c.calendarList.owner=?",
+			        new Object[] { calendarDomain, owner });
+		}
+		return ret;
+	}
+
 	public void populate(CalendarList cl)
 	{
 		cl.getCalendars().addAll(getCalendars(cl));
@@ -100,7 +102,7 @@ public class CalendarService
 
 	private List<Calendar> getCalendars(CalendarList cl)
 	{
-		return getHt().find("select cli.calendar from CalendarListItem cli where cli.calendarList=?", cl);
+		return getHt().find("from Calendar c where c.calendarList=?", cl);
 	}
 
 	public CalendarList createCalendarList(CalendarDomain calendarDomain, User owner, String title)
@@ -115,11 +117,11 @@ public class CalendarService
 		return calList;
 	}
 
-	public Calendar createCalendar(User owner, String title)
+	public Calendar createCalendar(CalendarList calendarList, String title)
 	{
 		Calendar c = new Calendar();
 		c.setCreated(new Date());
-		c.setOwner(owner);
+		c.setCalendarList(calendarList);
 		c.setTitle(StringUtils.isEmpty(title) ? "(no title)" : title);
 		c.setColorBackground("#3a87ad");
 		c.setColorForeground("#fff");
@@ -129,14 +131,6 @@ public class CalendarService
 		return c;
 	}
 
-	public void bind(CalendarList calList, Calendar calendar)
-	{
-		CalendarListItem cli = new CalendarListItem();
-		cli.setCalendarList(calList);
-		cli.setCalendar(calendar);
-		getHt().save(cli);
-	}
-
 	public Event createEvent(User owner, Calendar calendar, String title, Date startDate, Date endDate, boolean allDay)
 	{
 		Event e = null;
@@ -144,7 +138,7 @@ public class CalendarService
 		if (null != owner && null != calendar && null != startDate && null != endDate)
 		{
 			e = new Event();
-			e.setOwner(owner);
+			e.setCalendar(calendar);
 			e.setCreated(new Date());
 			e.setTitle(StringUtils.isEmpty(title) ? "(no title)" : title);
 			e.setAllDay(allDay);
@@ -154,114 +148,70 @@ public class CalendarService
 			getHt().save(e);
 
 			logger.info(e.toString());
-
-			bind(calendar, e);
 		}
 
 		return e;
 	}
 
-	public void bind(Calendar calendar, Event event)
-	{
-		CalendarEvent ce = new CalendarEvent();
-		ce.setCalendar(calendar);
-		ce.setEvent(event);
-		getHt().save(ce);
-
-		event.setCalendar(calendar);
-	}
-
 	public List<Event> getNonRepeatingEvents(CalendarDomain calendarDomain, User owner, Date start, Date end)
 	{
-		List<Event> el = new ArrayList<Event>();
+		List<Event> events = new ArrayList<Event>();
 
 		try
 		{
-			List<CalendarList> calLists = getCalendarLists(calendarDomain, owner);
-			for (CalendarList cl : calLists)
+			StringBuilder hql = new StringBuilder();
+
+			hql.append(
+			        "from Event e where e.repeats=0 and e.calendar.visible=1 and e.calendar.calendarList.calendarDomain.id=")
+			        .append(calendarDomain.getId()).append(" and e.calendar.calendarList.owner.id=")
+			        .append(owner.getId());
+
+			if (null != start && null != end)
 			{
-				List<Calendar> cals = getCalendars(cl);
-				for (Calendar c : cals)
-				{
-					if (c.isVisible())
-					{
-						StringBuilder hql = new StringBuilder();
-
-						hql.append("select ce.event from CalendarEvent ce where ce.calendar.id=").append(c.getId());
-
-						if (null != start && null != end)
-						{
-							hql.append(" and ce.event.startDate between '")
-							        .append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT)).append("' and '")
-							        .append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
-						}
-						else if (null != start && null == end)
-						{
-							hql.append(" and ce.event.startDate >= '")
-							        .append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT)).append("'");
-						}
-						else if (null == start && null != end)
-						{
-							hql.append(" and ce.event.startDate <= '")
-							        .append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
-						}
-
-						hql.append(" and ce.event.repeats=0");
-
-						List<Event> events = getHt().find(hql.toString());
-
-						for (Event event : events)
-						{
-							event.setCalendar(c);
-							el.add(event);
-						}
-					}
-				}
+				hql.append(" and e.startDate between '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
+				        .append("' and '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT)).append("'");
 			}
+			else if (null != start && null == end)
+			{
+				hql.append(" and e.startDate >= '").append(DateUtils.formatDate(start, DateUtils.DB_DATE_FORMAT))
+				        .append("'");
+			}
+			else if (null == start && null != end)
+			{
+				hql.append(" and e.startDate <= '").append(DateUtils.formatDate(end, DateUtils.DB_DATE_FORMAT))
+				        .append("'");
+			}
+
+			events = getHt().find(hql.toString());
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		return el;
+		return events;
 	}
 
 	public List<Event> getRepeatingEvents(CalendarDomain calendarDomain, User owner)
 	{
-		List<Event> el = new ArrayList<Event>();
+		List<Event> events = new ArrayList<Event>();
 
 		try
 		{
-			List<CalendarList> calLists = getCalendarLists(calendarDomain, owner);
-			for (CalendarList cl : calLists)
-			{
-				List<Calendar> cals = getCalendars(cl);
-				for (Calendar c : cals)
-				{
-					if (c.isVisible())
-					{
-						StringBuilder hql = new StringBuilder();
-						hql.append("select ce.event from CalendarEvent ce where ce.calendar.id=").append(c.getId());
-						hql.append(" and ce.event.repeats=1");
+			StringBuilder hql = new StringBuilder();
+			hql.append(
+			        "from Event e where e.repeats=1 and e.calendar.visible=1 and e.calendar.calendarList.calendarDomain.id=")
+			        .append(calendarDomain.getId()).append(" and e.calendar.calendarList.owner.id=")
+			        .append(owner.getId());
 
-						List<Event> events = getHt().find(hql.toString());
-
-						for (Event event : events)
-						{
-							event.setCalendar(c);
-							el.add(event);
-						}
-					}
-				}
-			}
+			events = getHt().find(hql.toString());
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		return el;
+		return events;
 	}
 
 	public Event getEvent(HttpServletRequest request)
@@ -286,17 +236,6 @@ public class CalendarService
 		getHt().saveOrUpdate(event);
 	}
 
-	public void populate(Event event)
-	{
-		List<Calendar> ces = getHt().find("select ce.calendar from CalendarEvent ce where ce.event=?", event);
-
-		if (!ces.isEmpty())
-		{
-			Calendar c = ces.get(0);
-			event.setCalendar(c);
-		}
-	}
-
 	public Calendar getCalendar(HttpServletRequest request)
 	{
 		Calendar calendar = null;
@@ -315,12 +254,6 @@ public class CalendarService
 
 	public void delete(Event event)
 	{
-		List<CalendarEvent> ces = getHt().find("from CalendarEvent ce where ce.event=?", event);
-		for (CalendarEvent ce : ces)
-		{
-			getHt().delete(ce);
-		}
-
 		getHt().delete(event);
 	}
 

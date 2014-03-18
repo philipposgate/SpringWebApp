@@ -7,50 +7,45 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import app.core.AbstractEntity;
-import app.core.user.User;
 
 @Entity
 @Table(name = "event")
 public class Event extends AbstractEntity
 {
-    @ManyToOne(fetch=FetchType.EAGER)
-	private User owner;
-	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	private Calendar calendar;
+
 	@Column(nullable = false)
 	private Date created;
 
 	@Column
 	private Date updated;
-	
+
 	@Column(nullable = false)
 	private String title;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String description;
-	
+
 	@Column
 	private Date startDate;
 
 	@Column
 	private Date endDate;
-	
+
 	@Column
 	private boolean allDay;
-	
+
 	@Column
 	private boolean repeats;
-	
+
 	@Column
 	private String rrule;
 
 	@Column
 	private String location;
-
-	@Transient
-	private Calendar calendar;
 
 	public Date getCreated()
 	{
@@ -112,16 +107,6 @@ public class Event extends AbstractEntity
 		this.location = location;
 	}
 
-	public User getOwner()
-	{
-		return owner;
-	}
-
-	public void setOwner(User owner)
-	{
-		this.owner = owner;
-	}
-
 	public Date getStartDate()
 	{
 		return startDate;
@@ -155,7 +140,7 @@ public class Event extends AbstractEntity
 	@Override
 	public String toString()
 	{
-	    return super.toString() + " [start: " + startDate + "] [end: " + endDate + "]";
+		return super.toString() + " [start: " + startDate + "] [end: " + endDate + "]";
 	}
 
 	public boolean isRepeats()
