@@ -13,16 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import app.common.calendar.Calendar;
-import app.common.calendar.CalendarDomain;
-import app.common.calendar.CalendarList;
-import app.common.calendar.CalendarService;
-import app.common.calendar.CalendarService.COLOR_THEME;
-import app.common.calendar.Event;
 import app.common.utils.DateUtils;
 import app.common.utils.StringUtils;
 import app.core.pathElement.PathElementController;
 import app.core.user.User;
+import app.modules.calendar.CalendarService.COLOR_THEME;
 
 @Controller
 public class CalendarController extends PathElementController<CalendarDomain>
@@ -133,12 +128,12 @@ public class CalendarController extends PathElementController<CalendarDomain>
 			event = new Event();
 		}
 
+		// EVENT INFO...
 		event.setTitle(request.getParameter("title"));
 		event.setLocation(request.getParameter("location"));
-		event.setAllDay(null != request.getParameter("allDay"));
 
-		event.setRepeats(null != request.getParameter("repeats"));
-		event.setRrule(request.getParameter("rrule"));
+		// EVENT DATE/TIME...
+		event.setAllDay(null != request.getParameter("allDay"));
 
 		Date startDate = null;
 		String startDay = request.getParameter("startDay");
@@ -167,6 +162,16 @@ public class CalendarController extends PathElementController<CalendarDomain>
 		event.setStartDate(startDate);
 		event.setEndDate(endDate);
 
+		// EVENT RECURRENCE...
+		event.setRepeats(null != request.getParameter("repeats"));
+		event.setRrule(request.getParameter("rrule"));
+		if (event.isRepeats() && StringUtils.isEmpty(event.getRrule()))
+		{
+			event.setRepeats(false);
+			event.setRrule(null);
+		}
+
+		// EVENT CALENDAR...
 		Calendar calendar = calendarService.getCalendar(request);
 		if (null != calendar && !calendar.getId().equals(event.getCalendar().getId()))
 		{

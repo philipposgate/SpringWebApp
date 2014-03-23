@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import app.common.calendar.Calendar;
-import app.common.calendar.CalendarDomain;
-import app.common.calendar.CalendarService;
-import app.common.calendar.Event;
 import app.common.utils.DateUtils;
 import app.common.utils.ICalUtils;
 import app.common.utils.StringUtils;
@@ -98,16 +94,19 @@ public class CalendarRestController extends AbstractRestController
 			try
 			{
 				VEvent ve = ICalUtils.getVEvent(e);
-				PeriodList list = ve.calculateRecurrenceSet(period);
-
-				for (Object po : list)
+				if (null != ve)
 				{
-					Period p = (Period) po;
+					PeriodList list = ve.calculateRecurrenceSet(period);
 
-					JSONObject event = getFullCalendarEvent(e);
-					event.put("start", DateUtils.formatDate(p.getStart(), FULLCALENDAR_DATE_FORMAT));
-					event.put("end", DateUtils.formatDate(p.getEnd(), FULLCALENDAR_DATE_FORMAT));
-					events.put(event);
+					for (Object po : list)
+					{
+						Period p = (Period) po;
+
+						JSONObject event = getFullCalendarEvent(e);
+						event.put("start", DateUtils.formatDate(p.getStart(), FULLCALENDAR_DATE_FORMAT));
+						event.put("end", DateUtils.formatDate(p.getEnd(), FULLCALENDAR_DATE_FORMAT));
+						events.put(event);
+					}
 				}
 			}
 			catch (Exception e1)
