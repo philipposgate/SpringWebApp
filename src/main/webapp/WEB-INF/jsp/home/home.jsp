@@ -6,6 +6,7 @@
 <div class="row-fluid">
   <div class="span4"><img class="img-rounded" src="/assets/images/classy_mustach_dude.jpg"></div>
   <div class="span8">
+  	<p>Hello!</p>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id velit metus. Aenean lobortis adipiscing lacus, nec condimentum ligula blandit ac. Ut at odio a velit
 		ullamcorper ullamcorper a vel sapien. Suspendisse mattis mauris eu neque consectetur at pretium turpis lobortis. Nunc id eros urna, at fringilla metus. Donec quis magna augue, et
 		pharetra nunc. Quisque a sapien quis mi venenatis ullamcorper. Donec scelerisque, enim quis venenatis hendrerit, elit ante iaculis justo, vitae lobortis tortor urna et ante.
